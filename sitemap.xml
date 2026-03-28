@@ -1,11 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<urlset xmlns="[link suspeito removido]">
-<!-- URL Principal do Stellar Bot -->
-<url>
-<loc>https://miguelsouzaytbr.github.io/stellar-site-bot/</loc>
-<lastmod>2026-03-28</lastmod>
-<changefreq>weekly</changefreq>
-<priority>1.0</priority>
-</url>
-</urlset>
+User-agent: *
+Allow: /
+Sitemap: https://www.google.com/search?q=https://miguelsouzaytbr.github.io/stellar-site-bot/sitemap.xml
