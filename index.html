@@ -14,8 +14,8 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Stellar Bot - Central de Comando">
     <meta property="og:description" content="Transforme seu servidor com um sistema de economia real, empregos e segurança total.">
-    <meta property="og:image" content="https://cdn.discordapp.com/avatars/976607745102979092/a_f87e2f5b8c3f4d5e6a7b8c9d0e1f2a3b.png?size=512"> <!-- Nota: Link de exemplo, o bot usará o avatar real -->
-    <meta property="og:url" content="https://seu-usuario.github.io/stellar">
+    <meta property="og:image" content="https://i.imgur.com/PDEZ4HT.jpeg">
+    <meta property="og:url" content="https://miguelsouzaytbr.github.io/stellar-site-bot/">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
@@ -35,7 +35,8 @@
         .hover-stellar-red:hover { background-color: #d11920; }
         
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .command-card:hover { transform: translateY(-5px); border-color: #ED1C24; transition: all 0.3s ease; }
+        .command-card { transition: all 0.3s ease; }
+        .command-card:hover { transform: translateY(-5px); border-color: #ED1C24; }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -45,6 +46,12 @@
         .hero-gradient {
             background: radial-gradient(circle at 50% 50%, rgba(237, 28, 36, 0.15) 0%, rgba(10, 10, 11, 1) 70%);
         }
+
+        /* Estilo para a barra de pesquisa */
+        .search-container:focus-within {
+            box-shadow: 0 0 20px rgba(237, 28, 36, 0.15);
+            border-color: #ED1C24;
+        }
     </style>
 </head>
 <body>
@@ -52,9 +59,10 @@
     <!-- NAVBAR -->
     <nav class="fixed w-full z-50 glass border-b border-white/5 px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="w-10 h-10 bg-stellar-red rounded-full flex items-center justify-center font-bold text-white">S</div>
-                <span class="text-2xl font-extrabold tracking-tighter">STELLAR<span class="stellar-red">.</span></span>
+            <div class="flex items-center gap-3">
+                <!-- FOTO NA NAV -->
+                <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-full border-2 border-stellar-red object-cover" alt="Logo">
+                <span class="text-2xl font-extrabold tracking-tighter uppercase">STELLAR<span class="stellar-red">.</span></span>
             </div>
             <div class="hidden md:flex gap-8 font-medium text-sm uppercase tracking-widest text-gray-400">
                 <a href="#home" class="hover:text-white transition">Início</a>
@@ -68,8 +76,14 @@
     </nav>
 
     <!-- HERO SECTION -->
-    <section id="home" class="pt-32 pb-20 px-6 hero-gradient">
+    <section id="home" class="pt-40 pb-20 px-6 hero-gradient">
         <div class="max-w-5xl mx-auto text-center">
+            <!-- FOTO EM DESTAQUE NO TOPO -->
+            <div class="relative inline-block mb-10">
+                <div class="absolute inset-0 bg-stellar-red/20 blur-3xl rounded-full"></div>
+                <img src="https://i.imgur.com/PDEZ4HT.jpeg" alt="Stellar Mascot" class="relative w-32 h-32 md:w-44 md:h-44 mx-auto rounded-3xl border-4 border-stellar-red shadow-2xl object-cover rotate-3 hover:rotate-0 transition-transform duration-500">
+            </div>
+
             <div class="inline-block px-4 py-1 border border-stellar-red/30 rounded-full text-stellar-red text-xs font-bold mb-6 tracking-widest uppercase">
                 Sistema Operacional Ativo • v2.0
             </div>
@@ -79,6 +93,14 @@
             <p class="text-gray-400 text-xl max-w-2xl mx-auto mb-10">
                 O bot definitivo para gestão de servidores. De sistemas imobiliários complexos a moderação automatizada, o Stellar é o cérebro que sua comunidade precisa.
             </p>
+
+            <!-- BARRA DE PESQUISA (ADICIONADA) -->
+            <div class="max-w-xl mx-auto relative mb-12 search-container border border-white/10 rounded-2xl bg-white/5 overflow-hidden transition-all">
+                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <input type="text" id="commandSearch" placeholder="Busque um comando... (ex: !work, !ban)" 
+                    class="w-full bg-transparent py-5 pl-14 pr-6 text-white placeholder:text-gray-600 focus:outline-none">
+            </div>
+
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="#comandos" class="bg-white text-black px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-200 transition">
                     <i data-lucide="terminal" class="w-5 h-5"></i> Ver Comandos
@@ -119,7 +141,7 @@
             </div>
 
             <!-- GRID DE SETORES -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="commandGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-white">
                 
                 <!-- COMÉRCIO -->
                 <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
@@ -252,7 +274,9 @@
     <!-- CALL TO ACTION -->
     <section id="suporte" class="py-20 px-6">
         <div class="max-w-4xl mx-auto glass p-12 rounded-[3rem] text-center relative overflow-hidden">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-stellar-red opacity-10 blur-3xl"></div>
+            <!-- FOTO NO SUPORTE TAMBÉM -->
+            <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="absolute -right-10 top-0 w-40 h-40 opacity-10 rounded-full blur-xl" alt="">
+            
             <h2 class="text-4xl font-black mb-4">Pronto para a Revolução?</h2>
             <p class="text-gray-400 mb-8 text-lg">Junte-se a milhares de servidores que já utilizam o Stellar para gerenciar suas economias e comunidades.</p>
             <div class="flex flex-col md:flex-row justify-center gap-4">
@@ -270,15 +294,15 @@
     <footer class="py-12 px-6 border-t border-white/5 text-center text-gray-500 text-sm">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-stellar-red rounded-full"></div>
-                <span class="font-bold text-white tracking-tighter">STELLAR SYSTEM</span>
+                <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-8 h-8 rounded-full border border-stellar-red" alt="">
+                <span class="font-bold text-white tracking-tighter uppercase">STELLAR SYSTEM</span>
             </div>
             <div>
                 © 2026 Stellar System • Todos os direitos reservados.
             </div>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-stellar-red">Termos</a>
-                <a href="#" class="hover:text-stellar-red">Privacidade</a>
+            <div class="flex gap-6 uppercase text-[10px] font-black tracking-widest">
+                <a href="#" class="hover:text-stellar-red transition">Termos</a>
+                <a href="#" class="hover:text-stellar-red transition">Privacidade</a>
             </div>
         </div>
     </footer>
@@ -287,6 +311,24 @@
     <script>
         // Inicializa os ícones do Lucide
         lucide.createIcons();
+
+        // LÓGICA DE PESQUISA (SÓ ADICIONEI ESTA PARTE)
+        const searchInput = document.getElementById('commandSearch');
+        const cards = document.querySelectorAll('.command-card');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                // Se o texto do card contiver o que foi digitado, ele aparece, senão some
+                if(text.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
 
         // Animação simples de scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -297,27 +339,6 @@
                 });
             });
         });
-    </script>
-
-    <!-- Schema.org JSON-LD para Google (SEO) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Stellar Bot",
-      "operatingSystem": "Discord",
-      "applicationCategory": "GameApplication, UtilityApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0.00",
-        "priceCurrency": "BRL"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "ratingCount": "1250"
-      }
-    }
     </script>
 </body>
 </html>
