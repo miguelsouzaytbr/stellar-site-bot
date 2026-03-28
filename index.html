@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO CRÍTICO -->
+    <title>Stellar Bot | O Sistema Operacional Definitivo para Discord</title>
+    <meta name="description" content="Stellar é o bot de economia, governo e segurança mais completo para Discord. Explore sistemas de imóveis, indústrias, carreiras e moderação avançada.">
+    <meta name="keywords" content="Discord Bot, Stellar Bot, Economia Discord, Bot de Governo, Bot de RPG, Comandos Discord, Stellar System">
+    <meta name="author" content="Stellar Team">
+    
+    <!-- Open Graph (Facebook/Discord) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Stellar Bot - Central de Comando">
+    <meta property="og:description" content="Transforme seu servidor com um sistema de economia real, empregos e segurança total.">
+    <meta property="og:image" content="https://cdn.discordapp.com/avatars/976607745102979092/a_f87e2f5b8c3f4d5e6a7b8c9d0e1f2a3b.png?size=512"> <!-- Nota: Link de exemplo, o bot usará o avatar real -->
+    <meta property="og:url" content="https://seu-usuario.github.io/stellar">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Stellar Bot">
+    <meta name="twitter:description" content="O sistema definitivo de economia e gestão para sua comunidade.">
+
+    <!-- Fonts & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0b; color: #e4e4e7; scroll-behavior: smooth; }
+        .stellar-red { color: #ED1C24; }
+        .bg-stellar-red { background-color: #ED1C24; }
+        .border-stellar-red { border-color: #ED1C24; }
+        .hover-stellar-red:hover { background-color: #d11920; }
+        
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .command-card:hover { transform: translateY(-5px); border-color: #ED1C24; transition: all 0.3s ease; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0b; }
+        ::-webkit-scrollbar-thumb { background: #ED1C24; border-radius: 10px; }
+
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(237, 28, 36, 0.15) 0%, rgba(10, 10, 11, 1) 70%);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="fixed w-full z-50 glass border-b border-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-stellar-red rounded-full flex items-center justify-center font-bold text-white">S</div>
+                <span class="text-2xl font-extrabold tracking-tighter">STELLAR<span class="stellar-red">.</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 font-medium text-sm uppercase tracking-widest text-gray-400">
+                <a href="#home" class="hover:text-white transition">Início</a>
+                <a href="#comandos" class="hover:text-white transition">Comandos</a>
+                <a href="#suporte" class="hover:text-white transition">Suporte</a>
+            </div>
+            <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=8&scope=bot" class="bg-stellar-red px-6 py-2 rounded-full font-bold text-sm hover-stellar-red transition shadow-lg shadow-red-600/20">
+                ADICIONAR BOT
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="pt-32 pb-20 px-6 hero-gradient">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-block px-4 py-1 border border-stellar-red/30 rounded-full text-stellar-red text-xs font-bold mb-6 tracking-widest uppercase">
+                Sistema Operacional Ativo • v2.0
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black mb-6 tracking-tight">
+                Domine sua Economia com o <span class="stellar-red">Stellar.</span>
+            </h1>
+            <p class="text-gray-400 text-xl max-w-2xl mx-auto mb-10">
+                O bot definitivo para gestão de servidores. De sistemas imobiliários complexos a moderação automatizada, o Stellar é o cérebro que sua comunidade precisa.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#comandos" class="bg-white text-black px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-200 transition">
+                    <i data-lucide="terminal" class="w-5 h-5"></i> Ver Comandos
+                </a>
+                <a href="https://discord.gg/MhJPqajwfT" class="glass px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-white/10 transition">
+                    <i data-lucide="users" class="w-5 h-5"></i> Servidor de Suporte
+                </a>
+            </div>
+            
+            <!-- STATS MOCKUP -->
+            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass p-6 rounded-2xl">
+                    <div class="text-3xl font-black stellar-red tracking-tighter">+500</div>
+                    <div class="text-gray-500 text-xs uppercase font-bold">Servidores</div>
+                </div>
+                <div class="glass p-6 rounded-2xl">
+                    <div class="text-3xl font-black stellar-red tracking-tighter">+100k</div>
+                    <div class="text-gray-500 text-xs uppercase font-bold">Usuários</div>
+                </div>
+                <div class="glass p-6 rounded-2xl">
+                    <div class="text-3xl font-black stellar-red tracking-tighter">60+</div>
+                    <div class="text-gray-500 text-xs uppercase font-bold">Comandos</div>
+                </div>
+                <div class="glass p-6 rounded-2xl">
+                    <div class="text-3xl font-black stellar-red tracking-tighter">99.9%</div>
+                    <div class="text-gray-500 text-xs uppercase font-bold">Uptime</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMANDOS SECTION -->
+    <section id="comandos" class="py-20 px-6 bg-[#0c0c0d]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Central de Processamento</h2>
+                <p class="text-gray-500 uppercase tracking-widest text-sm font-semibold">Explore todos os setores do sistema</p>
+            </div>
+
+            <!-- GRID DE SETORES -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- COMÉRCIO -->
+                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="shopping-cart"></i></div>
+                        <h3 class="text-xl font-bold">Comércio & Patrimônio</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Imobiliária</span>
+                            <p class="text-sm font-mono mt-1 text-white">!imoveis, !casa, !bau, !negócios</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Automotivo</span>
+                            <p class="text-sm font-mono mt-1 text-white">!concessionaria, !garagem, !abastecer, !tuning, !racha</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Consumo</span>
+                            <p class="text-sm font-mono mt-1 text-white">!loja, !mercado, !inventário, !petshop, !pet</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- TRABALHO -->
+                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="pickaxe"></i></div>
+                        <h3 class="text-xl font-bold">Carreiras & Trabalho</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Labuta Diária</span>
+                            <p class="text-sm font-mono mt-1 text-white">!work, !daily, !vote, !uber, !entregar</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Exploração</span>
+                            <p class="text-sm font-mono mt-1 text-white">!minerar, !pescar, !caçar, !explorar</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Criador de Conteúdo</span>
+                            <p class="text-sm font-mono mt-1 text-white">!youtube, !postar, !canal, !estudar</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- BANCOS -->
+                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="landmark"></i></div>
+                        <h3 class="text-xl font-bold">Bancos & Finanças</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Gestão Financeira</span>
+                            <p class="text-sm font-mono mt-1 text-white">!atm, !depositar, !sacar, !status, !pay</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Investimentos</span>
+                            <p class="text-sm font-mono mt-1 text-white">!investir, !top</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Submundo</span>
+                            <p class="text-sm font-mono mt-1 text-white">!roubar, !assaltar, !invadir</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- GOVERNO -->
+                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="building-2"></i></div>
+                        <h3 class="text-xl font-bold">Governo & Indústria</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Setor Público</span>
+                            <p class="text-sm font-mono mt-1 text-white">!governo, !economia, !topgovernos</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Produção Nacional</span>
+                            <p class="text-sm font-mono mt-1 text-white">!indústria</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- ADMIN -->
+                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="shield-check"></i></div>
+                        <h3 class="text-xl font-bold">Segurança & Admin</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Setup & Painel</span>
+                            <p class="text-sm font-mono mt-1 text-white">!segurança, !set-ticket, !set-welcome, !prefixo, !setlang</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Moderação Pura</span>
+                            <p class="text-sm font-mono mt-1 text-white">!ban, !unban, !mute, !kick, !warn, !clear, !temp-role</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Utilidades</span>
+                            <p class="text-sm font-mono mt-1 text-white">!lock, !unlock, !addemoji, !say, !invites, !cooldown</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- SOCIAL -->
+                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="smile"></i></div>
+                        <h3 class="text-xl font-bold">Social & Útil</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Informação</span>
+                            <p class="text-sm font-mono mt-1 text-white">!botinfo, !serverinfo, !perfil, !ajuda</p>
+                        </div>
+                        <div class="bg-black/40 p-3 rounded-xl">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Interação</span>
+                            <p class="text-sm font-mono mt-1 text-white">!ship, !kiss, !hug, !slap, !avatar</p>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section id="suporte" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto glass p-12 rounded-[3rem] text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-stellar-red opacity-10 blur-3xl"></div>
+            <h2 class="text-4xl font-black mb-4">Pronto para a Revolução?</h2>
+            <p class="text-gray-400 mb-8 text-lg">Junte-se a milhares de servidores que já utilizam o Stellar para gerenciar suas economias e comunidades.</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="https://picpay.me/miguel.bomfim.souza" class="bg-stellar-red px-10 py-4 rounded-2xl font-black hover-stellar-red transition flex items-center justify-center gap-2">
+                    <i data-lucide="gem"></i> APOIAR O PROJETO (PIX)
+                </a>
+                <a href="https://discord.gg/MhJPqajwfT" class="bg-white/5 border border-white/10 px-10 py-4 rounded-2xl font-black hover:bg-white/10 transition flex items-center justify-center gap-2">
+                    <i data-lucide="help-circle"></i> SUPORTE OFICIAL
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-12 px-6 border-t border-white/5 text-center text-gray-500 text-sm">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-stellar-red rounded-full"></div>
+                <span class="font-bold text-white tracking-tighter">STELLAR SYSTEM</span>
+            </div>
+            <div>
+                © 2026 Stellar System • Todos os direitos reservados.
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-stellar-red">Termos</a>
+                <a href="#" class="hover:text-stellar-red">Privacidade</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Inicializa os ícones do Lucide
+        lucide.createIcons();
+
+        // Animação simples de scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+    <!-- Schema.org JSON-LD para Google (SEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Stellar Bot",
+      "operatingSystem": "Discord",
+      "applicationCategory": "GameApplication, UtilityApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "BRL"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "1250"
+      }
+    }
+    </script>
+</body>
+</html>
