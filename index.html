@@ -11,7 +11,9 @@
     <meta name="description" content="Stellar é o bot de economia, governo e segurança mais completo para Discord. Explore sistemas de imóveis, indústrias, carreiras e moderação avançada.">
     <meta name="keywords" content="Discord Bot, Stellar Bot, Economia Discord, Bot de Governo, Bot de RPG, Comandos Discord, Stellar System">
     <meta name="author" content="Stellar Team">
-    
+    <link rel="canonical" href="https://miguelsouzaytbr.github.io/stellar-site-bot/">
+    <meta name="robots" content="index, follow">
+
     <!-- Open Graph (Facebook/Discord) -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Stellar Bot - Central de Comando">
@@ -40,7 +42,6 @@
         .command-card { transition: all 0.3s ease; }
         .command-card:hover { transform: translateY(-5px); border-color: #ED1C24; }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0b; }
         ::-webkit-scrollbar-thumb { background: #ED1C24; border-radius: 10px; }
@@ -49,7 +50,6 @@
             background: radial-gradient(circle at 50% 50%, rgba(237, 28, 36, 0.15) 0%, rgba(10, 10, 11, 1) 70%);
         }
 
-        /* Estilo para a barra de pesquisa */
         .search-container:focus-within {
             box-shadow: 0 0 20px rgba(237, 28, 36, 0.15);
             border-color: #ED1C24;
@@ -62,7 +62,6 @@
     <nav class="fixed w-full z-50 glass border-b border-white/5 px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <!-- FOTO NA NAV -->
                 <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-full border-2 border-stellar-red object-cover" alt="Logo">
                 <span class="text-2xl font-extrabold tracking-tighter uppercase">STELLAR<span class="stellar-red">.</span></span>
             </div>
@@ -80,7 +79,6 @@
     <!-- HERO SECTION -->
     <section id="home" class="pt-40 pb-20 px-6 hero-gradient">
         <div class="max-w-5xl mx-auto text-center">
-            <!-- FOTO EM DESTAQUE NO TOPO -->
             <div class="relative inline-block mb-10">
                 <div class="absolute inset-0 bg-stellar-red/20 blur-3xl rounded-full"></div>
                 <img src="https://i.imgur.com/PDEZ4HT.jpeg" alt="Stellar Mascot" class="relative w-32 h-32 md:w-44 md:h-44 mx-auto rounded-3xl border-4 border-stellar-red shadow-2xl object-cover rotate-3 hover:rotate-0 transition-transform duration-500">
@@ -96,7 +94,7 @@
                 O bot definitivo para gestão de servidores. De sistemas imobiliários complexos a moderação automatizada, o Stellar é o cérebro que sua comunidade precisa.
             </p>
 
-            <!-- BARRA DE PESQUISA (ADICIONADA) -->
+            <!-- BARRA DE PESQUISA -->
             <div class="max-w-xl mx-auto relative mb-12 search-container border border-white/10 rounded-2xl bg-white/5 overflow-hidden transition-all">
                 <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500"></i>
                 <input type="text" id="commandSearch" placeholder="Busque um comando... (ex: !work, !ban)" 
@@ -112,7 +110,7 @@
                 </a>
             </div>
             
-            <!-- STATS MOCKUP -->
+            <!-- STATS -->
             <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass p-6 rounded-2xl">
                     <div class="text-3xl font-black stellar-red tracking-tighter">+500</div>
@@ -142,10 +140,8 @@
                 <p class="text-gray-500 uppercase tracking-widest text-sm font-semibold">Explore todos os setores do sistema</p>
             </div>
 
-            <!-- GRID DE SETORES -->
             <div id="commandGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-white">
                 
-                <!-- COMÉRCIO -->
                 <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="shopping-cart"></i></div>
@@ -167,7 +163,6 @@
                     </div>
                 </article>
 
-                <!-- TRABALHO -->
                 <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="pickaxe"></i></div>
@@ -183,13 +178,12 @@
                             <p class="text-sm font-mono mt-1 text-white">!minerar, !pescar, !caçar, !explorar</p>
                         </div>
                         <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Criador de Conteúdo</span>
+                            <span class="text-xs font-bold text-gray-500 uppercase">Conteúdo</span>
                             <p class="text-sm font-mono mt-1 text-white">!youtube, !postar, !canal, !estudar</p>
                         </div>
                     </div>
                 </article>
 
-                <!-- BANCOS -->
                 <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="landmark"></i></div>
@@ -197,7 +191,7 @@
                     </div>
                     <div class="space-y-4">
                         <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Gestão Financeira</span>
+                            <span class="text-xs font-bold text-gray-500 uppercase">Gestão</span>
                             <p class="text-sm font-mono mt-1 text-white">!atm, !depositar, !sacar, !status, !pay</p>
                         </div>
                         <div class="bg-black/40 p-3 rounded-xl">
@@ -211,7 +205,6 @@
                     </div>
                 </article>
 
-                <!-- GOVERNO -->
                 <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="building-2"></i></div>
@@ -223,13 +216,12 @@
                             <p class="text-sm font-mono mt-1 text-white">!governo, !economia, !topgovernos</p>
                         </div>
                         <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Produção Nacional</span>
+                            <span class="text-xs font-bold text-gray-500 uppercase">Produção</span>
                             <p class="text-sm font-mono mt-1 text-white">!indústria</p>
                         </div>
                     </div>
                 </article>
 
-                <!-- ADMIN -->
                 <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="shield-check"></i></div>
@@ -237,21 +229,16 @@
                     </div>
                     <div class="space-y-4">
                         <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Setup & Painel</span>
-                            <p class="text-sm font-mono mt-1 text-white">!segurança, !set-ticket, !set-welcome, !prefixo, !setlang</p>
+                            <span class="text-xs font-bold text-gray-500 uppercase">Setup</span>
+                            <p class="text-sm font-mono mt-1 text-white">!segurança, !set-ticket, !set-welcome, !prefixo</p>
                         </div>
                         <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Moderação Pura</span>
-                            <p class="text-sm font-mono mt-1 text-white">!ban, !unban, !mute, !kick, !warn, !clear, !temp-role</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Utilidades</span>
-                            <p class="text-sm font-mono mt-1 text-white">!lock, !unlock, !addemoji, !say, !invites, !cooldown</p>
+                            <span class="text-xs font-bold text-gray-500 uppercase">Moderação</span>
+                            <p class="text-sm font-mono mt-1 text-white">!ban, !unban, !mute, !kick, !warn, !clear</p>
                         </div>
                     </div>
                 </article>
 
-                <!-- SOCIAL -->
                 <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="smile"></i></div>
@@ -276,14 +263,12 @@
     <!-- CALL TO ACTION -->
     <section id="suporte" class="py-20 px-6">
         <div class="max-w-4xl mx-auto glass p-12 rounded-[3rem] text-center relative overflow-hidden">
-            <!-- FOTO NO SUPORTE TAMBÉM -->
             <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="absolute -right-10 top-0 w-40 h-40 opacity-10 rounded-full blur-xl" alt="">
-            
             <h2 class="text-4xl font-black mb-4">Pronto para a Revolução?</h2>
-            <p class="text-gray-400 mb-8 text-lg">Junte-se a milhares de servidores que já utilizam o Stellar para gerenciar suas economias e comunidades.</p>
+            <p class="text-gray-400 mb-8 text-lg">Junte-se a milhares de servidores que já utilizam o Stellar.</p>
             <div class="flex flex-col md:flex-row justify-center gap-4">
                 <a href="https://picpay.me/miguel.bomfim.souza" class="bg-stellar-red px-10 py-4 rounded-2xl font-black hover-stellar-red transition flex items-center justify-center gap-2">
-                    <i data-lucide="gem"></i> APOIAR O PROJETO (PIX)
+                    <i data-lucide="gem"></i> APOIAR PROJETO
                 </a>
                 <a href="https://discord.gg/MhJPqajwfT" class="bg-white/5 border border-white/10 px-10 py-4 rounded-2xl font-black hover:bg-white/10 transition flex items-center justify-center gap-2">
                     <i data-lucide="help-circle"></i> SUPORTE OFICIAL
@@ -309,36 +294,27 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script>
-        // Inicializa os ícones do Lucide
         lucide.createIcons();
 
-        // LÓGICA DE PESQUISA (SÓ ADICIONEI ESTA PARTE)
         const searchInput = document.getElementById('commandSearch');
         const cards = document.querySelectorAll('.command-card');
 
         searchInput.addEventListener('input', () => {
             const query = searchInput.value.toLowerCase();
-            
             cards.forEach(card => {
                 const text = card.textContent.toLowerCase();
-                // Se o texto do card contiver o que foi digitado, ele aparece, senão some
-                if(text.includes(query)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = text.includes(query) ? 'block' : 'none';
             });
         });
 
-        // Animação simples de scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
             });
         });
     </script>
