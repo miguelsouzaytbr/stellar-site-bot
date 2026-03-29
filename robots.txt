@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: [https://miguelsouzaytbr.github.io/stellar-site-bot/sitemap.xml](https://miguelsouzaytbr.github.io/stellar-site-bot/sitemap.xml)
+Sitemap: https://miguelsouzaytbr.github.io/stellar-site-bot/sitemap.xml
