@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://miguelsouzaytbr.github.io/stellar-site-bot/sitemap.xml
 
-Isso diz a todos os robôs de busca (não só o Google, mas o Bing, DuckDuckGo, etc.) exatamente onde está o teu mapa.
-
-O que achas de adicionarmos uma secção de **"Novidades/Update Log"** no site principal para o Google ver que o conteúdo muda sempre e te dar mais relevância?
+Sitemap: https://www.google.com/search?q=https://miguelsouzaytbr.github.io/stellar-site-bot/sitemap.xml
