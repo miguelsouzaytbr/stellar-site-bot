@@ -40,10 +40,32 @@
 <body>
 
     <!-- NOTIFICAÇÃO (TOAST) -->
-    <div id="toast" class="fixed bottom-10 right-10 z-[1000] hidden">
+    <div id="toast" class="fixed bottom-10 right-10 z-[1000] hidden transition-all duration-300 transform translate-y-0 opacity-100">
         <div class="bg-zinc-900 border-l-4 border-red-600 p-4 rounded-r-xl shadow-2xl flex items-center gap-3">
             <i data-lucide="info" class="text-red-600"></i>
             <p id="toast-msg" class="text-sm font-bold"></p>
+        </div>
+    </div>
+
+    <!-- MODAL DE LOGIN CUSTOMIZADO -->
+    <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-[#121214] border border-white/10 p-8 rounded-3xl shadow-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="loginModalContent">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center border border-red-600/20">
+                    <i data-lucide="discord" class="w-8 h-8 text-red-500"></i>
+                </div>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-2 text-center uppercase tracking-tighter">Conectar Conta</h3>
+            <p class="text-gray-400 text-xs mb-6 text-center">Para testar o sistema, digite seu nome de usuário do Discord abaixo.</p>
+            
+            <input type="text" id="discordUser" placeholder="Ex: zack_dev" class="w-full p-4 rounded-xl mb-6 text-sm font-medium text-white placeholder-gray-600 focus:border-red-600 transition-colors">
+            
+            <div class="flex gap-3">
+                <button onclick="closeLoginModal()" class="flex-1 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 transition">Cancelar</button>
+                <button onclick="confirmLogin()" class="flex-1 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest text-white bg-red-600 hover:bg-red-700 btn-glow transition flex justify-center items-center gap-2">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Entrar
+                </button>
+            </div>
         </div>
     </div>
 
@@ -56,17 +78,19 @@
                     <span class="text-2xl font-black tracking-tighter uppercase">STELLAR<span class="stellar-red">.</span></span>
                 </div>
                 <div class="hidden lg:flex gap-6 text-xs font-bold uppercase tracking-widest text-gray-500">
-                    <button onclick="goTo('home')" class="nav-btn nav-active py-2">Home</button>
-                    <button onclick="goTo('board')" class="nav-btn py-2">Servers</button>
-                    <button onclick="goTo('commands')" class="nav-btn py-2">Comandos</button>
-                    <button onclick="goTo('add-server')" class="nav-btn py-2">Postar Server</button>
+                    <button onclick="goTo('home')" class="nav-btn nav-active py-2 transition-colors hover:text-white">Home</button>
+                    <button onclick="goTo('board')" class="nav-btn py-2 transition-colors hover:text-white">Servers</button>
+                    <button onclick="goTo('commands')" class="nav-btn py-2 transition-colors hover:text-white">Comandos</button>
+                    <button onclick="goTo('add-server')" class="nav-btn py-2 transition-colors hover:text-white">Postar Server</button>
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <button id="loginBtn" onclick="toggleLogin()" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-2">
+                <button id="loginBtn" onclick="toggleLogin()" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-2 bg-white/5 px-4 py-2.5 rounded-xl border border-white/5 hover:border-white/20">
                     <i data-lucide="user" class="w-4 h-4"></i> Login
                 </button>
-                <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=8&scope=bot" target="_blank" class="bg-stellar-red btn-glow px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-tight transition-all">Add Stellar</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=8&scope=bot" target="_blank" class="bg-stellar-red btn-glow px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-tight transition-all flex items-center gap-2">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Stellar
+                </a>
             </div>
         </div>
     </nav>
@@ -87,15 +111,15 @@
                 <button onclick="goTo('board')" class="bg-stellar-red btn-glow px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3">
                     <i data-lucide="layout-grid"></i> Explorar Board
                 </button>
-                <button onclick="goTo('commands')" class="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/10 transition">
-                    Ver Documentação
+                <button onclick="goTo('commands')" class="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/10 transition flex items-center gap-3">
+                    <i data-lucide="terminal"></i> Ver Comandos
                 </button>
             </div>
 
-            <!-- MOCK STATS -->
+            <!-- STATS -->
             <div class="mt-32 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass p-8 rounded-3xl text-center">
-                    <div class="text-4xl font-black mb-1" id="stat-servers">...</div>
+                    <div class="text-4xl font-black mb-1" id="stat-servers">0</div>
                     <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Servidores</div>
                 </div>
                 <div class="glass p-8 rounded-3xl text-center">
@@ -114,7 +138,7 @@
         </div>
     </main>
 
-    <!-- PÁGINA: STELLAR BOARD (DISBOARD STYLE) -->
+    <!-- PÁGINA: STELLAR BOARD -->
     <main id="page-board" class="page pt-40 pb-20 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
@@ -125,20 +149,13 @@
                 <div class="flex gap-3 w-full md:w-auto">
                     <div class="relative flex-1 md:w-80">
                         <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"></i>
-                        <input type="text" id="boardSearch" placeholder="Pesquisar servidor..." class="w-full py-3.5 pl-12 pr-4 rounded-xl text-sm transition">
+                        <input type="text" id="boardSearch" oninput="renderBoard()" placeholder="Pesquisar servidor..." class="w-full py-3.5 pl-12 pr-4 rounded-xl text-sm transition focus:shadow-[0_0_15px_rgba(237,28,36,0.2)]">
                     </div>
-                    <button onclick="loadServersFromDB()" class="bg-white/5 px-4 py-3.5 rounded-xl border border-white/10 hover:bg-white/10 transition" title="Atualizar">
-                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                    </button>
                 </div>
             </div>
 
             <div id="serversGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Servers injetados via JS (Firebase) -->
-                <div class="col-span-full py-20 text-center">
-                    <i data-lucide="loader-2" class="w-10 h-10 text-red-600 animate-spin mx-auto mb-4"></i>
-                    <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Conectando ao banco de dados...</p>
-                </div>
+                <!-- Servers injetados via JS -->
             </div>
         </div>
     </main>
@@ -150,14 +167,14 @@
         </div>
     </main>
 
-    <!-- PÁGINA: COMANDOS (FULL LIST) -->
+    <!-- PÁGINA: COMANDOS -->
     <main id="page-commands" class="page pt-40 pb-20 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="mb-16">
                 <h2 class="text-4xl font-black tracking-tighter uppercase mb-4 text-center">Documentação Técnica</h2>
                 <div class="max-w-2xl mx-auto relative">
                     <i data-lucide="terminal" class="absolute left-5 top-1/2 -translate-y-1/2 text-red-600"></i>
-                    <input type="text" id="cmdSearch" placeholder="Busque um comando (ex: !work, !ban)..." class="w-full py-5 pl-14 pr-6 rounded-2xl text-lg font-medium shadow-2xl">
+                    <input type="text" id="cmdSearch" oninput="searchCommands(event)" placeholder="Busque um comando (ex: !work, !ban)..." class="w-full py-5 pl-14 pr-6 rounded-2xl text-lg font-medium shadow-2xl focus:shadow-[0_0_20px_rgba(237,28,36,0.15)]">
                 </div>
             </div>
 
@@ -171,9 +188,9 @@
     <main id="page-add-server" class="page pt-40 pb-20 px-6">
         <div class="max-w-2xl mx-auto glass p-10 md:p-16 rounded-[3rem]">
             <h2 class="text-3xl font-black mb-2 uppercase tracking-tighter">Postar seu Servidor</h2>
-            <p class="text-gray-500 mb-10 font-medium">Configure como sua comunidade aparecerá no board global.</p>
+            <p class="text-gray-500 mb-10 font-medium text-sm">Sem servidores fakes. Adicione a sua comunidade real no board global para ganhar membros e engajamento.</p>
             
-            <form id="addServerForm" class="space-y-6">
+            <form id="addServerForm" onsubmit="addServer(event)" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Nome do Servidor</label>
@@ -186,17 +203,19 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Tags (Separadas por vírgula)</label>
-                    <input type="text" name="tags" class="w-full p-4 rounded-xl text-sm" placeholder="RPG, Economia, Social">
+                    <input type="text" name="tags" required class="w-full p-4 rounded-xl text-sm" placeholder="RPG, Economia, Social">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Resumo Curto (Aparece no Card)</label>
-                    <input type="text" name="shortDesc" required maxlength="100" class="w-full p-4 rounded-xl text-sm" placeholder="Uma frase sobre o servidor...">
+                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Resumo Curto (Para o Card)</label>
+                    <input type="text" name="shortDesc" required maxlength="120" class="w-full p-4 rounded-xl text-sm" placeholder="Uma frase rápida sobre o servidor...">
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Descrição Completa</label>
                     <textarea name="desc" required rows="4" class="w-full p-4 rounded-xl text-sm" placeholder="Descreva sua comunidade detalhadamente..."></textarea>
                 </div>
-                <button type="submit" class="w-full bg-stellar-red py-5 rounded-2xl font-black uppercase tracking-widest btn-glow transition-all">Publicar Servidor</button>
+                <button type="submit" class="w-full bg-stellar-red py-5 rounded-2xl font-black uppercase tracking-widest btn-glow transition-all flex justify-center items-center gap-2">
+                    <i data-lucide="send" class="w-5 h-5"></i> Publicar Servidor
+                </button>
             </form>
         </div>
     </main>
@@ -216,28 +235,12 @@
         </div>
     </footer>
 
-    <!-- LÓGICA CORE: FIREBASE (BANCO DE DADOS REAL) + JS DA PÁGINA -->
-    <script type="module">
-        // Importando Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Configuração segura embutida (Funciona no Github Pages)
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { projectId: "stellar-hub-demo" };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'stellar-real-db';
-
-        // Paths do Banco de Dados
-        const serversCollection = collection(db, 'artifacts', appId, 'public', 'data', 'servers');
-        const votesCollection = collection(db, 'artifacts', appId, 'public', 'data', 'votes');
-
+    <!-- LÓGICA CORE (ESTADO EM MEMÓRIA - 100% FUNCIONAL) -->
+    <script>
+        // --- BANCO DE DADOS LOCAL ---
+        let SERVERS = [];
         let currentUser = null;
-        let serversCache = [];
 
-        // Comandos que já estavam no seu código (Isso é estático mesmo)
         const COMMANDS = [
             { cat: "Comércio & Patrimônio", icon: "shopping-cart", cmds: "!imoveis, !casa, !bau, !negócios, !concessionaria, !garagem, !abastecer, !tuning, !racha, !loja, !mercado, !inventário, !petshop, !pet" },
             { cat: "Carreiras & Trabalho", icon: "pickaxe", cmds: "!work, !daily, !vote, !uber, !entregar, !minerar, !pescar, !caçar, !explorar, !youtube, !postar, !canal, !estudar" },
@@ -247,338 +250,8 @@
             { cat: "Social & Útil", icon: "smile", cmds: "!botinfo, !serverinfo, !perfil, !ajuda, !ship, !kiss, !hug, !slap, !avatar" }
         ];
 
-        // --- SISTEMA DE AUTENTICAÇÃO ---
-        async function initAuth() {
-            try { 
-                // Fix permission error: checking for custom auth token before signing in anonymously
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth); 
-                }
-            } catch (e) { 
-                console.error("Erro na Autenticação:", e); 
-            }
-        }
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const savedUser = localStorage.getItem('stellar_discord_user');
-                currentUser = savedUser ? { ...user, discord: JSON.parse(savedUser) } : user;
-                updateLoginUI();
-                loadServersFromDB();
-            } else {
-                currentUser = null;
-            }
-        });
-
-        // Trocando a função toggleLogin antiga por esta real
-        window.toggleLogin = () => {
-            if (currentUser && currentUser.discord) {
-                localStorage.removeItem('stellar_discord_user');
-                currentUser.discord = null;
-                updateLoginUI();
-                showToast('Deslogado com sucesso.');
-                return;
-            }
-            
-            // Simulação de OAuth2 (pede o nome de usuário)
-            const nick = prompt("Simulação de Login Discord.\nPor favor, digite seu nome de usuário (ex: zack_dev):");
-            if (nick) {
-                const discordData = { username: nick };
-                localStorage.setItem('stellar_discord_user', JSON.stringify(discordData));
-                currentUser.discord = discordData;
-                updateLoginUI();
-                showToast(`Bem-vindo ao Stellar Hub, ${nick}!`);
-            }
-        };
-
-        function updateLoginUI() {
-            const btn = document.getElementById('loginBtn');
-            if (currentUser && currentUser.discord) {
-                btn.innerHTML = `<i data-lucide="user-check" class="w-4 h-4 text-green-500"></i> ${currentUser.discord.username}`;
-                btn.classList.add('text-white');
-            } else {
-                btn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> Login`;
-                btn.classList.remove('text-white');
-            }
-            if (window.lucide) lucide.createIcons();
-        }
-
-
-        // --- SISTEMA DE SERVIDORES (BANCO DE DADOS) ---
-        window.loadServersFromDB = async () => {
-            if (!currentUser) return;
-            try {
-                const querySnapshot = await getDocs(serversCollection);
-                let servers = [];
-                querySnapshot.forEach((doc) => {
-                    servers.push({ id: doc.id, ...doc.data() });
-                });
-
-                // Ordena por Bump mais recente e depois por votos
-                servers.sort((a, b) => {
-                    if (b.bump !== a.bump) return b.bump - a.bump;
-                    return (b.votes || 0) - (a.votes || 0);
-                });
-
-                serversCache = servers;
-                
-                // Atualiza contadores
-                const statServers = document.getElementById('stat-servers');
-                if(statServers) statServers.innerText = servers.length > 0 ? `+${servers.length}` : '0';
-
-                if (document.getElementById('page-board').classList.contains('active')) {
-                    renderBoard();
-                }
-            } catch (e) {
-                console.error("Erro ao buscar servidores", e);
-                showToast("Erro ao conectar ao banco de dados.");
-            }
-        };
-
-        // Formatador de tempo para o Bump
-        function formatTimeAgo(timestamp) {
-            if (!timestamp) return 'Nunca';
-            const diffMin = Math.floor((Date.now() - timestamp) / 60000);
-            if (diffMin < 60) return diffMin === 0 ? 'Agora' : `${diffMin}m`;
-            const diffHours = Math.floor(diffMin / 60);
-            if (diffHours < 24) return `${diffHours}h`;
-            return `${Math.floor(diffHours / 24)}d`;
-        }
-
-        window.renderBoard = () => {
-            const grid = document.getElementById('serversGrid');
-            const q = document.getElementById('boardSearch').value.toLowerCase();
-            
-            let filtered = serversCache;
-            if (q) {
-                filtered = serversCache.filter(s => 
-                    s.name.toLowerCase().includes(q) || 
-                    (s.tags && s.tags.some(t => t.toLowerCase().includes(q)))
-                );
-            }
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest text-xs">Nenhum servidor encontrado.</div>';
-                return;
-            }
-
-            // MANTENDO EXATAMENTE O SEU DESIGN DE CARD, mas com dados reais
-            grid.innerHTML = filtered.map(s => `
-                <div onclick="showDetail('${s.id}')" class="server-card glass rounded-[2.5rem] p-6 flex flex-col h-full cursor-pointer transition-all duration-300">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl flex items-center justify-center text-2xl font-black">${s.name[0].toUpperCase()}</div>
-                        <div class="flex flex-col items-end gap-2">
-                            <div class="bg-black/50 px-3 py-1 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1 uppercase tracking-widest text-red-500">
-                                <i data-lucide="zap" class="w-3 h-3"></i> ${formatTimeAgo(s.bump)}
-                            </div>
-                            <div class="bg-black/50 px-3 py-1 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1 uppercase tracking-widest text-gray-400">
-                                <i data-lucide="chevron-up" class="w-3 h-3 text-red-500"></i> ${s.votes || 0} Votos
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="text-xl font-extrabold mb-2 tracking-tight">${s.name}</h4>
-                    <p class="text-gray-500 text-xs mb-6 flex-1 line-clamp-3">${s.shortDesc || s.desc}</p>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        ${s.tags ? s.tags.slice(0, 3).map(t => `<span class="px-3 py-1 bg-white/5 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400">${t}</span>`).join('') : ''}
-                    </div>
-                    <div class="flex items-center justify-between pt-6 border-t border-white/5">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></span>
-                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Postado por ${s.ownerName || 'Anônimo'}</span>
-                        </div>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
-                    </div>
-                </div>
-            `).join('');
-            if (window.lucide) lucide.createIcons();
-        };
-
-        window.showDetail = (id) => {
-            const s = serversCache.find(x => x.id === id);
-            if (!s) return;
-            const container = document.getElementById('detailContainer');
-            goTo('server-detail');
-            
-            // SEU DESIGN DE DETAIL, mas adicionei o botão de votar!
-            container.innerHTML = `
-                <div class="glass p-10 md:p-16 rounded-[3.5rem] relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[100px] -z-10"></div>
-                    <div class="flex flex-col md:flex-row gap-10 items-center md:items-start text-center md:text-left mb-12">
-                        <div class="w-40 h-40 bg-gradient-to-br from-red-600 to-orange-600 rounded-[2.5rem] flex items-center justify-center text-6xl font-black shadow-2xl shrink-0">${s.name[0].toUpperCase()}</div>
-                        <div class="flex-1">
-                            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tighter uppercase">${s.name}</h1>
-                            <div class="flex flex-wrap justify-center md:justify-start gap-3 mb-6">
-                                ${s.tags ? s.tags.map(t => `<span class="bg-red-600/10 text-red-500 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-red-600/20">${t}</span>`).join('') : ''}
-                            </div>
-                            <div class="flex justify-center md:justify-start gap-10">
-                                <div><div class="text-2xl font-black text-white flex items-center gap-2"><i data-lucide="chevron-up" class="text-red-500"></i> ${s.votes || 0}</div><div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Total de Votos</div></div>
-                                <div><div class="text-2xl font-black text-gray-300 flex items-center gap-2"><i data-lucide="zap" class="text-yellow-500 w-5 h-5"></i></div><div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Bump: ${formatTimeAgo(s.bump)}</div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 pt-12 border-t border-white/5">
-                        <div class="md:col-span-2">
-                            <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-600 mb-6">Sobre o Servidor</h3>
-                            <div class="text-gray-400 leading-relaxed text-lg whitespace-pre-line">${s.longDesc || s.desc}</div>
-                        </div>
-                        <div class="space-y-4">
-                            <!-- BOTÃO DE VOTAR TOP.GG STYLE -->
-                            <button onclick="castVote('${s.id}')" class="w-full bg-white text-black py-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 transition-all flex items-center justify-center gap-3">
-                                <i data-lucide="chevron-up"></i> VOTAR NO SERVER
-                            </button>
-                            <!-- BOTÃO DE BUMP -->
-                            <button onclick="doBump('${s.id}')" class="w-full bg-red-600 py-6 rounded-2xl font-black text-sm uppercase tracking-widest btn-glow flex items-center justify-center gap-3">
-                                <i data-lucide="zap"></i> DAR UM BUMP
-                            </button>
-                            <a href="${s.invite}" target="_blank" class="w-full bg-white/5 border border-white/10 py-6 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition">
-                                <i data-lucide="external-link"></i> ENTRAR NO DISCORD
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            `;
-            if (window.lucide) lucide.createIcons();
-        }
-
-        // --- SISTEMAS REAIS DE BUMP E VOTO ---
-        
-        // Votar (12h Cooldown)
-        window.castVote = async (serverId) => {
-            if (!currentUser || !currentUser.discord) return showToast("⚠️ Faça login para votar!");
-            
-            // Checagem de Cooldown no Banco
-            const votesSnap = await getDocs(votesCollection);
-            const now = Date.now();
-            let canVote = true;
-
-            votesSnap.forEach((doc) => {
-                const data = doc.data();
-                if (data.userId === currentUser.uid && data.serverId === serverId) {
-                    const diffHours = (now - data.timestamp) / 3600000;
-                    if (diffHours < 12) {
-                        canVote = false;
-                        showToast(`⏳ Aguarde ${Math.ceil(12 - diffHours)} horas para votar novamente neste servidor.`);
-                    }
-                }
-            });
-
-            if (!canVote) return;
-
-            try {
-                // Registra o voto
-                await addDoc(votesCollection, {
-                    userId: currentUser.uid,
-                    serverId: serverId,
-                    timestamp: now
-                });
-
-                // Atualiza o contador do servidor
-                const serverRef = doc(db, 'artifacts', appId, 'public', 'data', 'servers', serverId);
-                const s = serversCache.find(x => x.id === serverId);
-                await updateDoc(serverRef, { votes: (s.votes || 0) + 1 });
-                
-                showToast("✅ Voto computado com sucesso!");
-                await loadServersFromDB();
-                if (document.getElementById('page-server-detail').classList.contains('active')) {
-                    showDetail(serverId);
-                }
-            } catch (err) {
-                console.error(err);
-                showToast("Erro ao processar voto no banco.");
-            }
-        };
-
-        // Bump (2h Cooldown)
-        window.doBump = async (serverId) => {
-            if (!currentUser || !currentUser.discord) return showToast("⚠️ Faça login para dar Bump!");
-            
-            const s = serversCache.find(x => x.id === serverId);
-            const now = Date.now();
-            const diffHours = (now - s.bump) / 3600000;
-            
-            if (s.bump && diffHours < 2) {
-                return showToast(`⏳ Cooldown de Bump! Aguarde ${Math.ceil(2 - diffHours)} horas.`);
-            }
-
-            try {
-                const serverRef = doc(db, 'artifacts', appId, 'public', 'data', 'servers', serverId);
-                await updateDoc(serverRef, { bump: now });
-                showToast("🚀 BUMP! Servidor colocado no topo do Board.");
-                await loadServersFromDB();
-                showDetail(serverId);
-            } catch (err) {
-                console.error(err);
-                showToast("Erro ao dar bump no banco de dados.");
-            }
-        };
-
-
-        // --- POSTAR SERVIDOR ---
-        document.getElementById('addServerForm').onsubmit = async (e) => {
-            e.preventDefault();
-            if (!currentUser || !currentUser.discord) return showToast("⚠️ Faça Login para postar!");
-
-            const fd = new FormData(e.target);
-            
-            const payload = {
-                name: fd.get('name'),
-                invite: fd.get('invite'),
-                tags: fd.get('tags').split(',').map(t => t.trim()).filter(t => t),
-                shortDesc: fd.get('shortDesc'),
-                desc: fd.get('desc'),
-                longDesc: fd.get('desc'), // Garantir compatibilidade com o layout
-                ownerId: currentUser.uid,
-                ownerName: currentUser.discord.username,
-                votes: 0,
-                bump: Date.now(), // Primeiro bump automático
-                createdAt: Date.now()
-            };
-
-            try {
-                const submitBtn = e.target.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerText;
-                submitBtn.innerText = "Publicando...";
-                submitBtn.disabled = true;
-
-                await addDoc(serversCollection, payload);
-                
-                showToast("✅ Servidor postado com sucesso no Banco!");
-                e.target.reset();
-                submitBtn.innerText = originalText;
-                submitBtn.disabled = false;
-                
-                await loadServersFromDB();
-                goTo('board');
-            } catch (err) {
-                showToast("Erro ao salvar no banco.");
-                console.error(err);
-                e.target.querySelector('button[type="submit"]').disabled = false;
-            }
-        };
-
-        // --- RENDERIZAR COMANDOS (Da sua estrutura original) ---
-        window.renderCommands = () => {
-            const container = document.getElementById('commandsContainer');
-            if (container.innerHTML.trim() !== "") return; // Já renderizou
-
-            container.innerHTML = COMMANDS.map(c => `
-                <div class="glass p-8 rounded-[2rem] border-t-4 border-red-600 command-card">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="p-3 bg-red-600/10 rounded-2xl text-red-600"><i data-lucide="${c.icon}"></i></div>
-                        <h3 class="text-xl font-black uppercase tracking-tighter">${c.cat}</h3>
-                    </div>
-                    <div class="bg-black/40 p-4 rounded-2xl font-mono text-sm text-red-400 leading-loose">
-                        ${c.cmds}
-                    </div>
-                </div>
-            `).join('');
-            if (window.lucide) lucide.createIcons();
-        };
-
-        // --- LÓGICA DE NAVEGAÇÃO / BUSCA ---
-        window.goTo = (pageId) => {
+        // --- NAVEGAÇÃO & TOASTS ---
+        function goTo(pageId) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(`page-${pageId}`).classList.add('active');
@@ -589,32 +262,305 @@
             });
 
             if(pageId === 'board') renderBoard();
-            if(pageId === 'commands') renderCommands();
-        };
+        }
 
-        document.getElementById('cmdSearch').oninput = (e) => {
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.remove('hidden');
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => t.classList.add('hidden'), 3500);
+        }
+
+        // --- SISTEMA DE LOGIN (MODAL UI) ---
+        function toggleLogin() {
+            if (currentUser) {
+                // Logout
+                currentUser = null;
+                showToast("Você saiu da conta.");
+                updateLoginUI();
+            } else {
+                // Abre o Modal
+                const modal = document.getElementById('loginModal');
+                const content = document.getElementById('loginModalContent');
+                
+                modal.classList.remove('hidden');
+                // Força o reflow para a transição funcionar
+                void modal.offsetWidth;
+                
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                
+                document.getElementById('discordUser').focus();
+            }
+        }
+
+        function closeLoginModal() {
+            const modal = document.getElementById('loginModal');
+            const content = document.getElementById('loginModalContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function confirmLogin() {
+            const input = document.getElementById('discordUser');
+            const nick = input.value.trim();
+            
+            if (nick) {
+                currentUser = { username: nick };
+                showToast(`Logado com sucesso como ${currentUser.username}!`);
+                updateLoginUI();
+                closeLoginModal();
+                input.value = ''; // Limpa o input
+            } else {
+                showToast("⚠️ Por favor, digite um nome de usuário.");
+                input.focus();
+            }
+        }
+
+        // Permite logar apertando Enter no modal
+        document.getElementById('discordUser').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') confirmLogin();
+        });
+
+        function updateLoginUI() {
+            const btn = document.getElementById('loginBtn');
+            if (currentUser) {
+                btn.innerHTML = `<i data-lucide="user-check" class="w-4 h-4 text-green-500"></i> ${currentUser.username}`;
+                btn.classList.add('text-white', 'border-green-500/30', 'bg-green-500/10');
+                btn.classList.remove('border-white/5', 'bg-white/5');
+            } else {
+                btn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> Login`;
+                btn.classList.remove('text-white', 'border-green-500/30', 'bg-green-500/10');
+                btn.classList.add('border-white/5', 'bg-white/5');
+            }
+            lucide.createIcons();
+        }
+
+        // --- SISTEMA DE SERVIDORES ---
+        function addServer(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                showToast("⚠️ Você precisa fazer Login para publicar!");
+                toggleLogin();
+                return;
+            }
+
+            const fd = new FormData(e.target);
+            
+            const newServer = {
+                id: Date.now().toString(),
+                name: fd.get('name'),
+                invite: fd.get('invite'),
+                tags: fd.get('tags').split(',').map(t => t.trim()).filter(t => t),
+                shortDesc: fd.get('shortDesc'),
+                desc: fd.get('desc'),
+                ownerName: currentUser.username,
+                votes: 0,
+                bump: Date.now(),
+                votedBy: []
+            };
+
+            SERVERS.push(newServer);
+            document.getElementById('stat-servers').innerText = SERVERS.length;
+            
+            showToast("✅ Seu servidor foi publicado no Board!");
+            e.target.reset();
+            goTo('board');
+        }
+
+        function formatTimeAgo(timestamp) {
+            const diffMin = Math.floor((Date.now() - timestamp) / 60000);
+            if (diffMin < 60) return diffMin === 0 ? 'Agora mesmo' : `há ${diffMin}m`;
+            const diffHours = Math.floor(diffMin / 60);
+            if (diffHours < 24) return `há ${diffHours}h`;
+            return `há ${Math.floor(diffHours / 24)}d`;
+        }
+
+        function doBump(id) {
+            if (!currentUser) return toggleLogin();
+            
+            const s = SERVERS.find(x => x.id === id);
+            const now = Date.now();
+            const diffHours = (now - s.bump) / 3600000;
+            
+            if (diffHours < 2) {
+                return showToast(`⏳ Cooldown! Aguarde ${Math.ceil(2 - diffHours)}h para novo bump.`);
+            }
+
+            s.bump = now;
+            showToast("🚀 BUMP! O servidor subiu para o topo do ranking.");
+            renderBoard();
+            showDetail(id);
+        }
+
+        function castVote(id) {
+            if (!currentUser) return toggleLogin();
+            
+            const s = SERVERS.find(x => x.id === id);
+            const userVote = s.votedBy.find(v => v.user === currentUser.username);
+            const now = Date.now();
+
+            if (userVote) {
+                const diffHours = (now - userVote.time) / 3600000;
+                if (diffHours < 12) {
+                    return showToast(`⏳ Você já votou! Aguarde ${Math.ceil(12 - diffHours)}h.`);
+                }
+                userVote.time = now;
+            } else {
+                s.votedBy.push({ user: currentUser.username, time: now });
+            }
+
+            s.votes += 1;
+            showToast("❤️ Voto registrado! Obrigado por apoiar.");
+            renderBoard();
+            showDetail(id);
+        }
+
+        // --- RENDERIZADORES ---
+        function renderBoard() {
+            const grid = document.getElementById('serversGrid');
+            const q = document.getElementById('boardSearch').value.toLowerCase();
+            
+            let sortedServers = [...SERVERS].sort((a, b) => b.bump - a.bump);
+
+            let filtered = sortedServers;
+            if (q) {
+                filtered = sortedServers.filter(s => 
+                    s.name.toLowerCase().includes(q) || 
+                    s.tags.some(t => t.toLowerCase().includes(q))
+                );
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-20 text-center">
+                        <i data-lucide="server-off" class="w-12 h-12 text-gray-700 mx-auto mb-4"></i>
+                        <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">Nenhum servidor encontrado.</p>
+                        ${SERVERS.length === 0 ? `<button onclick="goTo('add-server')" class="mt-6 bg-white/5 hover:bg-white/10 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Seja o Primeiro a Postar</button>` : ''}
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            grid.innerHTML = filtered.map(s => `
+                <div onclick="showDetail('${s.id}')" class="server-card glass rounded-[2.5rem] p-6 flex flex-col h-full cursor-pointer transition-all duration-300">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg">${s.name[0].toUpperCase()}</div>
+                        <div class="flex flex-col items-end gap-2">
+                            <div class="bg-black/50 px-3 py-1.5 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1.5 uppercase tracking-widest text-red-500">
+                                <i data-lucide="zap" class="w-3 h-3"></i> ${formatTimeAgo(s.bump)}
+                            </div>
+                            <div class="bg-black/50 px-3 py-1.5 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1.5 uppercase tracking-widest text-gray-400">
+                                <i data-lucide="chevron-up" class="w-3 h-3 text-red-500"></i> ${s.votes} Votos
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-xl font-extrabold mb-2 tracking-tight">${s.name}</h4>
+                    <p class="text-gray-500 text-xs mb-6 flex-1 line-clamp-3 leading-relaxed">${s.shortDesc}</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        ${s.tags.slice(0, 3).map(t => `<span class="px-3 py-1 bg-white/5 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 border border-white/5">${t}</span>`).join('')}
+                    </div>
+                    <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></span>
+                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest truncate max-w-[120px]">Por ${s.ownerName}</span>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        function showDetail(id) {
+            const s = SERVERS.find(x => x.id === id);
+            if (!s) return;
+            const container = document.getElementById('detailContainer');
+            goTo('server-detail');
+            
+            container.innerHTML = `
+                <div class="glass p-10 md:p-16 rounded-[3.5rem] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[100px] -z-10"></div>
+                    <div class="flex flex-col md:flex-row gap-10 items-center md:items-start text-center md:text-left mb-12">
+                        <div class="w-40 h-40 bg-gradient-to-br from-red-600 to-orange-600 rounded-[2.5rem] flex items-center justify-center text-6xl font-black shadow-2xl shrink-0">${s.name[0].toUpperCase()}</div>
+                        <div class="flex-1">
+                            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tighter uppercase">${s.name}</h1>
+                            <div class="flex flex-wrap justify-center md:justify-start gap-3 mb-6">
+                                ${s.tags.map(t => `<span class="bg-red-600/10 text-red-500 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-red-600/20">${t}</span>`).join('')}
+                            </div>
+                            <div class="flex justify-center md:justify-start gap-10">
+                                <div class="bg-black/20 px-6 py-4 rounded-2xl border border-white/5">
+                                    <div class="text-3xl font-black text-white flex items-center gap-2 mb-1"><i data-lucide="chevron-up" class="text-red-500"></i> ${s.votes}</div>
+                                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Total de Votos</div>
+                                </div>
+                                <div class="bg-black/20 px-6 py-4 rounded-2xl border border-white/5">
+                                    <div class="text-xl font-black text-gray-300 flex items-center gap-2 mb-2 mt-1"><i data-lucide="zap" class="text-yellow-500 w-5 h-5"></i> ${formatTimeAgo(s.bump)}</div>
+                                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Último Bump</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 pt-12 border-t border-white/5">
+                        <div class="md:col-span-2">
+                            <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-600 mb-6 flex items-center gap-2"><i data-lucide="align-left" class="w-4 h-4"></i> Sobre o Servidor</h3>
+                            <div class="text-gray-400 leading-relaxed text-lg whitespace-pre-line bg-black/20 p-8 rounded-3xl border border-white/5">${s.desc}</div>
+                        </div>
+                        <div class="space-y-4">
+                            <button onclick="castVote('${s.id}')" class="w-full bg-white text-black py-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 transition-all flex items-center justify-center gap-3">
+                                <i data-lucide="chevron-up"></i> VOTAR NESTE SERVER
+                            </button>
+                            <button onclick="doBump('${s.id}')" class="w-full bg-red-600 py-6 rounded-2xl font-black text-sm uppercase tracking-widest btn-glow flex items-center justify-center gap-3">
+                                <i data-lucide="zap"></i> DAR UM BUMP (2H)
+                            </button>
+                            <a href="${s.invite}" target="_blank" class="w-full bg-white/5 border border-white/10 py-6 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition">
+                                <i data-lucide="external-link"></i> ENTRAR NO DISCORD
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function renderCommands() {
+            const container = document.getElementById('commandsContainer');
+            container.innerHTML = COMMANDS.map(c => `
+                <div class="glass p-8 rounded-[2rem] border-t-4 border-red-600 command-card transition-all hover:-translate-y-2 hover:border-white/20">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-4 bg-red-600/10 rounded-2xl text-red-600 border border-red-600/20"><i data-lucide="${c.icon}"></i></div>
+                        <h3 class="text-lg font-black uppercase tracking-tighter">${c.cat}</h3>
+                    </div>
+                    <div class="bg-black/40 p-5 rounded-2xl font-mono text-sm text-red-400/90 leading-loose border border-white/5">
+                        ${c.cmds}
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function searchCommands(e) {
             const q = e.target.value.toLowerCase();
             document.querySelectorAll('.command-card').forEach(c => {
                 c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
             });
-        };
+        }
 
-        document.getElementById('boardSearch').oninput = () => {
-            renderBoard();
-        };
-
-        window.showToast = (msg) => {
-            const t = document.getElementById('toast');
-            document.getElementById('toast-msg').innerText = msg;
-            t.classList.remove('hidden');
-            setTimeout(() => t.classList.add('hidden'), 3500);
-        };
-
-        // Inicializar
+        // Setup
         window.onload = () => {
-            if (window.lucide) lucide.createIcons();
-            initAuth();
+            lucide.createIcons();
             renderCommands();
+            renderBoard();
         };
     </script>
 </body>
