@@ -3,320 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="icon" type="image/jpeg" href="https://i.imgur.com/PDEZ4HT.jpeg">
+    <title>Stellar Hub | O Sistema Operacional Definitivo</title>
     
-    <!-- SEO CRÍTICO -->
-    <title>Stellar Bot | O Sistema Operacional Definitivo para Discord</title>
-    <meta name="description" content="Stellar é o bot de economia, governo e segurança mais completo para Discord. Explore sistemas de imóveis, indústrias, carreiras e moderação avançada.">
-    <meta name="keywords" content="Discord Bot, Stellar Bot, Economia Discord, Bot de Governo, Bot de RPG, Comandos Discord, Stellar System">
-    <meta name="author" content="Stellar Team">
-    <link rel="canonical" href="https://miguelsouzaytbr.github.io/stellar-site-bot/">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph (Facebook/Discord) -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Stellar Bot - Central de Comando">
-    <meta property="og:description" content="Transforme seu servidor com um sistema de economia real, empregos e segurança total.">
-    <meta property="og:image" content="https://i.imgur.com/PDEZ4HT.jpeg">
-    <meta property="og:url" content="https://miguelsouzaytbr.github.io/stellar-site-bot/">
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Stellar Bot">
-    <meta name="twitter:description" content="O sistema definitivo de economia e gestão para sua comunidade.">
-
-    <!-- Fonts & Icons -->
+    <link rel="icon" type="image/jpeg" href="https://i.imgur.com/PDEZ4HT.jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a0a0b; color: #e4e4e7; scroll-behavior: smooth; }
-        .stellar-red { color: #ED1C24; }
-        .bg-stellar-red { background-color: #ED1C24; }
-        .border-stellar-red { border-color: #ED1C24; }
+        :root { --stellar-red: #ED1C24; --stellar-dark: #0a0a0b; --stellar-card: #121214; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--stellar-dark); color: #e4e4e7; overflow-x: hidden; }
+        
+        .stellar-red { color: var(--stellar-red); }
+        .bg-stellar-red { background-color: var(--stellar-red); }
         .hover-stellar-red:hover { background-color: #d11920; }
         
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .command-card { transition: all 0.3s ease; }
-        .command-card:hover { transform: translateY(-5px); border-color: #ED1C24; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .nav-active { border-bottom: 2px solid var(--stellar-red); color: white !important; }
         
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0b; }
-        ::-webkit-scrollbar-thumb { background: #ED1C24; border-radius: 10px; }
+        /* Sistema de Páginas */
+        .page { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
+        .page.active { display: block; opacity: 1; transform: translateY(0); }
 
-        .hero-gradient {
-            background: radial-gradient(circle at 50% 50%, rgba(237, 28, 36, 0.15) 0%, rgba(10, 10, 11, 1) 70%);
-        }
+        .server-card:hover { border-color: var(--stellar-red); transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(237, 28, 36, 0.2); }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--stellar-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--stellar-red); border-radius: 10px; }
 
-        .search-container:focus-within {
-            box-shadow: 0 0 20px rgba(237, 28, 36, 0.15);
-            border-color: #ED1C24;
-        }
+        .btn-glow:hover { box-shadow: 0 0 20px rgba(237, 28, 36, 0.4); }
+        
+        input, textarea, select { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; outline: none !important; }
+        input:focus { border-color: var(--stellar-red) !important; }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
+    <!-- NOTIFICAÇÃO (TOAST) -->
+    <div id="toast" class="fixed bottom-10 right-10 z-[1000] hidden">
+        <div class="bg-zinc-900 border-l-4 border-red-600 p-4 rounded-r-xl shadow-2xl flex items-center gap-3">
+            <i data-lucide="info" class="text-red-600"></i>
+            <p id="toast-msg" class="text-sm font-bold"></p>
+        </div>
+    </div>
+
+    <!-- NAVBAR PRINCIPAL -->
     <nav class="fixed w-full z-50 glass border-b border-white/5 px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-full border-2 border-stellar-red object-cover" alt="Logo">
-                <span class="text-2xl font-extrabold tracking-tighter uppercase">STELLAR<span class="stellar-red">.</span></span>
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="goTo('home')">
+                    <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-xl border border-red-600/30" alt="Logo">
+                    <span class="text-2xl font-black tracking-tighter uppercase">STELLAR<span class="stellar-red">.</span></span>
+                </div>
+                <div class="hidden lg:flex gap-6 text-xs font-bold uppercase tracking-widest text-gray-500">
+                    <button onclick="goTo('home')" class="nav-btn nav-active py-2">Home</button>
+                    <button onclick="goTo('board')" class="nav-btn py-2">Servers</button>
+                    <button onclick="goTo('commands')" class="nav-btn py-2">Comandos</button>
+                    <button onclick="goTo('add-server')" class="nav-btn py-2">Postar Server</button>
+                </div>
             </div>
-            <div class="hidden md:flex gap-8 font-medium text-sm uppercase tracking-widest text-gray-400">
-                <a href="#home" class="hover:text-white transition">Início</a>
-                <a href="#comandos" class="hover:text-white transition">Comandos</a>
-                <a href="#suporte" class="hover:text-white transition">Suporte</a>
+            <div class="flex items-center gap-4">
+                <button id="loginBtn" onclick="toggleLogin()" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Login</button>
+                <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=8&scope=bot" target="_blank" class="bg-stellar-red btn-glow px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-tight transition-all">Add Stellar</a>
             </div>
-            <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=8&scope=bot" class="bg-stellar-red px-6 py-2 rounded-full font-bold text-sm hover-stellar-red transition shadow-lg shadow-red-600/20">
-                ADICIONAR BOT
-            </a>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section id="home" class="pt-40 pb-20 px-6 hero-gradient">
+    <!-- PÁGINA: HOME -->
+    <main id="page-home" class="page active pt-40 pb-20 px-6">
         <div class="max-w-5xl mx-auto text-center">
-            <div class="relative inline-block mb-10">
-                <div class="absolute inset-0 bg-stellar-red/20 blur-3xl rounded-full"></div>
-                <img src="https://i.imgur.com/PDEZ4HT.jpeg" alt="Stellar Mascot" class="relative w-32 h-32 md:w-44 md:h-44 mx-auto rounded-3xl border-4 border-stellar-red shadow-2xl object-cover rotate-3 hover:rotate-0 transition-transform duration-500">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-red-600/10 border border-red-600/20 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] mb-8">
+                The Ultimate Discord OS
             </div>
-
-            <div class="inline-block px-4 py-1 border border-stellar-red/30 rounded-full text-stellar-red text-xs font-bold mb-6 tracking-widest uppercase">
-                Sistema Operacional Ativo • v2.0
-            </div>
-            <h1 class="text-5xl md:text-7xl font-black mb-6 tracking-tight">
-                Domine sua Economia com o <span class="stellar-red">Stellar.</span>
+            <h1 class="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-[0.9]">
+                Domine sua <br><span class="text-white/20">Comunidade.</span>
             </h1>
-            <p class="text-gray-400 text-xl max-w-2xl mx-auto mb-10">
-                O bot definitivo para gestão de servidores. De sistemas imobiliários complexos a moderação automatizada, o Stellar é o cérebro que sua comunidade precisa.
+            <p class="text-gray-400 text-xl max-w-2xl mx-auto mb-12">
+                O Stellar transforma seu Discord em um sistema vivo de economia, governo e segurança total.
             </p>
-
-            <!-- BARRA DE PESQUISA -->
-            <div class="max-w-xl mx-auto relative mb-12 search-container border border-white/10 rounded-2xl bg-white/5 overflow-hidden transition-all">
-                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                <input type="text" id="commandSearch" placeholder="Busque um comando... (ex: !work, !ban)" 
-                    class="w-full bg-transparent py-5 pl-14 pr-6 text-white placeholder:text-gray-600 focus:outline-none">
-            </div>
-
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="#comandos" class="bg-white text-black px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-200 transition">
-                    <i data-lucide="terminal" class="w-5 h-5"></i> Ver Comandos
-                </a>
-                <a href="https://discord.gg/MhJPqajwfT" class="glass px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-white/10 transition">
-                    <i data-lucide="users" class="w-5 h-5"></i> Servidor de Suporte
-                </a>
+                <button onclick="goTo('board')" class="bg-stellar-red btn-glow px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3">
+                    <i data-lucide="layout-grid"></i> Explorar Board
+                </button>
+                <button onclick="goTo('commands')" class="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/10 transition">
+                    Ver Documentação
+                </button>
             </div>
-            
-            <!-- STATS -->
-            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="glass p-6 rounded-2xl">
-                    <div class="text-3xl font-black stellar-red tracking-tighter">+500</div>
-                    <div class="text-gray-500 text-xs uppercase font-bold">Servidores</div>
+
+            <!-- MOCK STATS -->
+            <div class="mt-32 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass p-8 rounded-3xl text-center">
+                    <div class="text-4xl font-black mb-1">+500</div>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Servidores</div>
                 </div>
-                <div class="glass p-6 rounded-2xl">
-                    <div class="text-3xl font-black stellar-red tracking-tighter">+100k</div>
-                    <div class="text-gray-500 text-xs uppercase font-bold">Usuários</div>
+                <div class="glass p-8 rounded-3xl text-center">
+                    <div class="text-4xl font-black mb-1">+120k</div>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Usuários</div>
                 </div>
-                <div class="glass p-6 rounded-2xl">
-                    <div class="text-3xl font-black stellar-red tracking-tighter">60+</div>
-                    <div class="text-gray-500 text-xs uppercase font-bold">Comandos</div>
+                <div class="glass p-8 rounded-3xl text-center">
+                    <div class="text-4xl font-black mb-1">99%</div>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Uptime</div>
                 </div>
-                <div class="glass p-6 rounded-2xl">
-                    <div class="text-3xl font-black stellar-red tracking-tighter">99.9%</div>
-                    <div class="text-gray-500 text-xs uppercase font-bold">Uptime</div>
+                <div class="glass p-8 rounded-3xl text-center">
+                    <div class="text-4xl font-black mb-1">v2.5</div>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Versão</div>
                 </div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- COMANDOS SECTION -->
-    <section id="comandos" class="py-20 px-6 bg-[#0c0c0d]">
+    <!-- PÁGINA: STELLAR BOARD (DISBOARD STYLE) -->
+    <main id="page-board" class="page pt-40 pb-20 px-6">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold mb-4">Central de Processamento</h2>
-                <p class="text-gray-500 uppercase tracking-widest text-sm font-semibold">Explore todos os setores do sistema</p>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
+                <div>
+                    <h2 class="text-4xl font-black tracking-tighter uppercase mb-2">Stellar Board</h2>
+                    <p class="text-gray-500 font-medium">Os servidores que mais utilizam e evoluem com o Stellar.</p>
+                </div>
+                <div class="flex gap-3 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-80">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"></i>
+                        <input type="text" id="boardSearch" placeholder="Pesquisar servidor..." class="w-full py-3.5 pl-12 pr-4 rounded-xl text-sm transition">
+                    </div>
+                    <button class="bg-white/5 px-4 py-3.5 rounded-xl border border-white/10"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i></button>
+                </div>
             </div>
 
-            <div id="commandGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-white">
-                
-                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="shopping-cart"></i></div>
-                        <h3 class="text-xl font-bold">Comércio & Patrimônio</h3>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Imobiliária</span>
-                            <p class="text-sm font-mono mt-1 text-white">!imoveis, !casa, !bau, !negócios</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Automotivo</span>
-                            <p class="text-sm font-mono mt-1 text-white">!concessionaria, !garagem, !abastecer, !tuning, !racha</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Consumo</span>
-                            <p class="text-sm font-mono mt-1 text-white">!loja, !mercado, !inventário, !petshop, !pet</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="pickaxe"></i></div>
-                        <h3 class="text-xl font-bold">Carreiras & Trabalho</h3>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Labuta Diária</span>
-                            <p class="text-sm font-mono mt-1 text-white">!work, !daily, !vote, !uber, !entregar</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Exploração</span>
-                            <p class="text-sm font-mono mt-1 text-white">!minerar, !pescar, !caçar, !explorar</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Conteúdo</span>
-                            <p class="text-sm font-mono mt-1 text-white">!youtube, !postar, !canal, !estudar</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="landmark"></i></div>
-                        <h3 class="text-xl font-bold">Bancos & Finanças</h3>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Gestão</span>
-                            <p class="text-sm font-mono mt-1 text-white">!atm, !depositar, !sacar, !status, !pay</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Investimentos</span>
-                            <p class="text-sm font-mono mt-1 text-white">!investir, !top</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Submundo</span>
-                            <p class="text-sm font-mono mt-1 text-white">!roubar, !assaltar, !invadir</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="building-2"></i></div>
-                        <h3 class="text-xl font-bold">Governo & Indústria</h3>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Setor Público</span>
-                            <p class="text-sm font-mono mt-1 text-white">!governo, !economia, !topgovernos</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Produção</span>
-                            <p class="text-sm font-mono mt-1 text-white">!indústria</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="shield-check"></i></div>
-                        <h3 class="text-xl font-bold">Segurança & Admin</h3>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Setup</span>
-                            <p class="text-sm font-mono mt-1 text-white">!segurança, !set-ticket, !set-welcome, !prefixo</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Moderação</span>
-                            <p class="text-sm font-mono mt-1 text-white">!ban, !unban, !mute, !kick, !warn, !clear</p>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="glass p-8 rounded-3xl border-t-4 border-stellar-red command-card">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="p-3 bg-red-600/10 rounded-2xl text-stellar-red"><i data-lucide="smile"></i></div>
-                        <h3 class="text-xl font-bold">Social & Útil</h3>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Informação</span>
-                            <p class="text-sm font-mono mt-1 text-white">!botinfo, !serverinfo, !perfil, !ajuda</p>
-                        </div>
-                        <div class="bg-black/40 p-3 rounded-xl">
-                            <span class="text-xs font-bold text-gray-500 uppercase">Interação</span>
-                            <p class="text-sm font-mono mt-1 text-white">!ship, !kiss, !hug, !slap, !avatar</p>
-                        </div>
-                    </div>
-                </article>
-
+            <div id="serversGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Servers injetados via JS -->
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- CALL TO ACTION -->
-    <section id="suporte" class="py-20 px-6">
-        <div class="max-w-4xl mx-auto glass p-12 rounded-[3rem] text-center relative overflow-hidden">
-            <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="absolute -right-10 top-0 w-40 h-40 opacity-10 rounded-full blur-xl" alt="">
-            <h2 class="text-4xl font-black mb-4">Pronto para a Revolução?</h2>
-            <p class="text-gray-400 mb-8 text-lg">Junte-se a milhares de servidores que já utilizam o Stellar.</p>
-            <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="https://picpay.me/miguel.bomfim.souza" class="bg-stellar-red px-10 py-4 rounded-2xl font-black hover-stellar-red transition flex items-center justify-center gap-2">
-                    <i data-lucide="gem"></i> APOIAR PROJETO
-                </a>
-                <a href="https://discord.gg/MhJPqajwfT" class="bg-white/5 border border-white/10 px-10 py-4 rounded-2xl font-black hover:bg-white/10 transition flex items-center justify-center gap-2">
-                    <i data-lucide="help-circle"></i> SUPORTE OFICIAL
-                </a>
+    <!-- PÁGINA: DETALHES DO SERVIDOR -->
+    <main id="page-server-detail" class="page pt-40 pb-20 px-6">
+        <div id="detailContainer" class="max-w-4xl mx-auto">
+            <!-- Conteúdo dinâmico -->
+        </div>
+    </main>
+
+    <!-- PÁGINA: COMANDOS (FULL LIST) -->
+    <main id="page-commands" class="page pt-40 pb-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16">
+                <h2 class="text-4xl font-black tracking-tighter uppercase mb-4 text-center">Documentação Técnica</h2>
+                <div class="max-w-2xl mx-auto relative">
+                    <i data-lucide="terminal" class="absolute left-5 top-1/2 -translate-y-1/2 text-red-600"></i>
+                    <input type="text" id="cmdSearch" placeholder="Busque um comando (ex: !work, !ban)..." class="w-full py-5 pl-14 pr-6 rounded-2xl text-lg font-medium shadow-2xl">
+                </div>
+            </div>
+
+            <div id="commandsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Injetado via JS -->
             </div>
         </div>
-    </section>
+    </main>
+
+    <!-- PÁGINA: ADD SERVER -->
+    <main id="page-add-server" class="page pt-40 pb-20 px-6">
+        <div class="max-w-2xl mx-auto glass p-10 md:p-16 rounded-[3rem]">
+            <h2 class="text-3xl font-black mb-2 uppercase tracking-tighter">Postar seu Servidor</h2>
+            <p class="text-gray-500 mb-10 font-medium">Configure como sua comunidade aparecerá no board.</p>
+            
+            <form id="addServerForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Nome do Servidor</label>
+                        <input type="text" name="name" required class="w-full p-4 rounded-xl text-sm" placeholder="Ex: Stellar Support">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Link de Convite</label>
+                        <input type="url" name="invite" required class="w-full p-4 rounded-xl text-sm" placeholder="discord.gg/...">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Tags (Separadas por vírgula)</label>
+                    <input type="text" name="tags" class="w-full p-4 rounded-xl text-sm" placeholder="RPG, Economia, Social">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Descrição Completa</label>
+                    <textarea name="desc" required rows="4" class="w-full p-4 rounded-xl text-sm" placeholder="Descreva sua comunidade detalhadamente..."></textarea>
+                </div>
+                <button type="submit" class="w-full bg-stellar-red py-5 rounded-2xl font-black uppercase tracking-widest btn-glow transition-all">Publicar Servidor</button>
+            </form>
+        </div>
+    </main>
 
     <!-- FOOTER -->
-    <footer class="py-12 px-6 border-t border-white/5 text-center text-gray-500 text-sm">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-2">
-                <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-8 h-8 rounded-full border border-stellar-red" alt="">
-                <span class="font-bold text-white tracking-tighter uppercase">STELLAR SYSTEM</span>
+    <footer class="py-20 border-t border-white/5 mt-20">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
+            <div class="text-center md:text-left">
+                <div class="text-2xl font-black uppercase mb-4">STELLAR<span class="stellar-red">.</span></div>
+                <p class="text-gray-500 text-sm max-w-xs">A plataforma definitiva para quem leva o Discord a sério.</p>
             </div>
-            <div>
-                © 2026 Stellar System • Todos os direitos reservados.
-            </div>
-            <div class="flex gap-6 uppercase text-[10px] font-black tracking-widest">
-                <a href="#" class="hover:text-stellar-red transition">Termos</a>
-                <a href="#" class="hover:text-stellar-red transition">Privacidade</a>
+            <div class="flex gap-10 text-xs font-bold uppercase tracking-widest text-gray-500">
+                <a href="#" class="hover:text-red-500 transition">Termos</a>
+                <a href="#" class="hover:text-red-500 transition">Privacidade</a>
+                <a href="#" class="hover:text-red-500 transition">Suporte</a>
             </div>
         </div>
     </footer>
 
     <script>
-        lucide.createIcons();
+        // --- BANCO DE DADOS DINÂMICO ---
+        const COMMANDS = [
+            { cat: "Comércio & Patrimônio", icon: "shopping-cart", cmds: "!imoveis, !casa, !bau, !negócios, !concessionaria, !garagem, !abastecer, !tuning, !racha, !loja, !mercado, !inventário, !petshop, !pet" },
+            { cat: "Carreiras & Trabalho", icon: "pickaxe", cmds: "!work, !daily, !vote, !uber, !entregar, !minerar, !pescar, !caçar, !explorar, !youtube, !postar, !canal, !estudar" },
+            { cat: "Bancos & Finanças", icon: "landmark", cmds: "!atm, !depositar, !sacar, !status, !pay, !investir, !top, !roubar, !assaltar, !invadir" },
+            { cat: "Governo & Indústria", icon: "building-2", cmds: "!governo, !economia, !topgovernos, !indústria" },
+            { cat: "Segurança & Admin", icon: "shield-check", cmds: "!segurança, !set-ticket, !set-welcome, !prefixo, !ban, !unban, !mute, !kick, !warn, !clear" },
+            { cat: "Social & Útil", icon: "smile", cmds: "!botinfo, !serverinfo, !perfil, !ajuda, !ship, !kiss, !hug, !slap, !avatar" }
+        ];
 
-        const searchInput = document.getElementById('commandSearch');
-        const cards = document.querySelectorAll('.command-card');
+        let SERVERS = [
+            { id: 1, name: "Stellar Official", desc: "Servidor oficial de suporte. Entre para aprender a configurar o bot e participar da economia global.", longDesc: "Bem-vindo ao centro de comando. Aqui você encontra suporte técnico 24/7, novidades sobre atualizações e uma economia integrada que recompensa os membros mais ativos. \n\nBenefícios: \n- Cargos exclusivos \n- Sorteios diários \n- Suporte direto com os devs.", tags: ["Oficial", "Suporte"], members: "5,420", online: 840, bump: "Agora" },
+            { id: 2, name: "Night City RPG", desc: "Um mundo Cyberpunk movido pela economia do Stellar. Seja um mercenário ou dono de corporação.", longDesc: "Night City é o maior servidor de RPG focado em economia realista. Use o Stellar para comprar indústrias, veículos e apartamentos de luxo.", tags: ["RPG", "Cyberpunk"], members: "12,100", online: 2100, bump: "5 min" }
+        ];
 
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase();
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(query) ? 'block' : 'none';
+        // --- LÓGICA DE NAVEGAÇÃO ---
+        function goTo(pageId) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('nav-active');
+                if(b.innerText.toLowerCase().includes(pageId === 'board' ? 'servers' : pageId)) b.classList.add('nav-active');
             });
-        });
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if(target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
+            if(pageId === 'board') renderBoard();
+            if(pageId === 'commands') renderCommands();
+        }
+
+        // --- RENDERIZADORES ---
+        function renderCommands() {
+            const container = document.getElementById('commandsContainer');
+            container.innerHTML = COMMANDS.map(c => `
+                <div class="glass p-8 rounded-[2rem] border-t-4 border-red-600 command-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-600/10 rounded-2xl text-red-600"><i data-lucide="${c.icon}"></i></div>
+                        <h3 class="text-xl font-black uppercase tracking-tighter">${c.cat}</h3>
+                    </div>
+                    <div class="bg-black/40 p-4 rounded-2xl font-mono text-sm text-red-400 leading-loose">
+                        ${c.cmds}
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderBoard() {
+            const grid = document.getElementById('serversGrid');
+            grid.innerHTML = SERVERS.map(s => `
+                <div onclick="showDetail(${s.id})" class="server-card glass rounded-[2.5rem] p-6 flex flex-col h-full cursor-pointer transition-all duration-300">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl flex items-center justify-center text-2xl font-black">${s.name[0]}</div>
+                        <div class="bg-black/50 px-3 py-1 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1 uppercase tracking-widest text-red-500">
+                            <i data-lucide="zap" class="w-3 h-3"></i> ${s.bump}
+                        </div>
+                    </div>
+                    <h4 class="text-xl font-extrabold mb-2 tracking-tight">${s.name}</h4>
+                    <p class="text-gray-500 text-xs mb-6 flex-1 line-clamp-3">${s.desc}</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        ${s.tags.map(t => `<span class="px-3 py-1 bg-white/5 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400">${t}</span>`).join('')}
+                    </div>
+                    <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></span>
+                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">${s.members} Membros</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function showDetail(id) {
+            const s = SERVERS.find(x => x.id === id);
+            const container = document.getElementById('detailContainer');
+            goTo('server-detail');
+            
+            container.innerHTML = `
+                <div class="glass p-10 md:p-16 rounded-[3.5rem] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[100px] -z-10"></div>
+                    <div class="flex flex-col md:flex-row gap-10 items-center md:items-start text-center md:text-left mb-12">
+                        <div class="w-40 h-40 bg-gradient-to-br from-red-600 to-orange-600 rounded-[2.5rem] flex items-center justify-center text-6xl font-black shadow-2xl">${s.name[0]}</div>
+                        <div class="flex-1">
+                            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tighter uppercase">${s.name}</h1>
+                            <div class="flex flex-wrap justify-center md:justify-start gap-3 mb-6">
+                                ${s.tags.map(t => `<span class="bg-red-600/10 text-red-500 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-red-600/20">${t}</span>`).join('')}
+                            </div>
+                            <div class="flex justify-center md:justify-start gap-10">
+                                <div><div class="text-2xl font-black">${s.members}</div><div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Total Membros</div></div>
+                                <div><div class="text-2xl font-black text-green-500">${s.online}</div><div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Online Agora</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 pt-12 border-t border-white/5">
+                        <div class="md:col-span-2">
+                            <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-600 mb-6">Sobre o Servidor</h3>
+                            <div class="text-gray-400 leading-relaxed text-lg whitespace-pre-line">${s.longDesc}</div>
+                        </div>
+                        <div class="space-y-4">
+                            <button onclick="doBump(${s.id})" class="w-full bg-red-600 py-6 rounded-2xl font-black text-sm uppercase tracking-widest btn-glow flex items-center justify-center gap-3">
+                                <i data-lucide="zap"></i> DAR UM BUMP
+                            </button>
+                            <a href="#" class="w-full bg-white/5 border border-white/10 py-6 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition">
+                                <i data-lucide="external-link"></i> ENTRAR NO DISCORD
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // --- SISTEMA DE LOGIN ---
+        let isLoggedIn = false;
+        function toggleLogin() {
+            isLoggedIn = !isLoggedIn;
+            const btn = document.getElementById('loginBtn');
+            btn.innerText = isLoggedIn ? 'Sair' : 'Login';
+            showToast(isLoggedIn ? 'Bem-vindo ao Stellar Hub!' : 'Até logo!');
+        }
+
+        // --- BUMP SIMULADO ---
+        function doBump(id) {
+            showToast("🚀 BUMP! Servidor colocado no topo do Board.");
+            const s = SERVERS.find(x => x.id === id);
+            s.bump = "Agora";
+            // Reposicionar no topo
+            const index = SERVERS.indexOf(s);
+            SERVERS.splice(index, 1);
+            SERVERS.unshift(s);
+        }
+
+        // --- FORMULÁRIO DE ADD SERVER ---
+        document.getElementById('addServerForm').onsubmit = (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const newServer = {
+                id: Date.now(),
+                name: fd.get('name'),
+                desc: fd.get('desc'),
+                longDesc: fd.get('desc'),
+                tags: fd.get('tags').split(',').map(t => t.trim()),
+                members: "1",
+                online: 1,
+                bump: "Agora"
+            };
+            SERVERS.unshift(newServer);
+            showToast("✅ Servidor postado com sucesso!");
+            goTo('board');
+            e.target.reset();
+        };
+
+        // --- BUSCAS ---
+        document.getElementById('cmdSearch').oninput = (e) => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('.command-card').forEach(c => {
+                c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
             });
-        });
+        };
+
+        document.getElementById('boardSearch').oninput = (e) => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('.server-card').forEach(c => {
+                c.style.display = c.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
+        };
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 3000);
+        }
+
+        window.onload = () => {
+            lucide.createIcons();
+            renderBoard();
+            renderCommands();
+        };
     </script>
 </body>
 </html>
