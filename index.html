@@ -63,7 +63,9 @@
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <button id="loginBtn" onclick="toggleLogin()" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition">Login</button>
+                <button id="loginBtn" onclick="toggleLogin()" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-2">
+                    <i data-lucide="user" class="w-4 h-4"></i> Login
+                </button>
                 <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=8&scope=bot" target="_blank" class="bg-stellar-red btn-glow px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-tight transition-all">Add Stellar</a>
             </div>
         </div>
@@ -93,7 +95,7 @@
             <!-- MOCK STATS -->
             <div class="mt-32 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass p-8 rounded-3xl text-center">
-                    <div class="text-4xl font-black mb-1">+500</div>
+                    <div class="text-4xl font-black mb-1" id="stat-servers">...</div>
                     <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Servidores</div>
                 </div>
                 <div class="glass p-8 rounded-3xl text-center">
@@ -125,12 +127,18 @@
                         <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"></i>
                         <input type="text" id="boardSearch" placeholder="Pesquisar servidor..." class="w-full py-3.5 pl-12 pr-4 rounded-xl text-sm transition">
                     </div>
-                    <button class="bg-white/5 px-4 py-3.5 rounded-xl border border-white/10"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i></button>
+                    <button onclick="loadServersFromDB()" class="bg-white/5 px-4 py-3.5 rounded-xl border border-white/10 hover:bg-white/10 transition" title="Atualizar">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
 
             <div id="serversGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Servers injetados via JS -->
+                <!-- Servers injetados via JS (Firebase) -->
+                <div class="col-span-full py-20 text-center">
+                    <i data-lucide="loader-2" class="w-10 h-10 text-red-600 animate-spin mx-auto mb-4"></i>
+                    <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Conectando ao banco de dados...</p>
+                </div>
             </div>
         </div>
     </main>
@@ -163,7 +171,7 @@
     <main id="page-add-server" class="page pt-40 pb-20 px-6">
         <div class="max-w-2xl mx-auto glass p-10 md:p-16 rounded-[3rem]">
             <h2 class="text-3xl font-black mb-2 uppercase tracking-tighter">Postar seu Servidor</h2>
-            <p class="text-gray-500 mb-10 font-medium">Configure como sua comunidade aparecerá no board.</p>
+            <p class="text-gray-500 mb-10 font-medium">Configure como sua comunidade aparecerá no board global.</p>
             
             <form id="addServerForm" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -173,12 +181,16 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Link de Convite</label>
-                        <input type="url" name="invite" required class="w-full p-4 rounded-xl text-sm" placeholder="discord.gg/...">
+                        <input type="url" name="invite" required class="w-full p-4 rounded-xl text-sm" placeholder="https://discord.gg/...">
                     </div>
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Tags (Separadas por vírgula)</label>
                     <input type="text" name="tags" class="w-full p-4 rounded-xl text-sm" placeholder="RPG, Economia, Social">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Resumo Curto (Aparece no Card)</label>
+                    <input type="text" name="shortDesc" required maxlength="100" class="w-full p-4 rounded-xl text-sm" placeholder="Uma frase sobre o servidor...">
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Descrição Completa</label>
@@ -204,8 +216,28 @@
         </div>
     </footer>
 
-    <script>
-        // --- BANCO DE DADOS DINÂMICO ---
+    <!-- LÓGICA CORE: FIREBASE (BANCO DE DADOS REAL) + JS DA PÁGINA -->
+    <script type="module">
+        // Importando Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuração segura embutida (Funciona no Github Pages)
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { projectId: "stellar-hub-demo" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'stellar-real-db';
+
+        // Paths do Banco de Dados
+        const serversCollection = collection(db, 'artifacts', appId, 'public', 'data', 'servers');
+        const votesCollection = collection(db, 'artifacts', appId, 'public', 'data', 'votes');
+
+        let currentUser = null;
+        let serversCache = [];
+
+        // Comandos que já estavam no seu código (Isso é estático mesmo)
         const COMMANDS = [
             { cat: "Comércio & Patrimônio", icon: "shopping-cart", cmds: "!imoveis, !casa, !bau, !negócios, !concessionaria, !garagem, !abastecer, !tuning, !racha, !loja, !mercado, !inventário, !petshop, !pet" },
             { cat: "Carreiras & Trabalho", icon: "pickaxe", cmds: "!work, !daily, !vote, !uber, !entregar, !minerar, !pescar, !caçar, !explorar, !youtube, !postar, !canal, !estudar" },
@@ -215,29 +247,322 @@
             { cat: "Social & Útil", icon: "smile", cmds: "!botinfo, !serverinfo, !perfil, !ajuda, !ship, !kiss, !hug, !slap, !avatar" }
         ];
 
-        let SERVERS = [
-            { id: 1, name: "Stellar Official", desc: "Servidor oficial de suporte. Entre para aprender a configurar o bot e participar da economia global.", longDesc: "Bem-vindo ao centro de comando. Aqui você encontra suporte técnico 24/7, novidades sobre atualizações e uma economia integrada que recompensa os membros mais ativos. \n\nBenefícios: \n- Cargos exclusivos \n- Sorteios diários \n- Suporte direto com os devs.", tags: ["Oficial", "Suporte"], members: "5,420", online: 840, bump: "Agora" },
-            { id: 2, name: "Night City RPG", desc: "Um mundo Cyberpunk movido pela economia do Stellar. Seja um mercenário ou dono de corporação.", longDesc: "Night City é o maior servidor de RPG focado em economia realista. Use o Stellar para comprar indústrias, veículos e apartamentos de luxo.", tags: ["RPG", "Cyberpunk"], members: "12,100", online: 2100, bump: "5 min" }
-        ];
-
-        // --- LÓGICA DE NAVEGAÇÃO ---
-        function goTo(pageId) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('nav-active');
-                if(b.innerText.toLowerCase().includes(pageId === 'board' ? 'servers' : pageId)) b.classList.add('nav-active');
-            });
-
-            if(pageId === 'board') renderBoard();
-            if(pageId === 'commands') renderCommands();
+        // --- SISTEMA DE AUTENTICAÇÃO ---
+        async function initAuth() {
+            try { 
+                // Fix permission error: checking for custom auth token before signing in anonymously
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth); 
+                }
+            } catch (e) { 
+                console.error("Erro na Autenticação:", e); 
+            }
         }
 
-        // --- RENDERIZADORES ---
-        function renderCommands() {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const savedUser = localStorage.getItem('stellar_discord_user');
+                currentUser = savedUser ? { ...user, discord: JSON.parse(savedUser) } : user;
+                updateLoginUI();
+                loadServersFromDB();
+            } else {
+                currentUser = null;
+            }
+        });
+
+        // Trocando a função toggleLogin antiga por esta real
+        window.toggleLogin = () => {
+            if (currentUser && currentUser.discord) {
+                localStorage.removeItem('stellar_discord_user');
+                currentUser.discord = null;
+                updateLoginUI();
+                showToast('Deslogado com sucesso.');
+                return;
+            }
+            
+            // Simulação de OAuth2 (pede o nome de usuário)
+            const nick = prompt("Simulação de Login Discord.\nPor favor, digite seu nome de usuário (ex: zack_dev):");
+            if (nick) {
+                const discordData = { username: nick };
+                localStorage.setItem('stellar_discord_user', JSON.stringify(discordData));
+                currentUser.discord = discordData;
+                updateLoginUI();
+                showToast(`Bem-vindo ao Stellar Hub, ${nick}!`);
+            }
+        };
+
+        function updateLoginUI() {
+            const btn = document.getElementById('loginBtn');
+            if (currentUser && currentUser.discord) {
+                btn.innerHTML = `<i data-lucide="user-check" class="w-4 h-4 text-green-500"></i> ${currentUser.discord.username}`;
+                btn.classList.add('text-white');
+            } else {
+                btn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> Login`;
+                btn.classList.remove('text-white');
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+
+        // --- SISTEMA DE SERVIDORES (BANCO DE DADOS) ---
+        window.loadServersFromDB = async () => {
+            if (!currentUser) return;
+            try {
+                const querySnapshot = await getDocs(serversCollection);
+                let servers = [];
+                querySnapshot.forEach((doc) => {
+                    servers.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Ordena por Bump mais recente e depois por votos
+                servers.sort((a, b) => {
+                    if (b.bump !== a.bump) return b.bump - a.bump;
+                    return (b.votes || 0) - (a.votes || 0);
+                });
+
+                serversCache = servers;
+                
+                // Atualiza contadores
+                const statServers = document.getElementById('stat-servers');
+                if(statServers) statServers.innerText = servers.length > 0 ? `+${servers.length}` : '0';
+
+                if (document.getElementById('page-board').classList.contains('active')) {
+                    renderBoard();
+                }
+            } catch (e) {
+                console.error("Erro ao buscar servidores", e);
+                showToast("Erro ao conectar ao banco de dados.");
+            }
+        };
+
+        // Formatador de tempo para o Bump
+        function formatTimeAgo(timestamp) {
+            if (!timestamp) return 'Nunca';
+            const diffMin = Math.floor((Date.now() - timestamp) / 60000);
+            if (diffMin < 60) return diffMin === 0 ? 'Agora' : `${diffMin}m`;
+            const diffHours = Math.floor(diffMin / 60);
+            if (diffHours < 24) return `${diffHours}h`;
+            return `${Math.floor(diffHours / 24)}d`;
+        }
+
+        window.renderBoard = () => {
+            const grid = document.getElementById('serversGrid');
+            const q = document.getElementById('boardSearch').value.toLowerCase();
+            
+            let filtered = serversCache;
+            if (q) {
+                filtered = serversCache.filter(s => 
+                    s.name.toLowerCase().includes(q) || 
+                    (s.tags && s.tags.some(t => t.toLowerCase().includes(q)))
+                );
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="col-span-full py-20 text-center text-gray-500 font-bold uppercase tracking-widest text-xs">Nenhum servidor encontrado.</div>';
+                return;
+            }
+
+            // MANTENDO EXATAMENTE O SEU DESIGN DE CARD, mas com dados reais
+            grid.innerHTML = filtered.map(s => `
+                <div onclick="showDetail('${s.id}')" class="server-card glass rounded-[2.5rem] p-6 flex flex-col h-full cursor-pointer transition-all duration-300">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl flex items-center justify-center text-2xl font-black">${s.name[0].toUpperCase()}</div>
+                        <div class="flex flex-col items-end gap-2">
+                            <div class="bg-black/50 px-3 py-1 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1 uppercase tracking-widest text-red-500">
+                                <i data-lucide="zap" class="w-3 h-3"></i> ${formatTimeAgo(s.bump)}
+                            </div>
+                            <div class="bg-black/50 px-3 py-1 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1 uppercase tracking-widest text-gray-400">
+                                <i data-lucide="chevron-up" class="w-3 h-3 text-red-500"></i> ${s.votes || 0} Votos
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="text-xl font-extrabold mb-2 tracking-tight">${s.name}</h4>
+                    <p class="text-gray-500 text-xs mb-6 flex-1 line-clamp-3">${s.shortDesc || s.desc}</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        ${s.tags ? s.tags.slice(0, 3).map(t => `<span class="px-3 py-1 bg-white/5 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400">${t}</span>`).join('') : ''}
+                    </div>
+                    <div class="flex items-center justify-between pt-6 border-t border-white/5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></span>
+                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Postado por ${s.ownerName || 'Anônimo'}</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
+                    </div>
+                </div>
+            `).join('');
+            if (window.lucide) lucide.createIcons();
+        };
+
+        window.showDetail = (id) => {
+            const s = serversCache.find(x => x.id === id);
+            if (!s) return;
+            const container = document.getElementById('detailContainer');
+            goTo('server-detail');
+            
+            // SEU DESIGN DE DETAIL, mas adicionei o botão de votar!
+            container.innerHTML = `
+                <div class="glass p-10 md:p-16 rounded-[3.5rem] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[100px] -z-10"></div>
+                    <div class="flex flex-col md:flex-row gap-10 items-center md:items-start text-center md:text-left mb-12">
+                        <div class="w-40 h-40 bg-gradient-to-br from-red-600 to-orange-600 rounded-[2.5rem] flex items-center justify-center text-6xl font-black shadow-2xl shrink-0">${s.name[0].toUpperCase()}</div>
+                        <div class="flex-1">
+                            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tighter uppercase">${s.name}</h1>
+                            <div class="flex flex-wrap justify-center md:justify-start gap-3 mb-6">
+                                ${s.tags ? s.tags.map(t => `<span class="bg-red-600/10 text-red-500 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-red-600/20">${t}</span>`).join('') : ''}
+                            </div>
+                            <div class="flex justify-center md:justify-start gap-10">
+                                <div><div class="text-2xl font-black text-white flex items-center gap-2"><i data-lucide="chevron-up" class="text-red-500"></i> ${s.votes || 0}</div><div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Total de Votos</div></div>
+                                <div><div class="text-2xl font-black text-gray-300 flex items-center gap-2"><i data-lucide="zap" class="text-yellow-500 w-5 h-5"></i></div><div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Bump: ${formatTimeAgo(s.bump)}</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 pt-12 border-t border-white/5">
+                        <div class="md:col-span-2">
+                            <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-600 mb-6">Sobre o Servidor</h3>
+                            <div class="text-gray-400 leading-relaxed text-lg whitespace-pre-line">${s.longDesc || s.desc}</div>
+                        </div>
+                        <div class="space-y-4">
+                            <!-- BOTÃO DE VOTAR TOP.GG STYLE -->
+                            <button onclick="castVote('${s.id}')" class="w-full bg-white text-black py-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 transition-all flex items-center justify-center gap-3">
+                                <i data-lucide="chevron-up"></i> VOTAR NO SERVER
+                            </button>
+                            <!-- BOTÃO DE BUMP -->
+                            <button onclick="doBump('${s.id}')" class="w-full bg-red-600 py-6 rounded-2xl font-black text-sm uppercase tracking-widest btn-glow flex items-center justify-center gap-3">
+                                <i data-lucide="zap"></i> DAR UM BUMP
+                            </button>
+                            <a href="${s.invite}" target="_blank" class="w-full bg-white/5 border border-white/10 py-6 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition">
+                                <i data-lucide="external-link"></i> ENTRAR NO DISCORD
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // --- SISTEMAS REAIS DE BUMP E VOTO ---
+        
+        // Votar (12h Cooldown)
+        window.castVote = async (serverId) => {
+            if (!currentUser || !currentUser.discord) return showToast("⚠️ Faça login para votar!");
+            
+            // Checagem de Cooldown no Banco
+            const votesSnap = await getDocs(votesCollection);
+            const now = Date.now();
+            let canVote = true;
+
+            votesSnap.forEach((doc) => {
+                const data = doc.data();
+                if (data.userId === currentUser.uid && data.serverId === serverId) {
+                    const diffHours = (now - data.timestamp) / 3600000;
+                    if (diffHours < 12) {
+                        canVote = false;
+                        showToast(`⏳ Aguarde ${Math.ceil(12 - diffHours)} horas para votar novamente neste servidor.`);
+                    }
+                }
+            });
+
+            if (!canVote) return;
+
+            try {
+                // Registra o voto
+                await addDoc(votesCollection, {
+                    userId: currentUser.uid,
+                    serverId: serverId,
+                    timestamp: now
+                });
+
+                // Atualiza o contador do servidor
+                const serverRef = doc(db, 'artifacts', appId, 'public', 'data', 'servers', serverId);
+                const s = serversCache.find(x => x.id === serverId);
+                await updateDoc(serverRef, { votes: (s.votes || 0) + 1 });
+                
+                showToast("✅ Voto computado com sucesso!");
+                await loadServersFromDB();
+                if (document.getElementById('page-server-detail').classList.contains('active')) {
+                    showDetail(serverId);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Erro ao processar voto no banco.");
+            }
+        };
+
+        // Bump (2h Cooldown)
+        window.doBump = async (serverId) => {
+            if (!currentUser || !currentUser.discord) return showToast("⚠️ Faça login para dar Bump!");
+            
+            const s = serversCache.find(x => x.id === serverId);
+            const now = Date.now();
+            const diffHours = (now - s.bump) / 3600000;
+            
+            if (s.bump && diffHours < 2) {
+                return showToast(`⏳ Cooldown de Bump! Aguarde ${Math.ceil(2 - diffHours)} horas.`);
+            }
+
+            try {
+                const serverRef = doc(db, 'artifacts', appId, 'public', 'data', 'servers', serverId);
+                await updateDoc(serverRef, { bump: now });
+                showToast("🚀 BUMP! Servidor colocado no topo do Board.");
+                await loadServersFromDB();
+                showDetail(serverId);
+            } catch (err) {
+                console.error(err);
+                showToast("Erro ao dar bump no banco de dados.");
+            }
+        };
+
+
+        // --- POSTAR SERVIDOR ---
+        document.getElementById('addServerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            if (!currentUser || !currentUser.discord) return showToast("⚠️ Faça Login para postar!");
+
+            const fd = new FormData(e.target);
+            
+            const payload = {
+                name: fd.get('name'),
+                invite: fd.get('invite'),
+                tags: fd.get('tags').split(',').map(t => t.trim()).filter(t => t),
+                shortDesc: fd.get('shortDesc'),
+                desc: fd.get('desc'),
+                longDesc: fd.get('desc'), // Garantir compatibilidade com o layout
+                ownerId: currentUser.uid,
+                ownerName: currentUser.discord.username,
+                votes: 0,
+                bump: Date.now(), // Primeiro bump automático
+                createdAt: Date.now()
+            };
+
+            try {
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = "Publicando...";
+                submitBtn.disabled = true;
+
+                await addDoc(serversCollection, payload);
+                
+                showToast("✅ Servidor postado com sucesso no Banco!");
+                e.target.reset();
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+                
+                await loadServersFromDB();
+                goTo('board');
+            } catch (err) {
+                showToast("Erro ao salvar no banco.");
+                console.error(err);
+                e.target.querySelector('button[type="submit"]').disabled = false;
+            }
+        };
+
+        // --- RENDERIZAR COMANDOS (Da sua estrutura original) ---
+        window.renderCommands = () => {
             const container = document.getElementById('commandsContainer');
+            if (container.innerHTML.trim() !== "") return; // Já renderizou
+
             container.innerHTML = COMMANDS.map(c => `
                 <div class="glass p-8 rounded-[2rem] border-t-4 border-red-600 command-card">
                     <div class="flex items-center gap-4 mb-6">
@@ -249,117 +574,24 @@
                     </div>
                 </div>
             `).join('');
-            lucide.createIcons();
-        }
-
-        function renderBoard() {
-            const grid = document.getElementById('serversGrid');
-            grid.innerHTML = SERVERS.map(s => `
-                <div onclick="showDetail(${s.id})" class="server-card glass rounded-[2.5rem] p-6 flex flex-col h-full cursor-pointer transition-all duration-300">
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl flex items-center justify-center text-2xl font-black">${s.name[0]}</div>
-                        <div class="bg-black/50 px-3 py-1 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1 uppercase tracking-widest text-red-500">
-                            <i data-lucide="zap" class="w-3 h-3"></i> ${s.bump}
-                        </div>
-                    </div>
-                    <h4 class="text-xl font-extrabold mb-2 tracking-tight">${s.name}</h4>
-                    <p class="text-gray-500 text-xs mb-6 flex-1 line-clamp-3">${s.desc}</p>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        ${s.tags.map(t => `<span class="px-3 py-1 bg-white/5 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400">${t}</span>`).join('')}
-                    </div>
-                    <div class="flex items-center justify-between pt-6 border-t border-white/5">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></span>
-                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">${s.members} Membros</span>
-                        </div>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        function showDetail(id) {
-            const s = SERVERS.find(x => x.id === id);
-            const container = document.getElementById('detailContainer');
-            goTo('server-detail');
-            
-            container.innerHTML = `
-                <div class="glass p-10 md:p-16 rounded-[3.5rem] relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[100px] -z-10"></div>
-                    <div class="flex flex-col md:flex-row gap-10 items-center md:items-start text-center md:text-left mb-12">
-                        <div class="w-40 h-40 bg-gradient-to-br from-red-600 to-orange-600 rounded-[2.5rem] flex items-center justify-center text-6xl font-black shadow-2xl">${s.name[0]}</div>
-                        <div class="flex-1">
-                            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tighter uppercase">${s.name}</h1>
-                            <div class="flex flex-wrap justify-center md:justify-start gap-3 mb-6">
-                                ${s.tags.map(t => `<span class="bg-red-600/10 text-red-500 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-red-600/20">${t}</span>`).join('')}
-                            </div>
-                            <div class="flex justify-center md:justify-start gap-10">
-                                <div><div class="text-2xl font-black">${s.members}</div><div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Total Membros</div></div>
-                                <div><div class="text-2xl font-black text-green-500">${s.online}</div><div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Online Agora</div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 pt-12 border-t border-white/5">
-                        <div class="md:col-span-2">
-                            <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-600 mb-6">Sobre o Servidor</h3>
-                            <div class="text-gray-400 leading-relaxed text-lg whitespace-pre-line">${s.longDesc}</div>
-                        </div>
-                        <div class="space-y-4">
-                            <button onclick="doBump(${s.id})" class="w-full bg-red-600 py-6 rounded-2xl font-black text-sm uppercase tracking-widest btn-glow flex items-center justify-center gap-3">
-                                <i data-lucide="zap"></i> DAR UM BUMP
-                            </button>
-                            <a href="#" class="w-full bg-white/5 border border-white/10 py-6 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition">
-                                <i data-lucide="external-link"></i> ENTRAR NO DISCORD
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            `;
-            lucide.createIcons();
-        }
-
-        // --- SISTEMA DE LOGIN ---
-        let isLoggedIn = false;
-        function toggleLogin() {
-            isLoggedIn = !isLoggedIn;
-            const btn = document.getElementById('loginBtn');
-            btn.innerText = isLoggedIn ? 'Sair' : 'Login';
-            showToast(isLoggedIn ? 'Bem-vindo ao Stellar Hub!' : 'Até logo!');
-        }
-
-        // --- BUMP SIMULADO ---
-        function doBump(id) {
-            showToast("🚀 BUMP! Servidor colocado no topo do Board.");
-            const s = SERVERS.find(x => x.id === id);
-            s.bump = "Agora";
-            // Reposicionar no topo
-            const index = SERVERS.indexOf(s);
-            SERVERS.splice(index, 1);
-            SERVERS.unshift(s);
-        }
-
-        // --- FORMULÁRIO DE ADD SERVER ---
-        document.getElementById('addServerForm').onsubmit = (e) => {
-            e.preventDefault();
-            const fd = new FormData(e.target);
-            const newServer = {
-                id: Date.now(),
-                name: fd.get('name'),
-                desc: fd.get('desc'),
-                longDesc: fd.get('desc'),
-                tags: fd.get('tags').split(',').map(t => t.trim()),
-                members: "1",
-                online: 1,
-                bump: "Agora"
-            };
-            SERVERS.unshift(newServer);
-            showToast("✅ Servidor postado com sucesso!");
-            goTo('board');
-            e.target.reset();
+            if (window.lucide) lucide.createIcons();
         };
 
-        // --- BUSCAS ---
+        // --- LÓGICA DE NAVEGAÇÃO / BUSCA ---
+        window.goTo = (pageId) => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('nav-active');
+                if(b.innerText.toLowerCase().includes(pageId === 'board' ? 'servers' : pageId)) b.classList.add('nav-active');
+            });
+
+            if(pageId === 'board') renderBoard();
+            if(pageId === 'commands') renderCommands();
+        };
+
         document.getElementById('cmdSearch').oninput = (e) => {
             const q = e.target.value.toLowerCase();
             document.querySelectorAll('.command-card').forEach(c => {
@@ -367,23 +599,21 @@
             });
         };
 
-        document.getElementById('boardSearch').oninput = (e) => {
-            const q = e.target.value.toLowerCase();
-            document.querySelectorAll('.server-card').forEach(c => {
-                c.style.display = c.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-            });
+        document.getElementById('boardSearch').oninput = () => {
+            renderBoard();
         };
 
-        function showToast(msg) {
+        window.showToast = (msg) => {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
             t.classList.remove('hidden');
-            setTimeout(() => t.classList.add('hidden'), 3000);
-        }
+            setTimeout(() => t.classList.add('hidden'), 3500);
+        };
 
+        // Inicializar
         window.onload = () => {
-            lucide.createIcons();
-            renderBoard();
+            if (window.lucide) lucide.createIcons();
+            initAuth();
             renderCommands();
         };
     </script>
