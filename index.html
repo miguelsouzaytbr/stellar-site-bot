@@ -3,479 +3,761 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stellar Hub | O Sistema Operacional Definitivo</title>
+    <title>Stellar Hub | The Ultimate Discord OS</title>
     
+    <!-- SEO & Favicon -->
     <link rel="icon" type="image/jpeg" href="https://i.imgur.com/PDEZ4HT.jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        :root { --stellar-red: #ED1C24; --stellar-dark: #0a0a0b; --stellar-card: #121214; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--stellar-dark); color: #e4e4e7; overflow-x: hidden; }
-        
-        .stellar-red { color: var(--stellar-red); }
-        .bg-stellar-red { background-color: var(--stellar-red); }
-        .hover-stellar-red:hover { background-color: #d11920; }
-        
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .nav-active { border-bottom: 2px solid var(--stellar-red); color: white !important; }
-        
-        /* Sistema de Páginas */
-        .page { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
-        .page.active { display: block; opacity: 1; transform: translateY(0); }
+        :root { 
+            --stellar-red: #ED1C24; 
+            --stellar-red-dark: #8b1116;
+            --stellar-dark: #070708; 
+            --stellar-card: #111113; 
+            --stellar-border: rgba(255, 255, 255, 0.06);
+        }
 
-        .server-card:hover { border-color: var(--stellar-red); transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(237, 28, 36, 0.2); }
-        
-        ::-webkit-scrollbar { width: 6px; }
+        * { cursor: url('https://cur.cursors-4u.net/arrows/arr-2/arr132.cur'), auto !important; }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--stellar-dark); 
+            color: #ececec; 
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Estilização Red Stellar */
+        .text-stellar { color: var(--stellar-red); }
+        .bg-stellar { background-color: var(--stellar-red); }
+        .border-stellar { border-color: var(--stellar-red); }
+        .glow-stellar { box-shadow: 0 0 20px rgba(237, 28, 36, 0.2); }
+        .glow-stellar-strong { box-shadow: 0 0 40px rgba(237, 28, 36, 0.4); }
+
+        /* Glassmorphism Evolution */
+        .glass { 
+            background: rgba(18, 18, 20, 0.7); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid var(--stellar-border); 
+        }
+        .glass-bright {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Animações de Página */
+        .page { display: none; opacity: 0; transform: scale(0.98); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .page.active { display: block; opacity: 1; transform: scale(1); }
+
+        /* Navbar Active State */
+        .nav-link { position: relative; transition: all 0.3s; }
+        .nav-link::after { 
+            content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; 
+            background: var(--stellar-red); transition: width 0.3s; 
+        }
+        .nav-link.active { color: white; }
+        .nav-link.active::after { width: 100%; }
+
+        /* Grid Background Animado */
+        .grid-bg {
+            background-image: linear-gradient(rgba(237, 28, 36, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(237, 28, 36, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+        }
+
+        /* Card Hover Effects */
+        .hover-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .hover-card:hover { 
+            transform: translateY(-8px) scale(1.02); 
+            border-color: var(--stellar-red);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 0 0 20px rgba(237, 28, 36, 0.1);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--stellar-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--stellar-red); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; transition: 0.3s; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--stellar-red); }
 
-        .btn-glow:hover { box-shadow: 0 0 20px rgba(237, 28, 36, 0.4); }
-        
-        input, textarea, select { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; outline: none !important; }
-        input:focus { border-color: var(--stellar-red) !important; }
+        /* Badge Glow */
+        .badge-stellar {
+            animation: badge-pulse 2s infinite;
+        }
+        @keyframes badge-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(237, 28, 36, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(237, 28, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(237, 28, 36, 0); }
+        }
+
+        /* Skeleton Loading Sim */
+        .skeleton { background: linear-gradient(90deg, #121214 25%, #1a1a1d 50%, #121214 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+        /* Tooltip Personalizado */
+        .tooltip { visibility: hidden; opacity: 0; transition: 0.3s; }
+        .has-tooltip:hover .tooltip { visibility: visible; opacity: 1; }
+
+        /* Seção de Comandos Estilo Terminal */
+        .terminal-window {
+            background: #0d0d0f;
+            border: 1px solid #1f1f23;
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.7);
+        }
     </style>
 </head>
-<body>
+<body class="selection:bg-red-600 selection:text-white">
 
-    <!-- NOTIFICAÇÃO (TOAST) -->
-    <div id="toast" class="fixed bottom-10 right-10 z-[1000] hidden transition-all duration-300 transform translate-y-0 opacity-100">
-        <div class="bg-zinc-900 border-l-4 border-red-600 p-4 rounded-r-xl shadow-2xl flex items-center gap-3">
-            <i data-lucide="info" class="text-red-600"></i>
-            <p id="toast-msg" class="text-sm font-bold"></p>
+    <!-- OVERLAY DE CARREGAMENTO INICIAL -->
+    <div id="loader" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center transition-opacity duration-700">
+        <div class="text-center">
+            <div class="relative w-24 h-24 mx-auto mb-6">
+                <div class="absolute inset-0 border-4 border-red-600/20 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-red-600 rounded-full border-t-transparent animate-spin"></div>
+                <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="absolute inset-4 w-16 h-16 rounded-full opacity-50" alt="Loader">
+            </div>
+            <p class="mono text-[10px] uppercase tracking-[0.5em] text-red-600 animate-pulse">Initializing Stellar OS...</p>
         </div>
     </div>
 
-    <!-- MODAL DE LOGIN CUSTOMIZADO -->
-    <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-[#121214] border border-white/10 p-8 rounded-3xl shadow-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="loginModalContent">
-            <div class="flex justify-center mb-6">
-                <div class="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center border border-red-600/20">
-                    <i data-lucide="discord" class="w-8 h-8 text-red-500"></i>
-                </div>
+    <!-- BACKGROUND DECORATION -->
+    <div class="fixed inset-0 pointer-events-none z-[-1]">
+        <div class="grid-bg absolute inset-0 opacity-40"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-red-600/10 blur-[150px] rounded-full"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-red-600/5 blur-[120px] rounded-full"></div>
+    </div>
+
+    <!-- NOTIFICAÇÃO (TOAST SYSTEM) -->
+    <div id="toast-container" class="fixed top-24 right-6 z-[999] flex flex-col gap-3"></div>
+
+    <!-- MODAL DE LOGIN -->
+    <div id="loginModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[2000] hidden items-center justify-center p-6 transition-all duration-300 opacity-0">
+        <div class="glass max-w-md w-full p-10 rounded-[2.5rem] text-center transform scale-95 transition-all duration-300" id="loginContent">
+            <div class="w-20 h-20 bg-red-600/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-red-600/20">
+                <i data-lucide="shield-check" class="w-10 h-10 text-red-600"></i>
             </div>
-            <h3 class="text-2xl font-black text-white mb-2 text-center uppercase tracking-tighter">Conectar Conta</h3>
-            <p class="text-gray-400 text-xs mb-6 text-center">Para testar o sistema, digite seu nome de usuário do Discord abaixo.</p>
+            <h2 class="text-3xl font-black uppercase tracking-tighter mb-2">Protocolo de Acesso</h2>
+            <p class="text-gray-500 text-sm mb-8">Conecte sua identidade para interagir com o ecossistema Stellar.</p>
             
-            <input type="text" id="discordUser" placeholder="Ex: zack_dev" class="w-full p-4 rounded-xl mb-6 text-sm font-medium text-white placeholder-gray-600 focus:border-red-600 transition-colors">
-            
-            <div class="flex gap-3">
-                <button onclick="closeLoginModal()" class="flex-1 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 transition">Cancelar</button>
-                <button onclick="confirmLogin()" class="flex-1 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest text-white bg-red-600 hover:bg-red-700 btn-glow transition flex justify-center items-center gap-2">
-                    <i data-lucide="log-in" class="w-4 h-4"></i> Entrar
+            <div class="space-y-4">
+                <div class="relative">
+                    <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"></i>
+                    <input type="text" id="loginNick" placeholder="Discord Username (ex: zack_dev)" class="w-full bg-white/5 border border-white/10 p-4 pl-12 rounded-2xl text-sm focus:border-red-600 outline-none transition-all">
+                </div>
+                <button onclick="authLogin()" class="w-full bg-red-600 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-red-700 transition shadow-[0_0_20px_rgba(237,28,36,0.3)] flex justify-center items-center gap-2">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Iniciar Sessão
                 </button>
+                <button onclick="closeModal('loginModal')" class="text-xs font-bold text-gray-600 hover:text-white uppercase tracking-widest transition">Voltar para o Guest Mode</button>
             </div>
         </div>
     </div>
 
     <!-- NAVBAR PRINCIPAL -->
-    <nav class="fixed w-full z-50 glass border-b border-white/5 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-8">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="goTo('home')">
-                    <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-xl border border-red-600/30" alt="Logo">
-                    <span class="text-2xl font-black tracking-tighter uppercase">STELLAR<span class="stellar-red">.</span></span>
+    <nav class="fixed top-0 w-full z-[100] transition-all duration-500" id="mainNav">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="glass rounded-[2rem] px-8 py-4 flex items-center justify-between border-white/5">
+                <div class="flex items-center gap-10">
+                    <div class="flex items-center gap-3 group cursor-pointer" onclick="switchPage('home')">
+                        <div class="relative">
+                            <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-xl border border-red-600/30 group-hover:border-red-600 transition-colors" alt="Stellar Logo">
+                            <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-600 rounded-full border-2 border-black badge-stellar"></div>
+                        </div>
+                        <span class="text-2xl font-black tracking-tighter uppercase hidden md:block">STELLAR<span class="text-red-600">.</span></span>
+                    </div>
+
+                    <div class="hidden lg:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                        <button onclick="switchPage('home')" class="nav-link active" data-page="home">Home</button>
+                        <button onclick="switchPage('board')" class="nav-link" data-page="board">Board</button>
+                        <button onclick="switchPage('wiki')" class="nav-link" data-page="wiki">Wiki</button>
+                        <button onclick="switchPage('economy')" class="nav-link" data-page="economy">Economia</button>
+                        <button onclick="switchPage('governo')" class="nav-link" data-page="governo">Governo</button>
+                        <button onclick="switchPage('staff')" class="nav-link" data-page="staff">Staff</button>
+                    </div>
                 </div>
-                <div class="hidden lg:flex gap-6 text-xs font-bold uppercase tracking-widest text-gray-500">
-                    <button onclick="goTo('home')" class="nav-btn nav-active py-2 transition-colors hover:text-white">Home</button>
-                    <button onclick="goTo('board')" class="nav-btn py-2 transition-colors hover:text-white">Servers</button>
-                    <button onclick="goTo('commands')" class="nav-btn py-2 transition-colors hover:text-white">Comandos</button>
-                    <button onclick="goTo('add-server')" class="nav-btn py-2 transition-colors hover:text-white">Postar Server</button>
+
+                <div class="flex items-center gap-4">
+                    <div id="userProfile" class="hidden md:flex items-center gap-3 px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+                        <div class="text-right">
+                            <p id="userNameDisplay" class="text-[10px] font-black uppercase text-white leading-none mb-1">Visitante</p>
+                            <p class="text-[8px] font-bold text-red-600 uppercase tracking-widest">Nível 01</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-red-600/20 flex items-center justify-center text-red-500 font-bold">V</div>
+                    </div>
+                    <button id="authBtn" onclick="openModal('loginModal')" class="bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 transition-all has-tooltip">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                        <span class="tooltip absolute top-16 right-0 bg-zinc-900 text-[10px] p-2 rounded-lg border border-white/10 whitespace-nowrap">Portal do Usuário</span>
+                    </button>
+                    <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=8&scope=bot" target="_blank" class="hidden sm:flex bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all glow-stellar items-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Bot
+                    </a>
                 </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <button id="loginBtn" onclick="toggleLogin()" class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-2 bg-white/5 px-4 py-2.5 rounded-xl border border-white/5 hover:border-white/20">
-                    <i data-lucide="user" class="w-4 h-4"></i> Login
-                </button>
-                <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=8&scope=bot" target="_blank" class="bg-stellar-red btn-glow px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-tight transition-all flex items-center gap-2">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Add Stellar
-                </a>
             </div>
         </div>
     </nav>
 
-    <!-- PÁGINA: HOME -->
-    <main id="page-home" class="page active pt-40 pb-20 px-6">
-        <div class="max-w-5xl mx-auto text-center">
-            <div class="inline-block px-4 py-1.5 rounded-full bg-red-600/10 border border-red-600/20 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] mb-8">
-                The Ultimate Discord OS
+    <!-- MOBILE NAV -->
+    <div class="lg:hidden fixed bottom-6 left-6 right-6 z-[100]">
+        <div class="glass rounded-3xl p-4 flex justify-around items-center border-white/10 shadow-2xl">
+            <button onclick="switchPage('home')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="home"></i></button>
+            <button onclick="switchPage('board')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="layout-grid"></i></button>
+            <button onclick="switchPage('wiki')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="book-open"></i></button>
+            <button onclick="switchPage('economy')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="trending-up"></i></button>
+        </div>
+    </div>
+
+    <!-- #################### PÁGINA: HOME #################### -->
+    <main id="page-home" class="page active pt-40 pb-32 px-6">
+        <section class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/10 border border-red-600/20 text-red-500 text-[10px] font-black uppercase tracking-[0.3em] mb-8">
+                        <span class="w-2 h-2 bg-red-600 rounded-full animate-ping"></span>
+                        Status: v2.5 Online & Stable
+                    </div>
+                    <h1 class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tighter leading-[0.85] uppercase">
+                        Controle sua <br><span class="text-white/20">Economia.</span><br>Governe sua <br><span class="text-red-600">Nação.</span>
+                    </h1>
+                    <p class="text-gray-400 text-lg md:text-xl max-w-xl mb-12 leading-relaxed">
+                        O Stellar não é apenas um bot, é o núcleo de processamento social do seu Discord. Simule governos, indústrias e um mercado financeiro dinâmico onde suas decisões importam.
+                    </p>
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-4">
+                        <button onclick="switchPage('board')" class="bg-red-600 hover:bg-red-700 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest glow-stellar-strong transition-all flex items-center gap-3">
+                            <i data-lucide="rocket" class="w-5 h-5"></i> Começar Jornada
+                        </button>
+                        <button onclick="switchPage('wiki')" class="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/10 transition-all flex items-center gap-3">
+                            <i data-lucide="terminal" class="w-5 h-5"></i> Ver Documentação
+                        </button>
+                    </div>
+
+                    <div class="mt-16 flex items-center gap-6 justify-center lg:justify-start">
+                        <div class="flex -space-x-3">
+                            <img src="https://i.pravatar.cc/100?u=1" class="w-10 h-10 rounded-full border-2 border-black" alt="u1">
+                            <img src="https://i.pravatar.cc/100?u=2" class="w-10 h-10 rounded-full border-2 border-black" alt="u2">
+                            <img src="https://i.pravatar.cc/100?u=3" class="w-10 h-10 rounded-full border-2 border-black" alt="u3">
+                            <div class="w-10 h-10 rounded-full border-2 border-black bg-zinc-800 flex items-center justify-center text-[10px] font-bold">+120k</div>
+                        </div>
+                        <p class="text-[10px] uppercase font-bold text-gray-500 tracking-widest">Utilizado por grandes <br>comunidades e impérios.</p>
+                    </div>
+                </div>
+
+                <div class="relative hidden lg:block">
+                    <!-- Dashboard Preview -->
+                    <div class="glass p-8 rounded-[3rem] border-white/10 rotate-2 hover:rotate-0 transition-all duration-700 shadow-2xl overflow-hidden group">
+                        <div class="flex justify-between items-center mb-8">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 bg-red-600 rounded-full"></div>
+                                <div class="w-3 h-3 bg-zinc-700 rounded-full"></div>
+                                <div class="w-3 h-3 bg-zinc-700 rounded-full"></div>
+                            </div>
+                            <div class="mono text-[10px] text-zinc-600">STELLAR_OS_CORE_V2.5</div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-black/40 p-6 rounded-2xl border border-white/5">
+                                <div class="flex justify-between items-end mb-4">
+                                    <h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-500">PIB Nacional</h4>
+                                    <span class="text-green-500 mono text-xs">+12.4% ↑</span>
+                                </div>
+                                <div class="text-3xl font-black mono text-white">S$ 1,452,000,000.00</div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-black/40 p-6 rounded-2xl border border-white/5">
+                                    <h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">Inflação</h4>
+                                    <div class="text-xl font-black mono text-red-500">0.05%</div>
+                                </div>
+                                <div class="bg-black/40 p-6 rounded-2xl border border-white/5">
+                                    <h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">População</h4>
+                                    <div class="text-xl font-black mono text-white">42,891</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-red-600/5 border border-red-600/10 p-6 rounded-2xl">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <i data-lucide="landmark" class="w-4 h-4 text-red-600"></i>
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-red-500">Lei em Votação</span>
+                                </div>
+                                <p class="text-sm font-bold text-zinc-300">Subsídio Industrial: +15% de produção em mineração.</p>
+                                <div class="mt-4 flex gap-2">
+                                    <div class="h-2 flex-1 bg-red-600 rounded-full"></div>
+                                    <div class="h-2 w-1/4 bg-zinc-800 rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Glow Effect -->
+                        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-red-600/20 blur-[60px] rounded-full group-hover:bg-red-600/40 transition-all"></div>
+                    </div>
+
+                    <!-- Floating Elements -->
+                    <div class="absolute -top-10 -left-10 glass-bright p-6 rounded-2xl animate-bounce duration-[3s]">
+                        <i data-lucide="trending-up" class="w-8 h-8 text-green-500"></i>
+                    </div>
+                    <div class="absolute -bottom-6 -left-20 glass-bright p-5 rounded-2xl animate-pulse">
+                        <i data-lucide="shield" class="w-6 h-6 text-red-600"></i>
+                    </div>
+                </div>
             </div>
-            <h1 class="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-[0.9]">
-                Domine sua <br><span class="text-white/20">Comunidade.</span>
-            </h1>
-            <p class="text-gray-400 text-xl max-w-2xl mx-auto mb-12">
-                O Stellar transforma seu Discord em um sistema vivo de economia, governo e segurança total.
-            </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="goTo('board')" class="bg-stellar-red btn-glow px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3">
-                    <i data-lucide="layout-grid"></i> Explorar Board
-                </button>
-                <button onclick="goTo('commands')" class="bg-white/5 border border-white/10 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/10 transition flex items-center gap-3">
-                    <i data-lucide="terminal"></i> Ver Comandos
-                </button>
+        </section>
+
+        <!-- CARDS DE FEATURES -->
+        <section class="max-w-7xl mx-auto mt-40">
+            <div class="text-center mb-20">
+                <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-red-600 mb-4">Processamento de Dados</h2>
+                <h3 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">O que torna o Stellar Elite?</h3>
             </div>
 
-            <!-- STATS -->
-            <div class="mt-32 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="glass p-8 rounded-3xl text-center">
-                    <div class="text-4xl font-black mb-1" id="stat-servers">0</div>
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Servidores</div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass p-10 rounded-[3rem] hover-card">
+                    <div class="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center mb-8 border border-red-600/20">
+                        <i data-lucide="globe" class="w-8 h-8 text-red-600"></i>
+                    </div>
+                    <h4 class="text-xl font-black uppercase tracking-tighter mb-4">Simulador de Vida</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Crie sua própria história. Trabalhe, compre imóveis, case, crie empresas e conquiste seu lugar no topo da pirâmide social do seu servidor.
+                    </p>
                 </div>
-                <div class="glass p-8 rounded-3xl text-center">
-                    <div class="text-4xl font-black mb-1">+120k</div>
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Usuários</div>
+
+                <div class="glass p-10 rounded-[3rem] hover-card">
+                    <div class="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center mb-8 border border-red-600/20">
+                        <i data-lucide="factory" class="w-8 h-8 text-red-600"></i>
+                    </div>
+                    <h4 class="text-xl font-black uppercase tracking-tighter mb-4">Poder Industrial</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Um sistema de mineração e manufatura complexo. Extraia minérios, refine materiais e produza itens de alto valor para o mercado global.
+                    </p>
                 </div>
-                <div class="glass p-8 rounded-3xl text-center">
-                    <div class="text-4xl font-black mb-1">99%</div>
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Uptime</div>
-                </div>
-                <div class="glass p-8 rounded-3xl text-center">
-                    <div class="text-4xl font-black mb-1">v2.5</div>
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Versão</div>
+
+                <div class="glass p-10 rounded-[3rem] hover-card border-stellar glow-stellar">
+                    <div class="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center mb-8 border border-red-600/20">
+                        <i data-lucide="gavel" class="w-8 h-8 text-red-600"></i>
+                    </div>
+                    <h4 class="text-xl font-black uppercase tracking-tighter mb-4">Governança Real</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Sistema de leis, taxas e votações. O governo pode mudar o rumo da economia, cobrando impostos para financiar projetos públicos ou eventos.
+                    </p>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 
-    <!-- PÁGINA: STELLAR BOARD -->
-    <main id="page-board" class="page pt-40 pb-20 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
+    <!-- #################### PÁGINA: BOARD #################### -->
+    <main id="page-board" class="page pt-40 pb-32 px-6">
+        <section class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-10 mb-20">
                 <div>
-                    <h2 class="text-4xl font-black tracking-tighter uppercase mb-2">Stellar Board</h2>
-                    <p class="text-gray-500 font-medium">Os servidores que mais utilizam e evoluem com o Stellar.</p>
+                    <h2 class="text-5xl font-black tracking-tighter uppercase mb-4">Stellar Board</h2>
+                    <p class="text-gray-500 font-medium">Os servidores de elite que movimentam o ecossistema global.</p>
                 </div>
-                <div class="flex gap-3 w-full md:w-auto">
+                <div class="flex gap-4 w-full md:w-auto">
                     <div class="relative flex-1 md:w-80">
-                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"></i>
-                        <input type="text" id="boardSearch" oninput="renderBoard()" placeholder="Pesquisar servidor..." class="w-full py-3.5 pl-12 pr-4 rounded-xl text-sm transition focus:shadow-[0_0_15px_rgba(237,28,36,0.2)]">
+                        <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"></i>
+                        <input type="text" id="boardSearch" oninput="renderBoard()" placeholder="Buscar império..." class="w-full bg-white/5 border border-white/10 py-4 pl-14 pr-6 rounded-2xl text-sm focus:border-red-600 outline-none transition-all">
+                    </div>
+                    <button onclick="openModal('addServerModal')" class="bg-red-600 hover:bg-red-700 p-4 rounded-2xl transition shadow-lg">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- GRID DE SERVIDORES -->
+            <div id="serversGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Servidores inseridos dinamicamente -->
+            </div>
+        </section>
+    </main>
+
+    <!-- #################### PÁGINA: WIKI #################### -->
+    <main id="page-wiki" class="page pt-40 pb-32 px-6">
+        <section class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-black tracking-tighter uppercase mb-4 text-white">Centro de Comando</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto font-medium">Documentação completa de todos os protocolos disponíveis no Stellar OS.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-12">
+                <!-- Sidebar Categorias -->
+                <aside class="lg:w-1/4">
+                    <div class="sticky top-32 space-y-2" id="wikiNav">
+                        <!-- Categorias via JS -->
+                    </div>
+                </aside>
+
+                <!-- Área de Comandos -->
+                <div class="flex-1">
+                    <div class="relative mb-12">
+                        <i data-lucide="terminal" class="absolute left-6 top-1/2 -translate-y-1/2 text-red-600"></i>
+                        <input type="text" id="wikiSearch" oninput="filterWiki()" placeholder="Procurar protocolo (ex: !work, !investir)..." class="w-full bg-white/5 border border-white/10 py-6 pl-16 pr-6 rounded-[2rem] text-lg font-bold focus:border-red-600 outline-none transition-all">
+                    </div>
+
+                    <div id="wikiContent" class="space-y-6">
+                        <!-- Injetado via JS -->
                     </div>
                 </div>
             </div>
-
-            <div id="serversGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Servers injetados via JS -->
-            </div>
-        </div>
+        </section>
     </main>
 
-    <!-- PÁGINA: DETALHES DO SERVIDOR -->
-    <main id="page-server-detail" class="page pt-40 pb-20 px-6">
-        <div id="detailContainer" class="max-w-4xl mx-auto">
-            <!-- Conteúdo dinâmico -->
-        </div>
-    </main>
-
-    <!-- PÁGINA: COMANDOS -->
-    <main id="page-commands" class="page pt-40 pb-20 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-16">
-                <h2 class="text-4xl font-black tracking-tighter uppercase mb-4 text-center">Documentação Técnica</h2>
-                <div class="max-w-2xl mx-auto relative">
-                    <i data-lucide="terminal" class="absolute left-5 top-1/2 -translate-y-1/2 text-red-600"></i>
-                    <input type="text" id="cmdSearch" oninput="searchCommands(event)" placeholder="Busque um comando (ex: !work, !ban)..." class="w-full py-5 pl-14 pr-6 rounded-2xl text-lg font-medium shadow-2xl focus:shadow-[0_0_20px_rgba(237,28,36,0.15)]">
-                </div>
-            </div>
-
-            <div id="commandsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Injetado via JS -->
-            </div>
-        </div>
-    </main>
-
-    <!-- PÁGINA: ADD SERVER -->
-    <main id="page-add-server" class="page pt-40 pb-20 px-6">
-        <div class="max-w-2xl mx-auto glass p-10 md:p-16 rounded-[3rem]">
-            <h2 class="text-3xl font-black mb-2 uppercase tracking-tighter">Postar seu Servidor</h2>
-            <p class="text-gray-500 mb-10 font-medium text-sm">Sem servidores fakes. Adicione a sua comunidade real no board global para ganhar membros e engajamento.</p>
+    <!-- #################### PÁGINA: STAFF #################### -->
+    <main id="page-staff" class="page pt-40 pb-32 px-6">
+        <section class="max-w-7xl mx-auto text-center">
+            <h2 class="text-5xl font-black tracking-tighter uppercase mb-20 text-white">⁝ Gestão Interna ‧₊</h2>
             
-            <form id="addServerForm" onsubmit="addServer(event)" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Direção -->
+                <div class="glass p-10 rounded-[3rem] border-red-600/30 glow-stellar">
+                    <div class="w-16 h-16 bg-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-red-600/20">
+                        <i data-lucide="crown" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Diretoria Executiva</h4>
+                    <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Poder Central</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-4 bg-black/30 rounded-2xl border border-white/5">
+                            <img src="https://i.pravatar.cc/100?u=zack" class="w-8 h-8 rounded-lg" alt="z">
+                            <span class="font-bold text-sm">Zack Dev ‧₊</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Administração -->
+                <div class="glass p-10 rounded-[3rem]">
+                    <div class="w-16 h-16 bg-zinc-800 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
+                        <i data-lucide="shield-check" class="w-8 h-8 text-red-600"></i>
+                    </div>
+                    <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Administração</h4>
+                    <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Gestão de Operações</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-center gap-2 text-gray-400 text-sm py-4 italic">
+                            Aguardando nomeações...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suporte -->
+                <div class="glass p-10 rounded-[3rem]">
+                    <div class="w-16 h-16 bg-zinc-800 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
+                        <i data-lucide="message-square" class="w-8 h-8 text-red-600"></i>
+                    </div>
+                    <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Ajudantes Elite</h4>
+                    <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Suporte ao Usuário</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-center gap-2 text-gray-400 text-sm py-4 italic">
+                            Processo seletivo aberto.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- #################### MODAL: ADD SERVER #################### -->
+    <div id="addServerModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[2000] hidden items-center justify-center p-6 transition-all duration-300 opacity-0">
+        <div class="glass max-w-2xl w-full p-10 rounded-[3rem] transform scale-95 transition-all duration-300" id="addServerContent">
+            <div class="flex justify-between items-start mb-10">
+                <div>
+                    <h2 class="text-3xl font-black uppercase tracking-tighter mb-1">Publicar Império</h2>
+                    <p class="text-gray-500 text-xs font-bold uppercase tracking-widest">Board Global Stellar</p>
+                </div>
+                <button onclick="closeModal('addServerModal')" class="p-3 bg-white/5 rounded-xl hover:text-red-500 transition"><i data-lucide="x"></i></button>
+            </div>
+            
+            <form id="serverForm" onsubmit="handleServerSubmit(event)" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Nome do Servidor</label>
-                        <input type="text" name="name" required class="w-full p-4 rounded-xl text-sm" placeholder="Ex: Stellar Support">
+                        <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Nome da Comunidade</label>
+                        <input type="text" required name="name" placeholder="Ex: Stellar Support" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm focus:border-red-600 outline-none">
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Link de Convite</label>
-                        <input type="url" name="invite" required class="w-full p-4 rounded-xl text-sm" placeholder="https://discord.gg/...">
+                        <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Link do Convite</label>
+                        <input type="url" required name="invite" placeholder="discord.gg/convite" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm focus:border-red-600 outline-none">
                     </div>
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Tags (Separadas por vírgula)</label>
-                    <input type="text" name="tags" required class="w-full p-4 rounded-xl text-sm" placeholder="RPG, Economia, Social">
+                    <input type="text" required name="tags" placeholder="Social, Economia, RPG" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm focus:border-red-600 outline-none">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Resumo Curto (Para o Card)</label>
-                    <input type="text" name="shortDesc" required maxlength="120" class="w-full p-4 rounded-xl text-sm" placeholder="Uma frase rápida sobre o servidor...">
+                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Descrição Oficial do Setor</label>
+                    <textarea required name="desc" rows="4" placeholder="Descreva os diferenciais e a proposta da sua sociedade..." class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm focus:border-red-600 outline-none"></textarea>
                 </div>
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Descrição Completa</label>
-                    <textarea name="desc" required rows="4" class="w-full p-4 rounded-xl text-sm" placeholder="Descreva sua comunidade detalhadamente..."></textarea>
-                </div>
-                <button type="submit" class="w-full bg-stellar-red py-5 rounded-2xl font-black uppercase tracking-widest btn-glow transition-all flex justify-center items-center gap-2">
-                    <i data-lucide="send" class="w-5 h-5"></i> Publicar Servidor
+                <button type="submit" class="w-full bg-red-600 py-5 rounded-[1.5rem] font-black uppercase tracking-widest hover:bg-red-700 shadow-xl transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="w-5 h-5"></i> Registrar no Sistema
                 </button>
             </form>
         </div>
-    </main>
+    </div>
 
     <!-- FOOTER -->
-    <footer class="py-20 border-t border-white/5 mt-20">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
-            <div class="text-center md:text-left">
-                <div class="text-2xl font-black uppercase mb-4">STELLAR<span class="stellar-red">.</span></div>
-                <p class="text-gray-500 text-sm max-w-xs">A plataforma definitiva para quem leva o Discord a sério.</p>
+    <footer class="py-20 border-t border-white/5 mt-20 px-6">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+            <div class="col-span-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-xl" alt="Logo">
+                    <span class="text-2xl font-black tracking-tighter uppercase">STELLAR<span class="text-red-600">.</span></span>
+                </div>
+                <p class="text-gray-500 max-w-sm mb-8">
+                    Elevando o padrão de simulação social no Discord. Siga o desenvolvimento e construa sua própria história conosco.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="p-3 bg-white/5 rounded-xl hover:text-red-500 transition"><i data-lucide="twitter"></i></a>
+                    <a href="#" class="p-3 bg-white/5 rounded-xl hover:text-red-500 transition"><i data-lucide="github"></i></a>
+                    <a href="#" class="p-3 bg-white/5 rounded-xl hover:text-red-500 transition"><i data-lucide="youtube"></i></a>
+                </div>
             </div>
-            <div class="flex gap-10 text-xs font-bold uppercase tracking-widest text-gray-500">
-                <a href="#" class="hover:text-red-500 transition">Termos</a>
-                <a href="#" class="hover:text-red-500 transition">Privacidade</a>
-                <a href="#" class="hover:text-red-500 transition">Suporte</a>
+            <div>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">Navegação</h4>
+                <ul class="space-y-4 text-sm font-bold text-gray-500">
+                    <li><button onclick="switchPage('home')" class="hover:text-red-500 transition">Dashboard Home</button></li>
+                    <li><button onclick="switchPage('board')" class="hover:text-red-500 transition">Board de Impérios</button></li>
+                    <li><button onclick="switchPage('wiki')" class="hover:text-red-500 transition">Wiki de Comandos</button></li>
+                    <li><button onclick="switchPage('staff')" class="hover:text-red-500 transition">Gestão Interna</button></li>
+                </ul>
             </div>
+            <div>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-white mb-8">Jurídico</h4>
+                <ul class="space-y-4 text-sm font-bold text-gray-500">
+                    <li><a href="#" class="hover:text-red-500 transition">Termos de Uso</a></li>
+                    <li><a href="#" class="hover:text-red-500 transition">Privacidade</a></li>
+                    <li><a href="#" class="hover:text-red-500 transition">Políticas de Venda</a></li>
+                    <li><a href="#" class="hover:text-red-500 transition">Diretrizes</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-12 mt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">© 2024 Stellar Dev Team. Todos os direitos reservados.</p>
+            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Feito com ❤️ por quem ama simulação.</p>
         </div>
     </footer>
 
-    <!-- LÓGICA CORE (ESTADO EM MEMÓRIA - 100% FUNCIONAL) -->
+    <!-- LÓGICA CORE -->
     <script>
-        // --- BANCO DE DADOS LOCAL ---
-        let SERVERS = [];
-        let currentUser = null;
+        // --- ESTADO GLOBAL ---
+        let state = {
+            user: null,
+            servers: [
+                { id: '1', name: 'Stellar Society', owner: 'Zack Dev', votes: 1452, bump: Date.now() - 3600000, tags: ['Oficial', 'Social', 'Economia'], desc: 'O centro oficial de diversão do bot Stellar. Notícias sobre o bot, suporte especializado, competição econômica entre servidores e membros.', invite: 'https://discord.gg/stellarsociety' },
+                { id: '2', name: 'Império do Sol', owner: 'Arthur', votes: 890, bump: Date.now() - 7200000, tags: ['RPG', 'Monarquia', 'Guerra'], desc: 'Uma sociedade focada em expansão territorial e domínio industrial através da mineração pesada.', invite: '#' }
+            ],
+            wiki: [
+                { cat: 'Simulação de Vida', icon: 'user', items: [
+                    { cmd: '!work', desc: 'Realiza uma jornada de trabalho padrão.', uso: '!work', perm: 'Livre' },
+                    { cmd: '!daily', desc: 'Resgata sua recompensa diária em capital.', uso: '!daily', perm: 'Livre' },
+                    { cmd: '!perfil', desc: 'Exibe seu RG e status social completo.', uso: '!perfil [@alguém]', perm: 'Livre' },
+                    { cmd: '!casar', desc: 'Envia um pedido de casamento formal.', uso: '!casar @alguém', perm: 'Livre' },
+                    { cmd: '!imoveis', desc: 'Acessa o mercado imobiliário para compra de casas.', uso: '!imoveis', perm: 'Livre' }
+                ]},
+                { cat: 'Indústria & Mineração', icon: 'pickaxe', items: [
+                    { cmd: '!minerar', desc: 'Extrai minérios brutos do solo.', uso: '!minerar', perm: 'Livre' },
+                    { cmd: '!refinar', desc: 'Transforma minério bruto em materiais industriais.', uso: '!refinar [material]', perm: 'Nível 5' },
+                    { cmd: '!fabricas', desc: 'Gerencia suas unidades de produção industrial.', uso: '!fabricas', perm: 'Empresário' },
+                    { cmd: '!estoque', desc: 'Exibe os materiais armazenados no seu depósito.', uso: '!estoque', perm: 'Livre' }
+                ]},
+                { cat: 'Economia & Mercado', icon: 'trending-up', items: [
+                    { cmd: '!investir', desc: 'Aplica seu capital em ações da Bolsa Stellar.', uso: '!investir [valor] [sigla]', perm: 'Nível 10' },
+                    { cmd: '!bolsa', desc: 'Exibe as cotações em tempo real do mercado.', uso: '!bolsa', perm: 'Livre' },
+                    { cmd: '!top', desc: 'Exibe o ranking dos maiores bilionários.', uso: '!top', perm: 'Livre' },
+                    { cmd: '!pay', desc: 'Transfere capital para outro usuário.', uso: '!pay @usuário [valor]', perm: 'Livre' }
+                ]},
+                { cat: 'Governo & Política', icon: 'gavel', items: [
+                    { cmd: '!votar', desc: 'Participa de uma eleição ou plebiscito ativo.', uso: '!votar [opção]', perm: 'Cidadão' },
+                    { cmd: '!leis', desc: 'Lista as leis e taxas vigentes no governo atual.', uso: '!leis', perm: 'Livre' },
+                    { cmd: '!taxas', desc: 'Exibe o histórico de cobrança tributária.', uso: '!taxas', perm: 'Livre' },
+                    { cmd: '!partido', desc: 'Cria ou gerencia seu partido político.', uso: '!partido [nome]', perm: 'Nível 20' }
+                ]},
+                { cat: 'Administração', icon: 'shield', items: [
+                    { cmd: '!set-prefix', desc: 'Altera o prefixo operacional do bot.', uso: '!set-prefix [novo]', perm: 'Admin' },
+                    { cmd: '!clear', desc: 'Limpa o histórico de logs do terminal de texto.', uso: '!clear [qnt]', perm: 'Mod' },
+                    { cmd: '!ban', desc: 'Exila um usuário do império permanentemente.', uso: '!ban @user [motivo]', perm: 'Mod' }
+                ]}
+            ]
+        };
 
-        const COMMANDS = [
-            { cat: "Comércio & Patrimônio", icon: "shopping-cart", cmds: "!imoveis, !casa, !bau, !negócios, !concessionaria, !garagem, !abastecer, !tuning, !racha, !loja, !mercado, !inventário, !petshop, !pet" },
-            { cat: "Carreiras & Trabalho", icon: "pickaxe", cmds: "!work, !daily, !vote, !uber, !entregar, !minerar, !pescar, !caçar, !explorar, !youtube, !postar, !canal, !estudar" },
-            { cat: "Bancos & Finanças", icon: "landmark", cmds: "!atm, !depositar, !sacar, !status, !pay, !investir, !top, !roubar, !assaltar, !invadir" },
-            { cat: "Governo & Indústria", icon: "building-2", cmds: "!governo, !economia, !topgovernos, !indústria" },
-            { cat: "Segurança & Admin", icon: "shield-check", cmds: "!segurança, !set-ticket, !set-welcome, !prefixo, !ban, !unban, !mute, !kick, !warn, !clear" },
-            { cat: "Social & Útil", icon: "smile", cmds: "!botinfo, !serverinfo, !perfil, !ajuda, !ship, !kiss, !hug, !slap, !avatar" }
-        ];
+        // --- CORE FUNCTIONS ---
 
-        // --- NAVEGAÇÃO & TOASTS ---
-        function goTo(pageId) {
+        function switchPage(pageId) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('nav-active');
-                if(b.innerText.toLowerCase().includes(pageId === 'board' ? 'servers' : pageId)) b.classList.add('nav-active');
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('active');
+                if(l.dataset.page === pageId) l.classList.add('active');
             });
+            
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if(targetPage) {
+                targetPage.classList.add('active');
+            }
 
             if(pageId === 'board') renderBoard();
+            if(pageId === 'wiki') renderWiki();
         }
 
-        let toastTimeout;
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            document.getElementById('toast-msg').innerText = msg;
-            t.classList.remove('hidden');
-            
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => t.classList.add('hidden'), 3500);
-        }
-
-        // --- SISTEMA DE LOGIN (MODAL UI) ---
-        function toggleLogin() {
-            if (currentUser) {
-                // Logout
-                currentUser = null;
-                showToast("Você saiu da conta.");
-                updateLoginUI();
-            } else {
-                // Abre o Modal
-                const modal = document.getElementById('loginModal');
-                const content = document.getElementById('loginModalContent');
-                
-                modal.classList.remove('hidden');
-                // Força o reflow para a transição funcionar
-                void modal.offsetWidth;
-                
-                modal.classList.remove('opacity-0');
-                content.classList.remove('scale-95');
-                
-                document.getElementById('discordUser').focus();
-            }
-        }
-
-        function closeLoginModal() {
-            const modal = document.getElementById('loginModal');
-            const content = document.getElementById('loginModalContent');
-            
-            modal.classList.add('opacity-0');
-            content.classList.add('scale-95');
-            
+        function openModal(id) {
+            const m = document.getElementById(id);
+            const c = m.querySelector('div');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
             setTimeout(() => {
-                modal.classList.add('hidden');
+                m.classList.add('opacity-100');
+                c.classList.remove('scale-95');
+                c.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            const c = m.querySelector('div');
+            m.classList.remove('opacity-100');
+            c.classList.add('scale-95');
+            setTimeout(() => {
+                m.classList.add('hidden');
+                m.classList.remove('flex');
             }, 300);
         }
 
-        function confirmLogin() {
-            const input = document.getElementById('discordUser');
-            const nick = input.value.trim();
-            
-            if (nick) {
-                currentUser = { username: nick };
-                showToast(`Logado com sucesso como ${currentUser.username}!`);
-                updateLoginUI();
-                closeLoginModal();
-                input.value = ''; // Limpa o input
-            } else {
-                showToast("⚠️ Por favor, digite um nome de usuário.");
-                input.focus();
-            }
+        function spawnToast(msg) {
+            const id = Date.now();
+            const toast = document.createElement('div');
+            toast.className = 'glass-bright p-4 pr-10 rounded-2xl border-l-4 border-red-600 flex items-center gap-3 animate-slide-in relative';
+            toast.id = `toast-${id}`;
+            toast.innerHTML = `
+                <i data-lucide="info" class="w-4 h-4 text-red-600"></i>
+                <p class="text-xs font-bold text-white uppercase tracking-widest">${msg}</p>
+                <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-zinc-600 hover:text-white"><i data-lucide="x" class="w-3 h-3"></i></button>
+            `;
+            document.getElementById('toast-container').appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-full');
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
         }
 
-        // Permite logar apertando Enter no modal
-        document.getElementById('discordUser').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') confirmLogin();
-        });
+        // --- AUTH ---
 
-        function updateLoginUI() {
-            const btn = document.getElementById('loginBtn');
-            if (currentUser) {
-                btn.innerHTML = `<i data-lucide="user-check" class="w-4 h-4 text-green-500"></i> ${currentUser.username}`;
-                btn.classList.add('text-white', 'border-green-500/30', 'bg-green-500/10');
-                btn.classList.remove('border-white/5', 'bg-white/5');
-            } else {
-                btn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> Login`;
-                btn.classList.remove('text-white', 'border-green-500/30', 'bg-green-500/10');
-                btn.classList.add('border-white/5', 'bg-white/5');
-            }
+        function authLogin() {
+            const nick = document.getElementById('loginNick').value;
+            if(!nick) return spawnToast("Protocolo inválido. Digite um Nick.");
+            
+            state.user = { nick: nick };
+            document.getElementById('userNameDisplay').innerText = nick;
+            document.getElementById('userProfile').classList.remove('hidden');
+            document.getElementById('authBtn').innerHTML = `<i data-lucide="log-out" class="w-5 h-5"></i>`;
+            
+            spawnToast(`Identidade confirmada: ${nick}`);
+            closeModal('loginModal');
             lucide.createIcons();
         }
 
-        // --- SISTEMA DE SERVIDORES ---
-        function addServer(e) {
-            e.preventDefault();
-            if (!currentUser) {
-                showToast("⚠️ Você precisa fazer Login para publicar!");
-                toggleLogin();
-                return;
-            }
+        // --- BOARD LOGIC ---
 
-            const fd = new FormData(e.target);
-            
-            const newServer = {
-                id: Date.now().toString(),
-                name: fd.get('name'),
-                invite: fd.get('invite'),
-                tags: fd.get('tags').split(',').map(t => t.trim()).filter(t => t),
-                shortDesc: fd.get('shortDesc'),
-                desc: fd.get('desc'),
-                ownerName: currentUser.username,
-                votes: 0,
-                bump: Date.now(),
-                votedBy: []
-            };
-
-            SERVERS.push(newServer);
-            document.getElementById('stat-servers').innerText = SERVERS.length;
-            
-            showToast("✅ Seu servidor foi publicado no Board!");
-            e.target.reset();
-            goTo('board');
-        }
-
-        function formatTimeAgo(timestamp) {
-            const diffMin = Math.floor((Date.now() - timestamp) / 60000);
-            if (diffMin < 60) return diffMin === 0 ? 'Agora mesmo' : `há ${diffMin}m`;
-            const diffHours = Math.floor(diffMin / 60);
-            if (diffHours < 24) return `há ${diffHours}h`;
-            return `há ${Math.floor(diffHours / 24)}d`;
-        }
-
-        function doBump(id) {
-            if (!currentUser) return toggleLogin();
-            
-            const s = SERVERS.find(x => x.id === id);
-            const now = Date.now();
-            const diffHours = (now - s.bump) / 3600000;
-            
-            if (diffHours < 2) {
-                return showToast(`⏳ Cooldown! Aguarde ${Math.ceil(2 - diffHours)}h para novo bump.`);
-            }
-
-            s.bump = now;
-            showToast("🚀 BUMP! O servidor subiu para o topo do ranking.");
-            renderBoard();
-            showDetail(id);
-        }
-
-        function castVote(id) {
-            if (!currentUser) return toggleLogin();
-            
-            const s = SERVERS.find(x => x.id === id);
-            const userVote = s.votedBy.find(v => v.user === currentUser.username);
-            const now = Date.now();
-
-            if (userVote) {
-                const diffHours = (now - userVote.time) / 3600000;
-                if (diffHours < 12) {
-                    return showToast(`⏳ Você já votou! Aguarde ${Math.ceil(12 - diffHours)}h.`);
-                }
-                userVote.time = now;
-            } else {
-                s.votedBy.push({ user: currentUser.username, time: now });
-            }
-
-            s.votes += 1;
-            showToast("❤️ Voto registrado! Obrigado por apoiar.");
-            renderBoard();
-            showDetail(id);
-        }
-
-        // --- RENDERIZADORES ---
         function renderBoard() {
             const grid = document.getElementById('serversGrid');
             const q = document.getElementById('boardSearch').value.toLowerCase();
             
-            let sortedServers = [...SERVERS].sort((a, b) => b.bump - a.bump);
-
-            let filtered = sortedServers;
-            if (q) {
-                filtered = sortedServers.filter(s => 
-                    s.name.toLowerCase().includes(q) || 
-                    s.tags.some(t => t.toLowerCase().includes(q))
-                );
-            }
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-20 text-center">
-                        <i data-lucide="server-off" class="w-12 h-12 text-gray-700 mx-auto mb-4"></i>
-                        <p class="text-gray-500 font-bold uppercase tracking-widest text-xs">Nenhum servidor encontrado.</p>
-                        ${SERVERS.length === 0 ? `<button onclick="goTo('add-server')" class="mt-6 bg-white/5 hover:bg-white/10 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Seja o Primeiro a Postar</button>` : ''}
-                    </div>`;
-                lucide.createIcons();
-                return;
-            }
+            let filtered = state.servers.filter(s => 
+                s.name.toLowerCase().includes(q) || 
+                s.tags.some(t => t.toLowerCase().includes(q))
+            ).sort((a,b) => b.votes - a.votes);
 
             grid.innerHTML = filtered.map(s => `
-                <div onclick="showDetail('${s.id}')" class="server-card glass rounded-[2.5rem] p-6 flex flex-col h-full cursor-pointer transition-all duration-300">
+                <div class="glass p-8 rounded-[2.5rem] hover-card group relative overflow-hidden">
                     <div class="flex justify-between items-start mb-6">
-                        <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg">${s.name[0].toUpperCase()}</div>
+                        <div class="w-14 h-14 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl flex items-center justify-center text-xl font-black shadow-lg">
+                            ${s.name[0]}
+                        </div>
                         <div class="flex flex-col items-end gap-2">
-                            <div class="bg-black/50 px-3 py-1.5 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1.5 uppercase tracking-widest text-red-500">
-                                <i data-lucide="zap" class="w-3 h-3"></i> ${formatTimeAgo(s.bump)}
+                             <div class="bg-black/50 px-3 py-1.5 rounded-full text-[9px] font-black border border-white/5 flex items-center gap-1.5 uppercase tracking-widest text-red-500">
+                                <i data-lucide="zap" class="w-3 h-3"></i> BUMPADO
                             </div>
-                            <div class="bg-black/50 px-3 py-1.5 rounded-full text-[10px] font-black border border-white/5 flex items-center gap-1.5 uppercase tracking-widest text-gray-400">
-                                <i data-lucide="chevron-up" class="w-3 h-3 text-red-500"></i> ${s.votes} Votos
+                            <div class="bg-black/50 px-3 py-1.5 rounded-full text-[9px] font-black border border-white/5 flex items-center gap-1.5 uppercase tracking-widest text-gray-400">
+                                <i data-lucide="trending-up" class="w-3 h-3 text-red-600"></i> ${s.votes} VOTOS
                             </div>
                         </div>
                     </div>
-                    <h4 class="text-xl font-extrabold mb-2 tracking-tight">${s.name}</h4>
-                    <p class="text-gray-500 text-xs mb-6 flex-1 line-clamp-3 leading-relaxed">${s.shortDesc}</p>
+                    <h4 class="text-xl font-black uppercase tracking-tighter mb-2">${s.name}</h4>
+                    <p class="text-gray-500 text-xs mb-6 line-clamp-3 leading-relaxed font-medium">
+                        ${s.desc}
+                    </p>
                     <div class="flex flex-wrap gap-2 mb-6">
-                        ${s.tags.slice(0, 3).map(t => `<span class="px-3 py-1 bg-white/5 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 border border-white/5">${t}</span>`).join('')}
+                        ${s.tags.slice(0, 3).map(t => `<span class="px-2 py-1 bg-white/5 rounded-lg text-[8px] font-black uppercase tracking-[0.2em] text-gray-500 border border-white/5">${t}</span>`).join('')}
                     </div>
                     <div class="flex items-center justify-between pt-6 border-t border-white/5">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></span>
-                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest truncate max-w-[120px]">Por ${s.ownerName}</span>
-                        </div>
-                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
-                        </div>
+                        <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">Por ${s.owner}</span>
+                        <a href="${s.invite}" target="_blank" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-red-600 transition-colors">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function handleServerSubmit(e) {
+            e.preventDefault();
+            if(!state.user) return openModal('loginModal');
+            
+            const fd = new FormData(e.target);
+            const newS = {
+                id: Date.now().toString(),
+                name: fd.get('name'),
+                invite: fd.get('invite'),
+                tags: fd.get('tags').split(',').map(t => t.trim()),
+                desc: fd.get('desc'),
+                owner: state.user.nick,
+                votes: 0,
+                bump: Date.now()
+            };
+
+            state.servers.push(newS);
+            spawnToast("Império registrado com sucesso!");
+            e.target.reset();
+            closeModal('addServerModal');
+            renderBoard();
+        }
+
+        // --- WIKI LOGIC ---
+
+        function renderWiki() {
+            const nav = document.getElementById('wikiNav');
+            const content = document.getElementById('wikiContent');
+            
+            nav.innerHTML = state.wiki.map(cat => `
+                <button onclick="scrollToWiki('${cat.cat}')" class="w-full text-left p-4 rounded-2xl hover:bg-white/5 text-gray-500 hover:text-white transition flex items-center gap-3 group">
+                    <i data-lucide="${cat.icon}" class="w-4 h-4 group-hover:text-red-600"></i>
+                    <span class="text-[10px] font-black uppercase tracking-widest">${cat.cat}</span>
+                </button>
+            `).join('');
+
+            content.innerHTML = state.wiki.map(cat => `
+                <div id="cat-${cat.cat.replace(/\s/g, '-')}" class="wiki-section mb-16">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="h-px flex-1 bg-white/5"></div>
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.5em] text-red-600">${cat.cat}</h3>
+                        <div class="h-px flex-1 bg-white/5"></div>
+                    </div>
+                    <div class="grid gap-4">
+                        ${cat.items.map(cmd => `
+                            <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                    <div>
+                                        <div class="flex items-center gap-3 mb-2">
+                                            <span class="mono text-lg font-black text-red-500">${cmd.cmd}</span>
+                                            <span class="px-2 py-0.5 bg-white/5 rounded-md text-[8px] font-black uppercase tracking-widest text-zinc-600 border border-white/5">${cmd.perm}</span>
+                                        </div>
+                                        <p class="text-gray-400 text-sm font-medium">${cmd.desc}</p>
+                                    </div>
+                                    <div class="bg-black/50 px-4 py-3 rounded-xl border border-white/5 mono text-xs text-zinc-500">
+                                        <span class="text-red-900 mr-2">$</span> ${cmd.uso}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
             `).join('');
@@ -483,85 +765,47 @@
             lucide.createIcons();
         }
 
-        function showDetail(id) {
-            const s = SERVERS.find(x => x.id === id);
-            if (!s) return;
-            const container = document.getElementById('detailContainer');
-            goTo('server-detail');
-            
-            container.innerHTML = `
-                <div class="glass p-10 md:p-16 rounded-[3.5rem] relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[100px] -z-10"></div>
-                    <div class="flex flex-col md:flex-row gap-10 items-center md:items-start text-center md:text-left mb-12">
-                        <div class="w-40 h-40 bg-gradient-to-br from-red-600 to-orange-600 rounded-[2.5rem] flex items-center justify-center text-6xl font-black shadow-2xl shrink-0">${s.name[0].toUpperCase()}</div>
-                        <div class="flex-1">
-                            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tighter uppercase">${s.name}</h1>
-                            <div class="flex flex-wrap justify-center md:justify-start gap-3 mb-6">
-                                ${s.tags.map(t => `<span class="bg-red-600/10 text-red-500 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-red-600/20">${t}</span>`).join('')}
-                            </div>
-                            <div class="flex justify-center md:justify-start gap-10">
-                                <div class="bg-black/20 px-6 py-4 rounded-2xl border border-white/5">
-                                    <div class="text-3xl font-black text-white flex items-center gap-2 mb-1"><i data-lucide="chevron-up" class="text-red-500"></i> ${s.votes}</div>
-                                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Total de Votos</div>
-                                </div>
-                                <div class="bg-black/20 px-6 py-4 rounded-2xl border border-white/5">
-                                    <div class="text-xl font-black text-gray-300 flex items-center gap-2 mb-2 mt-1"><i data-lucide="zap" class="text-yellow-500 w-5 h-5"></i> ${formatTimeAgo(s.bump)}</div>
-                                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Último Bump</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 pt-12 border-t border-white/5">
-                        <div class="md:col-span-2">
-                            <h3 class="text-xs font-black uppercase tracking-[0.4em] text-red-600 mb-6 flex items-center gap-2"><i data-lucide="align-left" class="w-4 h-4"></i> Sobre o Servidor</h3>
-                            <div class="text-gray-400 leading-relaxed text-lg whitespace-pre-line bg-black/20 p-8 rounded-3xl border border-white/5">${s.desc}</div>
-                        </div>
-                        <div class="space-y-4">
-                            <button onclick="castVote('${s.id}')" class="w-full bg-white text-black py-6 rounded-2xl font-black text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 transition-all flex items-center justify-center gap-3">
-                                <i data-lucide="chevron-up"></i> VOTAR NESTE SERVER
-                            </button>
-                            <button onclick="doBump('${s.id}')" class="w-full bg-red-600 py-6 rounded-2xl font-black text-sm uppercase tracking-widest btn-glow flex items-center justify-center gap-3">
-                                <i data-lucide="zap"></i> DAR UM BUMP (2H)
-                            </button>
-                            <a href="${s.invite}" target="_blank" class="w-full bg-white/5 border border-white/10 py-6 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition">
-                                <i data-lucide="external-link"></i> ENTRAR NO DISCORD
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            `;
-            lucide.createIcons();
+        function scrollToWiki(cat) {
+            const el = document.getElementById(`cat-${cat.replace(/\s/g, '-')}`);
+            window.scrollTo({ top: el.offsetTop - 150, behavior: 'smooth' });
         }
 
-        function renderCommands() {
-            const container = document.getElementById('commandsContainer');
-            container.innerHTML = COMMANDS.map(c => `
-                <div class="glass p-8 rounded-[2rem] border-t-4 border-red-600 command-card transition-all hover:-translate-y-2 hover:border-white/20">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="p-4 bg-red-600/10 rounded-2xl text-red-600 border border-red-600/20"><i data-lucide="${c.icon}"></i></div>
-                        <h3 class="text-lg font-black uppercase tracking-tighter">${c.cat}</h3>
-                    </div>
-                    <div class="bg-black/40 p-5 rounded-2xl font-mono text-sm text-red-400/90 leading-loose border border-white/5">
-                        ${c.cmds}
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        function searchCommands(e) {
-            const q = e.target.value.toLowerCase();
-            document.querySelectorAll('.command-card').forEach(c => {
-                c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
+        function filterWiki() {
+            const q = document.getElementById('wikiSearch').value.toLowerCase();
+            const items = document.querySelectorAll('.wiki-section .glass');
+            items.forEach(i => {
+                const text = i.innerText.toLowerCase();
+                i.style.display = text.includes(q) ? 'block' : 'none';
             });
         }
 
-        // Setup
+        // --- INIT ---
+
         window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('opacity-0');
+                setTimeout(() => document.getElementById('loader').remove(), 700);
+            }, 1000);
+
             lucide.createIcons();
-            renderCommands();
             renderBoard();
+            renderWiki();
         };
+
+        // Efeito de scroll na navbar
+        window.onscroll = () => {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.querySelector('div').classList.add('py-2');
+                nav.querySelector('div').classList.remove('py-4');
+                nav.querySelector('div').classList.add('bg-black/80');
+            } else {
+                nav.querySelector('div').classList.remove('py-2');
+                nav.querySelector('div').classList.add('py-4');
+                nav.querySelector('div').classList.remove('bg-black/80');
+            }
+        };
+
     </script>
 </body>
 </html>
