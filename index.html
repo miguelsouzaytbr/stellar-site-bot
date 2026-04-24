@@ -39,7 +39,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Expor as funções do Firestore para o escopo global para serem usadas no script principal
@@ -69,10 +69,19 @@
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
             const db = getFirestore(app);
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'stellar-default';
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'stellar-hub';
 
             window.stellarDb = db;
             window.stellarAppId = appId;
+            window.firebaseAuth = auth;
+
+            // Mantém a sessão anônima ativa e aguarda ela estar pronta para pegar o ID de segurança
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("Autenticação segura estabelecida com o Firebase.");
+                    window.firebaseUserId = user.uid;
+                }
+            });
 
             signInAnonymously(auth).catch(console.error);
         } catch (error) {
@@ -353,6 +362,12 @@
                     <div class="lg:col-span-3 space-y-6">
                         <div class="glass p-10 rounded-[3rem]">
                             
+                            <!-- BANNER DE ERRO (NOVO) -->
+                            <div id="error-banner" class="hidden bg-red-900/80 border border-red-500 text-white p-4 rounded-2xl mb-8 text-xs font-bold uppercase tracking-widest flex items-center justify-between">
+                                <span id="error-text">Mensagem de erro aqui</span>
+                                <button onclick="document.getElementById('error-banner').classList.add('hidden')"><i data-lucide="x" class="w-4 h-4"></i></button>
+                            </div>
+
                             <!-- TAB: GERAL -->
                             <div id="tab-geral" class="tab-content block space-y-10">
                                 <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3 mb-6">
@@ -702,6 +717,7 @@
             selectedGuild = { id, name };
             document.getElementById('dash-logged-in').classList.add('hidden');
             document.getElementById('dash-manage-guild').classList.remove('hidden');
+            document.getElementById('error-banner').classList.add('hidden');
             
             document.getElementById('manage-name').innerText = name;
             document.getElementById('manage-icon').src = icon && icon !== 'null' 
@@ -711,10 +727,10 @@
             openTab('geral'); // Abre a aba Geral por padrão
 
             try {
-                if (!window.stellarDb) throw new Error("Base de dados Firebase não conectada.");
+                if (!window.stellarDb || !window.firebaseUserId) throw new Error("Base de dados Firebase não conectada ou ID do usuário não encontrado.");
 
-                // Carregar do Firestore
-                const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id);
+                // Carregar do Firestore (COM PROTEÇÃO USER ID)
+                const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'users', window.firebaseUserId, 'guildConfigs', id);
                 const snap = await window.fbGetDoc(docRef);
                 
                 if (snap.exists()) {
@@ -766,6 +782,11 @@
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados do painel:", error);
+                
+                const errBanner = document.getElementById('error-banner');
+                document.getElementById('error-text').innerText = "Erro ao buscar do Firebase: " + error.message;
+                errBanner.classList.remove('hidden');
+
                 document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
                 document.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
             }
@@ -827,9 +848,10 @@
             };
 
             try {
-                if (!window.stellarDb) throw new Error("Firebase não configurado. Não é possível salvar dados localmente.");
+                if (!window.stellarDb || !window.firebaseUserId) throw new Error("Firebase não configurado ou você não tem autenticação de usuário segura.");
 
-                const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id);
+                // Salvar no Firestore (COM PROTEÇÃO USER ID)
+                const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'users', window.firebaseUserId, 'guildConfigs', selectedGuild.id);
                 await window.fbSetDoc(docRef, data, { merge: true });
                 
                 btn.classList.replace('bg-red-600', 'bg-green-600');
@@ -844,12 +866,18 @@
                 }, 2000);
             } catch (e) {
                 console.error("Erro detalhado ao sincronizar:", e);
+                
+                // Exibe o erro na tela para você ver o que é
+                const errBanner = document.getElementById('error-banner');
+                document.getElementById('error-text').innerText = "Falha ao Salvar: " + e.message;
+                errBanner.classList.remove('hidden');
+
                 btn.classList.replace('bg-red-600', 'bg-red-800');
-                btn.innerHTML = '<i data-lucide="x-circle"></i> Falha (Ver Console)';
+                btn.innerHTML = '<i data-lucide="x-circle"></i> Falha ao Salvar';
                 lucide.createIcons();
                 setTimeout(() => {
                     btn.classList.replace('bg-red-800', 'bg-red-600');
-                    btn.innerHTML = '<i data-lucide="save"></i> Sincronizar Protocolos';
+                    btn.innerHTML = '<i data-lucide="save"></i> Tentar Novamente';
                     lucide.createIcons();
                 }, 3000);
             }
