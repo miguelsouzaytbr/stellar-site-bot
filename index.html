@@ -83,7 +83,11 @@
                 }
             });
 
-            signInAnonymously(auth).catch(console.error);
+            // Adicionado um catch para registrar o erro de autenticação caso não esteja ativado
+            signInAnonymously(auth).catch((error) => {
+                console.error("Falha ao criar sessão anônima:", error);
+                window.firebaseAuthError = error.message;
+            });
         } catch (error) {
             console.error("Erro ao inicializar Firebase:", error);
         }
@@ -362,7 +366,7 @@
                     <div class="lg:col-span-3 space-y-6">
                         <div class="glass p-10 rounded-[3rem]">
                             
-                            <!-- BANNER DE ERRO (NOVO) -->
+                            <!-- BANNER DE ERRO -->
                             <div id="error-banner" class="hidden bg-red-900/80 border border-red-500 text-white p-4 rounded-2xl mb-8 text-xs font-bold uppercase tracking-widest flex items-center justify-between">
                                 <span id="error-text">Mensagem de erro aqui</span>
                                 <button onclick="document.getElementById('error-banner').classList.add('hidden')"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -727,7 +731,9 @@
             openTab('geral'); // Abre a aba Geral por padrão
 
             try {
-                if (!window.stellarDb || !window.firebaseUserId) throw new Error("Base de dados Firebase não conectada ou ID do usuário não encontrado.");
+                if (!window.stellarDb) throw new Error("Base de dados não conectada.");
+                if (window.firebaseAuthError) throw new Error(`O Login Anônimo não está ativado no Firebase! (Erro original: ${window.firebaseAuthError})`);
+                if (!window.firebaseUserId) throw new Error("Autenticação pendente. Recarregue a página e tente novamente.");
 
                 // Carregar do Firestore (COM PROTEÇÃO USER ID)
                 const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'users', window.firebaseUserId, 'guildConfigs', id);
@@ -784,7 +790,7 @@
                 console.error("Erro ao carregar dados do painel:", error);
                 
                 const errBanner = document.getElementById('error-banner');
-                document.getElementById('error-text').innerText = "Erro ao buscar do Firebase: " + error.message;
+                document.getElementById('error-text').innerText = error.message;
                 errBanner.classList.remove('hidden');
 
                 document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
@@ -848,7 +854,9 @@
             };
 
             try {
-                if (!window.stellarDb || !window.firebaseUserId) throw new Error("Firebase não configurado ou você não tem autenticação de usuário segura.");
+                if (!window.stellarDb) throw new Error("Base de dados desconectada.");
+                if (window.firebaseAuthError) throw new Error(`Vá no Firebase > Authentication > Sign-in method e ative o 'Anônimo'!`);
+                if (!window.firebaseUserId) throw new Error("Você não está autenticado. Ative o 'Login Anônimo' no painel do Firebase.");
 
                 // Salvar no Firestore (COM PROTEÇÃO USER ID)
                 const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'users', window.firebaseUserId, 'guildConfigs', selectedGuild.id);
@@ -858,6 +866,7 @@
                 btn.innerHTML = '<i data-lucide="check"></i> Protocolo Sincronizado!';
                 lucide.createIcons();
                 document.getElementById('current-prefix').innerText = data.prefix;
+                document.getElementById('error-banner').classList.add('hidden');
 
                 setTimeout(() => {
                     btn.classList.replace('bg-green-600', 'bg-red-600');
