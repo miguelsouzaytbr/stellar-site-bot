@@ -39,11 +39,9 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        // 🔥 IMPORTADO: Para liberar a permissão de gravação no banco de dados 🔥
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Expor as funções do Firestore para o escopo global para serem usadas no script principal
         window.fbDoc = doc;
         window.fbSetDoc = setDoc;
         window.fbGetDoc = getDoc;
@@ -51,11 +49,9 @@
         try {
             let firebaseConfig;
             
-            // Verifica se está rodando no Canvas ou no seu site real
             if (typeof __firebase_config !== 'undefined') {
                 firebaseConfig = JSON.parse(__firebase_config);
             } else {
-                // Suas chaves reais para o GitHub Pages
                 firebaseConfig = {
                     apiKey: "AIzaSyA1jdKEJZ7kcr5t0AMIF5cID8gXAzyCvX4",
                     authDomain: "stellar-2667d.firebaseapp.com",
@@ -86,7 +82,6 @@
                 }
             });
 
-            // 🔥 Tenta logar com token forte (edição local) ou Anônimo (nuvem) 🔥
             const initAuth = async () => {
                 try {
                     if (isCanvas && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -172,6 +167,24 @@
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--stellar-red); }
         input:checked + .slider:before { transform: translateX(24px); }
+
+        /* 🔥 ESTILIZAÇÃO PREMIUM DOS MENUS DE SELEÇÃO 🔥 */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ED1C24' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1.5rem center;
+            background-size: 1.2em;
+            cursor: pointer;
+        }
+        select option {
+            background-color: var(--stellar-card);
+            color: #ececec;
+            font-weight: bold;
+            padding: 10px;
+        }
 
         .discord-mockup { background-color: #313338; font-family: 'gg sans', sans-serif; }
     </style>
@@ -353,7 +366,7 @@
                             <h3 id="manage-name" class="text-xl font-black uppercase tracking-tighter truncate">Server Name</h3>
                             <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-2 mb-6">Gestão de Protocolos</p>
                             
-                            <div class="space-y-3">
+                            <div class="space-y-3 mt-6">
                                 <button onclick="openTab('geral')" id="btn-tab-geral" class="w-full p-4 rounded-2xl bg-red-600 text-[10px] font-black uppercase tracking-widest text-white flex items-center gap-3 transition">
                                     <i data-lucide="settings" class="w-4 h-4"></i> Gerais
                                 </button>
@@ -374,6 +387,9 @@
                                 </button>
                                 <button onclick="openTab('economia')" id="btn-tab-economia" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
                                     <i data-lucide="coins" class="w-4 h-4"></i> Economia
+                                </button>
+                                <button onclick="openTab('comandos')" id="btn-tab-comandos" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
+                                    <i data-lucide="terminal" class="w-4 h-4"></i> Comandos
                                 </button>
                             </div>
                         </div>
@@ -402,8 +418,11 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID do Canal de Logs Gerais</label>
-                                    <input type="text" id="cfg-logs" placeholder="000000000000000000" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal de Logs Gerais</label>
+                                    <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                    <select id="cfg-logs" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                        <option value="">Carregando canais...</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -452,7 +471,6 @@
                                         <button onclick="previewWelcome()" class="bg-[#5865F2] hover:bg-[#4752C4] text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
                                             <i data-lucide="eye" class="w-3 h-3"></i>
                                         </button>
-                                        <!-- BOTÃO REAL DISCORD -->
                                         <button onclick="triggerTest('test_welcome')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
                                             <i data-lucide="send" class="w-3 h-3"></i> Testar no Chat
                                         </button>
@@ -460,26 +478,30 @@
                                 </div>
                                 <div class="grid md:grid-cols-2 gap-6">
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Canal Boas-Vindas</label>
-                                        <input type="text" id="cfg-wel-channel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal Boas-Vindas</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-wel-channel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                            <option value="">Carregando canais...</option>
+                                        </select>
                                     </div>
                                     <div>
                                         <div class="flex justify-between items-center mb-4">
-                                            <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">ID Canal Invites</label>
+                                            <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Canal Invites</label>
                                             <button onclick="triggerTest('test_invite')" class="text-green-500 hover:text-green-400 text-[9px] uppercase font-bold flex items-center gap-1"><i data-lucide="send" class="w-3 h-3"></i> Testar</button>
                                         </div>
-                                        <input type="text" id="cfg-wel-inv-channel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-wel-inv-channel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                            <option value="">Carregando canais...</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Mensagem de Boas-Vindas</label>
                                     <textarea id="cfg-wel-msg" rows="3" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition"></textarea>
-                                    <p class="text-[10px] text-gray-500 mt-2 font-bold uppercase tracking-widest">Variáveis: {user}, {guild}, {total}</p>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Mensagem de Invites</label>
                                     <textarea id="cfg-wel-inv-msg" rows="2" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition"></textarea>
-                                    <p class="text-[10px] text-gray-500 mt-2 font-bold uppercase tracking-widest">Variáveis: {user}, {inviter}, {invites}</p>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">URL da Imagem/Banner (Opcional)</label>
@@ -493,23 +515,25 @@
                                     <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
                                         <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo de Atendimento
                                     </h4>
-                                    <!-- BOTÃO REAL DISCORD -->
                                     <button onclick="triggerTest('test_ticket')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
                                         <i data-lucide="send" class="w-3 h-3"></i> Testar Painel no Chat
                                     </button>
                                 </div>
                                 <div class="grid md:grid-cols-3 gap-6">
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Canal Painel</label>
-                                        <input type="text" id="cfg-tk-painel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal Painel</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-tk-painel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Canal Logs</label>
-                                        <input type="text" id="cfg-tk-logs" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal Logs</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-tk-logs" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Categoria</label>
-                                        <input type="text" id="cfg-tk-cat" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Categoria dos Tickets</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-tk-cat" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
                                     </div>
                                 </div>
                                 <div>
@@ -528,23 +552,25 @@
                                     <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
                                         <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo de Parcerias
                                     </h4>
-                                    <!-- BOTÃO REAL DISCORD -->
                                     <button onclick="triggerTest('test_parceria')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
                                         <i data-lucide="send" class="w-3 h-3"></i> Testar Painel no Chat
                                     </button>
                                 </div>
                                 <div class="grid md:grid-cols-3 gap-6">
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Canal Painel</label>
-                                        <input type="text" id="cfg-parc-painel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal Painel</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-parc-painel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Canal Postagem</label>
-                                        <input type="text" id="cfg-parc-post" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal Postagem</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-parc-post" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Categoria</label>
-                                        <input type="text" id="cfg-parc-cat" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Categoria de Atendimento</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-parc-cat" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
                                     </div>
                                 </div>
                                 <div class="grid md:grid-cols-2 gap-6">
@@ -565,25 +591,26 @@
                                 </div>
                             </div>
 
-                            <!-- TAB: STAFF -->
+                            <!-- STAFF -->
                             <div id="tab-staff" class="tab-content hidden space-y-10">
                                 <div class="flex items-center justify-between mb-6">
                                     <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
                                         <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo Staff
                                     </h4>
-                                    <!-- BOTÃO REAL DISCORD -->
                                     <button onclick="triggerTest('test_staff')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
                                         <i data-lucide="send" class="w-3 h-3"></i> Testar Anúncio no Chat
                                     </button>
                                 </div>
                                 <div class="grid md:grid-cols-2 gap-6">
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Canal Anúncio</label>
-                                        <input type="text" id="cfg-st-painel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal Anúncio</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-st-painel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Canal Fichas (Logs)</label>
-                                        <input type="text" id="cfg-st-logs" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal Fichas (Logs)</label>
+                                        <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                        <select id="cfg-st-logs" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
                                     </div>
                                 </div>
                                 <div>
@@ -596,13 +623,12 @@
                                 </div>
                             </div>
 
-                            <!-- TAB: ECONOMIA -->
+                            <!-- ECONOMIA -->
                             <div id="tab-economia" class="tab-content hidden space-y-10">
                                 <div class="flex items-center justify-between mb-6">
                                     <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
                                         <span class="w-1 h-6 bg-red-600 rounded-full"></span> Sistema de Economia
                                     </h4>
-                                    <!-- BOTÃO REAL DISCORD -->
                                     <button onclick="triggerTest('test_economy')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
                                         <i data-lucide="send" class="w-3 h-3"></i> Simular Queda/Alta no Chat
                                     </button>
@@ -610,13 +636,41 @@
                                 <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5 mb-6">
                                     <div>
                                         <h5 class="text-xs font-black uppercase">Sistema Econômico Ativo</h5>
-                                        <p class="text-[10px] text-gray-600 font-medium">Habilitar carteira e inventário global.</p>
                                     </div>
                                     <label class="switch"><input type="checkbox" id="cfg-eco-active" checked><span class="slider"></span></label>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID Canal de Notícias (Cotações)</label>
-                                    <input type="text" id="cfg-eco-channel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal de Notícias (Cotações)</label>
+                                    <!-- 🔥 DROPDOWN APLICADO AQUI 🔥 -->
+                                    <select id="cfg-eco-channel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
+                                </div>
+                            </div>
+
+                            <!-- COMANDOS (NOVA ABA) -->
+                            <div id="tab-comandos" class="tab-content hidden space-y-10">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+                                        <span class="w-1 h-6 bg-red-600 rounded-full"></span> Restrição de Comandos
+                                    </h4>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canais Bloqueados</label>
+                                    
+                                    <!-- Container Visual das Tags (Chips) -->
+                                    <div id="cmd-blocked-list" class="flex flex-wrap gap-2 mb-4">
+                                        <!-- Badges geradas via JS -->
+                                    </div>
+
+                                    <!-- 🔥 MENU DROPDOWN NO LUGAR DA CAIXA DE TEXTO (A MÁGICA ACONTECE AQUI) 🔥 -->
+                                    <div class="flex gap-2">
+                                        <select id="cfg-cmd-select" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                            <option value="">Carregando canais...</option>
+                                        </select>
+                                        <button type="button" onclick="window.addBlockedChannel()" class="bg-[#5865F2] hover:bg-[#4752C4] text-white px-6 py-4 rounded-2xl font-black uppercase tracking-widest transition flex items-center gap-2">
+                                            <i data-lucide="plus" class="w-4 h-4"></i> Add
+                                        </button>
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-3 font-bold uppercase tracking-widest">Selecione o canal na lista acima e clique em "Add". O bot vai ignorar comandos nos canais que estiverem vermelhos.</p>
                                 </div>
                             </div>
 
@@ -631,73 +685,14 @@
         </section>
     </main>
 
-    <!-- #################### PÁGINA: WIKI #################### -->
+    <!-- WIKI / STAFF / FOOTER IGUAIS AO ORIGINAL -->
     <main id="page-wiki" class="page pt-40 pb-32 px-6">
-        <section class="max-w-7xl mx-auto">
-            <div class="text-center mb-20">
-                <h2 class="text-5xl font-black tracking-tighter uppercase mb-4 text-white">Central de Comandos</h2>
-                <p class="text-gray-500 max-w-2xl mx-auto font-medium">Wiki oficial. Aprenda a usar a economia, criar negócios e dominar o sistema.</p>
-            </div>
-            <div class="flex flex-col lg:flex-row gap-12">
-                <aside class="lg:w-1/4">
-                    <div class="sticky top-32 space-y-2" id="wikiNav"></div>
-                </aside>
-                <div class="flex-1">
-                    <div class="relative mb-12">
-                        <i data-lucide="search" class="absolute left-6 top-1/2 -translate-y-1/2 text-red-600"></i>
-                        <input type="text" id="wikiSearch" oninput="filterWiki()" placeholder="Procurar protocolo..." class="w-full bg-white/5 border border-white/10 py-6 pl-16 pr-6 rounded-[2rem] text-lg font-bold focus:border-red-600 outline-none transition">
-                    </div>
-                    <div id="wikiContent" class="space-y-6"></div>
-                </div>
-            </div>
-        </section>
+        <section class="max-w-7xl mx-auto"><div class="text-center mb-20"><h2 class="text-5xl font-black tracking-tighter uppercase mb-4 text-white">Central de Comandos</h2></div><div class="flex flex-col lg:flex-row gap-12"><aside class="lg:w-1/4"><div class="sticky top-32 space-y-2" id="wikiNav"></div></aside><div class="flex-1"><div class="relative mb-12"><i data-lucide="search" class="absolute left-6 top-1/2 -translate-y-1/2 text-red-600"></i><input type="text" id="wikiSearch" oninput="filterWiki()" placeholder="Procurar protocolo..." class="w-full bg-white/5 border border-white/10 py-6 pl-16 pr-6 rounded-[2rem] text-lg font-bold focus:border-red-600 outline-none transition"></div><div id="wikiContent" class="space-y-6"></div></div></div></section>
     </main>
-
-    <!-- #################### PÁGINA: STAFF #################### -->
     <main id="page-staff" class="page pt-40 pb-32 px-6">
-        <section class="max-w-7xl mx-auto text-center">
-            <h2 class="text-5xl font-black tracking-tighter uppercase mb-20 text-white">⁝ Gestão Interna ‧₊</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <div class="glass p-10 rounded-[3rem] border-red-600/30 glow-stellar">
-                    <div class="w-16 h-16 bg-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                        <i data-lucide="crown" class="w-8 h-8 text-white"></i>
-                    </div>
-                    <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Diretoria</h4>
-                    <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Poder Central</p>
-                    <div class="flex items-center justify-center gap-3 p-4 bg-black/30 rounded-2xl border border-white/5">
-                        <span class="font-bold text-sm">Fast21 ‧₊</span>
-                    </div>
-                </div>
-                <div class="glass p-10 rounded-[3rem]">
-                    <div class="w-16 h-16 bg-zinc-800 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                        <i data-lucide="shield-check" class="w-8 h-8 text-red-600"></i>
-                    </div>
-                    <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Administração</h4>
-                    <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Gestão de Operações</p>
-                    <div class="text-gray-400 text-sm py-4 italic">Aguardando nomeações...</div>
-                </div>
-                <div class="glass p-10 rounded-[3rem]">
-                    <div class="w-16 h-16 bg-zinc-800 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                        <i data-lucide="message-square" class="w-8 h-8 text-red-600"></i>
-                    </div>
-                    <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Ajudantes Elite</h4>
-                    <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Suporte ao Usuário</p>
-                    <div class="text-gray-400 text-sm py-4 italic">Processo seletivo aberto.</div>
-                </div>
-            </div>
-        </section>
+        <section class="max-w-7xl mx-auto text-center"><h2 class="text-5xl font-black tracking-tighter uppercase mb-20 text-white">⁝ Gestão Interna ‧₊</h2><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10"><div class="glass p-10 rounded-[3rem] border-red-600/30 glow-stellar"><div class="w-16 h-16 bg-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6"><i data-lucide="crown" class="w-8 h-8 text-white"></i></div><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Diretoria</h4><div class="flex items-center justify-center gap-3 p-4 bg-black/30 rounded-2xl border border-white/5"><span class="font-bold text-sm">Fast21 ‧₊</span></div></div></div></section>
     </main>
-
-    <!-- FOOTER -->
-    <footer class="py-12 border-t border-white/5 mt-20 px-6 bg-[#070708]">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-3">
-                <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-8 h-8 rounded-xl" alt="Logo">
-                <span class="text-xl font-black tracking-tighter uppercase">STELLAR<span class="text-red-600">.</span></span>
-            </div>
-            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest text-center">© 2026 Stellar Hub. O Sistema Definitivo.</p>
-        </div>
-    </footer>
+    <footer class="py-12 border-t border-white/5 mt-20 px-6 bg-[#070708]"><div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6"><div class="flex items-center gap-3"><img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-8 h-8 rounded-xl" alt="Logo"><span class="text-xl font-black tracking-tighter uppercase">STELLAR<span class="text-red-600">.</span></span></div><p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest text-center">© 2026 Stellar Hub. O Sistema Definitivo.</p></div></footer>
 
     <!-- MODAL DE PREVIEW DO DISCORD -->
     <div id="preview-modal" class="fixed inset-0 z-[200] hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 transition-opacity">
@@ -710,11 +705,7 @@
                 <div class="flex items-start gap-4">
                     <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-white">S</div>
                     <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-white font-medium text-base">Stellar</span>
-                            <span class="bg-[#5865F2] text-white text-[10px] uppercase font-bold px-1.5 py-0.5 rounded flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> BOT</span>
-                            <span class="text-[#949ba4] text-xs">Hoje às 14:32</span>
-                        </div>
+                        <div class="flex items-center gap-2 mb-1"><span class="text-white font-medium text-base">Stellar</span><span class="bg-[#5865F2] text-white text-[10px] uppercase font-bold px-1.5 py-0.5 rounded flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> BOT</span><span class="text-[#949ba4] text-xs">Hoje às 14:32</span></div>
                         <div id="preview-content"></div>
                     </div>
                 </div>
@@ -728,6 +719,11 @@
         const SCOPES = 'identify guilds';
         let userAccessToken = null;
         let selectedGuild = null;
+        
+        // VARIÁVEIS DO CACHE DA LORITTA (Ponte Bot -> Site)
+        window.cachedChannels = [];
+        window.cachedCategories = [];
+        window.blockedChannelsList = [];
 
         function showToast(msg, isError = false) {
             const banner = document.getElementById('error-banner');
@@ -736,28 +732,21 @@
             banner.classList.add(isError ? 'bg-red-900/80' : 'bg-green-900/80', isError ? 'border-red-500' : 'border-green-500');
         }
 
-        // 🔥 NOVA FUNÇÃO: ENVIA O SINAL DE TESTE PARA O BOT VIA FIREBASE 🔥
+        // PREENCHEDOR DE MENUS (Dropdowns mágicos)
+        function populateSelect(elementId, items, selectedValue, defaultText = "Selecione uma opção...") {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            el.innerHTML = `<option value="">${defaultText}</option>` + 
+                items.map(i => `<option value="${i.id}" ${i.id === selectedValue ? 'selected' : ''}># ${i.name}</option>`).join('');
+        }
+
         window.triggerTest = async function(actionType) {
             if (!selectedGuild) return showToast("Nenhum servidor selecionado.", true);
             if (!window.stellarDb) return showToast("Sem conexão com o Firebase.", true);
-            
             try {
                 const triggerId = selectedGuild.id + '_' + Date.now();
-                
-                // Trata a diferença de caminho entre o Canvas de teste e o GitHub Pages real
-                let triggerRef;
-                if (window.isCanvasEnv) {
-                    triggerRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'web_triggers', triggerId);
-                } else {
-                    triggerRef = window.fbDoc(window.stellarDb, 'web_triggers', triggerId);
-                }
-                
-                await window.fbSetDoc(triggerRef, {
-                    guildId: selectedGuild.id,
-                    action: actionType,
-                    timestamp: Date.now()
-                });
-                
+                let triggerRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'web_triggers', triggerId) : window.fbDoc(window.stellarDb, 'web_triggers', triggerId);
+                await window.fbSetDoc(triggerRef, { guildId: selectedGuild.id, action: actionType, timestamp: Date.now() });
                 showToast("🚀 Comando de teste enviado! Olhe o Discord.");
                 setTimeout(() => document.getElementById('error-banner').classList.add('hidden'), 5000);
             } catch (e) {
@@ -765,11 +754,41 @@
             }
         };
 
-        // UI Helpers
-        function parseMessage(text) { 
-            return text.replace(/{user}/g, '<span>@Usuário</span>').replace(/\n/g, '<br>'); 
-        }
+        // LÓGICA DAS TAGS DE CANAIS BLOQUEADOS (Agora lendo do Select Real)
+        window.addBlockedChannel = function() {
+            const select = document.getElementById('cfg-cmd-select');
+            const val = select.value;
+            
+            if (val && !window.blockedChannelsList.find(c => c.id === val)) {
+                const text = select.options[select.selectedIndex].text.replace('# ', '');
+                window.blockedChannelsList.push({ id: val, name: text });
+                window.renderBlockedChannels();
+            }
+            select.value = '';
+        };
 
+        window.removeBlockedChannel = function(id) {
+            window.blockedChannelsList = window.blockedChannelsList.filter(c => c.id !== id);
+            window.renderBlockedChannels();
+        };
+
+        window.renderBlockedChannels = function() {
+            const container = document.getElementById('cmd-blocked-list');
+            if (window.blockedChannelsList.length === 0) {
+                container.innerHTML = '<span class="text-xs text-gray-600 italic font-bold">Nenhum canal bloqueado. O bot responde em todos.</span>';
+                return;
+            }
+            container.innerHTML = window.blockedChannelsList.map(channel => `
+                <div class="flex items-center gap-2 bg-red-600/20 text-red-500 px-3 py-1.5 rounded-lg border border-red-600/30 text-xs font-bold tracking-widest uppercase">
+                    #${channel.name}
+                    <button type="button" onclick="window.removeBlockedChannel('${channel.id}')" class="hover:text-white transition"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
+        // UI Helpers
+        function parseMessage(text) { return text.replace(/{user}/g, '<span>@Usuário</span>').replace(/\n/g, '<br>'); }
         function previewWelcome() {
             const rawMsg = document.getElementById('cfg-wel-msg').value || 'Bem-vindo(a) {user}!';
             const img = document.getElementById('cfg-wel-img').value;
@@ -778,47 +797,26 @@
             document.getElementById('preview-content').innerHTML = html + `</div>`;
             document.getElementById('preview-modal').classList.remove('hidden');
         }
-
         function previewInvite() {
             document.getElementById('preview-content').innerHTML = `<p class="text-[#dbdee1] text-sm mt-2">🛰️ <strong>[LOG DE INVITE]</strong><br>${parseMessage(document.getElementById('cfg-wel-inv-msg').value)}</p>`;
             document.getElementById('preview-modal').classList.remove('hidden');
         }
-
         function openTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('[id^="btn-tab-"]').forEach(btn => { 
-                btn.classList.remove('bg-red-600', 'text-white'); 
-                btn.classList.add('bg-white/5', 'text-gray-400'); 
-            });
+            document.querySelectorAll('[id^="btn-tab-"]').forEach(btn => { btn.classList.remove('bg-red-600', 'text-white'); btn.classList.add('bg-white/5', 'text-gray-400'); });
             document.getElementById('tab-' + tabName).classList.remove('hidden');
             document.getElementById('tab-' + tabName).classList.add('block');
             const btn = document.getElementById('btn-tab-' + tabName);
-            btn.classList.remove('bg-white/5', 'text-gray-400'); 
-            btn.classList.add('bg-red-600', 'text-white');
+            btn.classList.remove('bg-white/5', 'text-gray-400'); btn.classList.add('bg-red-600', 'text-white');
         }
-
         function switchPage(pageId) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => { 
-                l.classList.remove('active', 'text-red-500'); 
-                if(l.dataset.page === pageId) { 
-                    l.classList.add('active'); 
-                    if(pageId === 'dashboard') l.classList.add('text-red-500'); 
-                } 
-            });
+            document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('active', 'text-red-500'); if(l.dataset.page === pageId) { l.classList.add('active'); if(pageId === 'dashboard') l.classList.add('text-red-500'); } });
             document.getElementById(`page-${pageId}`).classList.add('active');
         }
-
-        function loginDiscord() { 
-            window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}`; 
-        }
-
-        function logoutDiscord() { 
-            localStorage.removeItem('stellar_token'); 
-            location.reload(); 
-        }
-
+        function loginDiscord() { window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}`; }
+        function logoutDiscord() { localStorage.removeItem('stellar_token'); location.reload(); }
         async function checkAuth() {
             let token = localStorage.getItem('stellar_token');
             if (window.location.hash && window.location.hash.includes('access_token')) {
@@ -831,24 +829,16 @@
                 document.getElementById('dash-logged-in').classList.remove('hidden');
                 document.getElementById('btn-login-discord').classList.add('hidden');
                 document.getElementById('user-info').classList.remove('hidden');
-                await fetchUser(); 
-                await fetchGuilds();
+                await fetchUser(); await fetchGuilds();
             }
         }
-
         async function fetchUser() {
             try {
                 const res = await fetch('https://discord.com/api/users/@me', { headers: { 'Authorization': `Bearer ${userAccessToken}` } });
                 const data = await res.json();
-                if (data.id) { 
-                    document.getElementById('user-tag').innerText = data.username; 
-                    document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`; 
-                } else {
-                    logoutDiscord();
-                }
+                if (data.id) { document.getElementById('user-tag').innerText = data.username; document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`; } else logoutDiscord();
             } catch (e) { logoutDiscord(); }
         }
-
         async function fetchGuilds() {
             try {
                 const res = await fetch('https://discord.com/api/users/@me/guilds', { headers: { 'Authorization': `Bearer ${userAccessToken}` } });
@@ -862,9 +852,7 @@
                         <button class="w-full py-3 bg-red-600/10 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition">Configurar</button>
                     </div>`).join('');
                 lucide.createIcons();
-            } catch (e) { 
-                document.getElementById('guild-list').innerHTML = `<div class="col-span-full py-20 text-center text-red-500 font-bold uppercase text-xs">Erro.</div>`; 
-            }
+            } catch (e) { document.getElementById('guild-list').innerHTML = `<div class="col-span-full py-20 text-center text-red-500 font-bold uppercase text-xs">Erro.</div>`; }
         }
 
         async function manageGuild(id, name, icon) {
@@ -877,14 +865,45 @@
 
             try {
                 if (!window.stellarDb) throw new Error("Base não conectada.");
+
+                // 🔥 LENDO O CACHE DE CANAIS (A PONTE DA LORITTA) 🔥
+                let cacheRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildCache', id) : window.fbDoc(window.stellarDb, 'guildCache', id);
+                const cacheSnap = await window.fbGetDoc(cacheRef);
+                
+                if (cacheSnap.exists()) {
+                    const cacheData = cacheSnap.data();
+                    window.cachedChannels = cacheData.channels || [];
+                    window.cachedCategories = cacheData.categories || [];
+                } else {
+                    window.cachedChannels = [];
+                    window.cachedCategories = [];
+                    showToast("Aviso: Lista de Canais vazia. O seu bot está online no Discord?", true);
+                }
+
+                // Lendo as Configurações do Servidor
                 let docRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id) : window.fbDoc(window.stellarDb, 'guildConfigs', id);
                 const snap = await window.fbGetDoc(docRef);
                 
                 if (snap.exists()) {
                     const d = snap.data();
+                    
+                    // PREENCHENDO OS MENUS DROPDOWN (O MÁGICO)
+                    populateSelect('cfg-logs', window.cachedChannels, d.logs, "Nenhum Canal de Log Selecionado");
+                    populateSelect('cfg-wel-channel', window.cachedChannels, d.welcome?.channel, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-wel-inv-channel', window.cachedChannels, d.welcome?.inviteChannel, "Usar mesmo de Boas-Vindas");
+                    populateSelect('cfg-tk-painel', window.cachedChannels, d.ticket?.canalPainel, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-tk-logs', window.cachedChannels, d.ticket?.canalLogs, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-tk-cat', window.cachedCategories, d.ticket?.categoriaId, "Nenhuma Categoria Selecionada");
+                    populateSelect('cfg-parc-painel', window.cachedChannels, d.parceria?.painel, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-parc-post', window.cachedChannels, d.parceria?.postagem, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-parc-cat', window.cachedCategories, d.parceria?.categoria, "Nenhuma Categoria Selecionada");
+                    populateSelect('cfg-st-painel', window.cachedChannels, d.staff?.channel, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-st-logs', window.cachedChannels, d.staff?.logs, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-eco-channel', window.cachedChannels, d.economy?.channel, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-cmd-select', window.cachedChannels, '', "Selecione um canal da lista...");
+
                     document.getElementById('cfg-prefix').value = d.prefix || '!';
                     document.getElementById('current-prefix').innerText = d.prefix || '!';
-                    document.getElementById('cfg-logs').value = d.logs || '';
                 
                     document.getElementById('cfg-sec-spam').checked = d.security?.antispam || false;
                     document.getElementById('cfg-sec-link').checked = d.security?.antilink || false;
@@ -893,54 +912,44 @@
                     document.getElementById('cfg-sec-limit').value = d.security?.limitBan || 3;
                     document.getElementById('cfg-sec-forbid').value = d.security?.forbiddenWords || '';
 
-                    document.getElementById('cfg-wel-channel').value = d.welcome?.channel || '';
-                    document.getElementById('cfg-wel-inv-channel').value = d.welcome?.inviteChannel || '';
-                    document.getElementById('cfg-wel-msg').value = d.welcome?.msg || 'Seja bem-vindo(a) {user}!';
-                    document.getElementById('cfg-wel-inv-msg').value = d.welcome?.inviteMsg || '{user} entrou usando o convite de {inviter}';
+                    document.getElementById('cfg-wel-msg').value = d.welcome?.msg || '# <a:dindon:1468425730240286774> Boas-vindas, {user}!\n> Você acaba de entrar no **{guild}**! Sinta-se em casa.\n\n<a:seta1Img_adm:1468419286631710821> **Passos Iniciais:**\n* 📖 Leia as <#1458092487171379270> para evitar qualquer <a:warning:1468425732668784834> `Aviso`.\n* 🧭 Entenda o nosso ecossistema no <#1487555523888021777>.\n* 💸 Pegue as <#1489786478434324621> e acumule <:cash:1493784655319666789> `coins`.\n* 🛠️ Dúvidas? Abra um ticket no <#1482187262862037155> para a <:staff:1493289738981998652> **Equipe**.\n\n<:student:1493290481264754729> *Você é o membro número **#{total}**!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
+                    document.getElementById('cfg-wel-inv-msg').value = d.welcome?.inviteMsg || '🛰️ **[LOG DE INVITE]**\nO membro {user} acabou de entrar.\nConvidado por: {inviter}\nTotal de convites: **{invites}**';
                     document.getElementById('cfg-wel-img').value = d.welcome?.image || '';
 
-                    document.getElementById('cfg-tk-painel').value = d.ticket?.canalPainel || '';
-                    document.getElementById('cfg-tk-logs').value = d.ticket?.canalLogs || '';
-                    document.getElementById('cfg-tk-cat').value = d.ticket?.categoriaId || '';
-                    document.getElementById('cfg-tk-msg').value = d.ticket?.text || 'Precisa de suporte? Abra um ticket.';
+                    document.getElementById('cfg-tk-msg').value = d.ticket?.text || '# <a:dindon:1468425730240286774> Central de Atendimento\n> Precisa de ajuda, tem uma dúvida ou quer fazer uma denúncia? Você está no lugar certo!\n\n<a:seta1Img_adm:1468419286631710821> **Como abrir seu ticket:**\n* Selecione o motivo do seu contato no menu logo abaixo.\n* Evite abrir tickets sem necessidade para não levar um <a:warning:1468425732668784834> `Aviso`.\n* Aguarde pacientemente. Nossa <:staff:1493289738981998652> **Equipe** vai te atender o mais rápido possível.\n\n<:student:1493290481264754729> *Dica: Muitas dúvidas já estão respondidas no <#1487555523888021777>!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
                     document.getElementById('cfg-tk-img').value = d.ticket?.image || '';
 
-                    document.getElementById('cfg-parc-painel').value = d.parceria?.painel || '';
-                    document.getElementById('cfg-parc-post').value = d.parceria?.postagem || '';
-                    document.getElementById('cfg-parc-cat').value = d.parceria?.categoria || '';
                     document.getElementById('cfg-parc-msg').value = d.parceria?.text || 'Clique no botão abaixo para abrir uma parceria.';
                     document.getElementById('cfg-parc-color').value = d.parceria?.color || '#2ECC71';
                     document.getElementById('cfg-parc-img').value = d.parceria?.image || '';
 
-                    document.getElementById('cfg-st-painel').value = d.staff?.channel || '';
-                    document.getElementById('cfg-st-logs').value = d.staff?.logs || '';
                     document.getElementById('cfg-st-msg').value = d.staff?.text || 'Deseja fazer parte da equipe? Clique abaixo!';
                     document.getElementById('cfg-st-img').value = d.staff?.image || '';
 
                     document.getElementById('cfg-eco-active').checked = d.economy?.active ?? true;
-                    document.getElementById('cfg-eco-channel').value = d.economy?.channel || '';
+
+                    // Carrega as tags (objetos de canais bloqueados) salvas do banco
+                    window.blockedChannelsList = d.commands?.blockedChannels || [];
+                    window.renderBlockedChannels();
 
                 } else {
                     document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
                     document.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
                     document.getElementById('cfg-prefix').value = '!';
                     document.getElementById('current-prefix').innerText = '!';
+                    
+                    window.blockedChannelsList = [];
+                    window.renderBlockedChannels();
                 }
             } catch (error) { console.error(error); }
         }
 
-        function backToGuilds() { 
-            document.getElementById('dash-manage-guild').classList.add('hidden'); 
-            document.getElementById('dash-logged-in').classList.remove('hidden'); 
-            selectedGuild = null; 
-        }
+        function backToGuilds() { document.getElementById('dash-manage-guild').classList.add('hidden'); document.getElementById('dash-logged-in').classList.remove('hidden'); selectedGuild = null; }
 
         async function saveGuildSettings() {
             if (!selectedGuild) return;
             const btn = document.getElementById('btn-save');
-            btn.innerHTML = '<i class="animate-spin" data-lucide="refresh-cw"></i> Sincronizando...'; 
-            lucide.createIcons();
-            
+            btn.innerHTML = '<i class="animate-spin" data-lucide="refresh-cw"></i> Sincronizando...'; lucide.createIcons();
             const data = {
                 guildId: selectedGuild.id, guildName: selectedGuild.name, prefix: document.getElementById('cfg-prefix').value || '!', logs: document.getElementById('cfg-logs').value,
                 security: { antispam: document.getElementById('cfg-sec-spam').checked, antilink: document.getElementById('cfg-sec-link').checked, antiwords: document.getElementById('cfg-sec-words').checked, globalMode: document.getElementById('cfg-sec-global').checked, limitBan: parseInt(document.getElementById('cfg-sec-limit').value) || 3, forbiddenWords: document.getElementById('cfg-sec-forbid').value },
@@ -949,6 +958,10 @@
                 parceria: { painel: document.getElementById('cfg-parc-painel').value, postagem: document.getElementById('cfg-parc-post').value, categoria: document.getElementById('cfg-parc-cat').value, text: document.getElementById('cfg-parc-msg').value, color: document.getElementById('cfg-parc-color').value, image: document.getElementById('cfg-parc-img').value },
                 staff: { channel: document.getElementById('cfg-st-painel').value, logs: document.getElementById('cfg-st-logs').value, text: document.getElementById('cfg-st-msg').value, image: document.getElementById('cfg-st-img').value },
                 economy: { active: document.getElementById('cfg-eco-active').checked, channel: document.getElementById('cfg-eco-channel').value },
+                
+                // Salva o Array das Tags no Firebase
+                commands: { blockedChannels: window.blockedChannelsList },
+
                 lastUpdated: new Date().toISOString()
             };
 
@@ -957,25 +970,12 @@
                 await window.fbSetDoc(docRef, data, { merge: true });
                 showToast("✅ Protocolo Sincronizado!");
                 setTimeout(() => document.getElementById('error-banner').classList.add('hidden'), 3000);
-                btn.classList.replace('bg-red-600', 'bg-green-600'); 
-                btn.innerHTML = '<i data-lucide="check"></i> Protocolo Sincronizado!'; 
-                lucide.createIcons(); 
-                document.getElementById('current-prefix').innerText = data.prefix;
-                setTimeout(() => { 
-                    btn.classList.replace('bg-green-600', 'bg-red-600'); 
-                    btn.innerHTML = '<i data-lucide="save"></i> Salvar e Sincronizar'; 
-                    lucide.createIcons(); 
-                }, 2000);
+                btn.classList.replace('bg-red-600', 'bg-green-600'); btn.innerHTML = '<i data-lucide="check"></i> Protocolo Sincronizado!'; lucide.createIcons(); document.getElementById('current-prefix').innerText = data.prefix;
+                setTimeout(() => { btn.classList.replace('bg-green-600', 'bg-red-600'); btn.innerHTML = '<i data-lucide="save"></i> Salvar e Sincronizar'; lucide.createIcons(); }, 2000);
             } catch (e) {
                 showToast("Falha ao Salvar: " + e.message, true);
-                btn.classList.replace('bg-red-600', 'bg-red-800'); 
-                btn.innerHTML = '<i data-lucide="x-circle"></i> Falha ao Salvar'; 
-                lucide.createIcons();
-                setTimeout(() => { 
-                    btn.classList.replace('bg-red-800', 'bg-red-600'); 
-                    btn.innerHTML = '<i data-lucide="save"></i> Tentar Novamente'; 
-                    lucide.createIcons(); 
-                }, 3000);
+                btn.classList.replace('bg-red-600', 'bg-red-800'); btn.innerHTML = '<i data-lucide="x-circle"></i> Falha ao Salvar'; lucide.createIcons();
+                setTimeout(() => { btn.classList.replace('bg-red-800', 'bg-red-600'); btn.innerHTML = '<i data-lucide="save"></i> Tentar Novamente'; lucide.createIcons(); }, 3000);
             }
         }
 
@@ -983,62 +983,16 @@
             { cat: 'Comércio & Patrimônio', icon: 'shopping-cart', desc: 'Gerenciamento de bens e propriedades.', items: [ { cmd: '!loja', desc: 'Abre o catálogo para compra de itens.'}, { cmd: '!casa', desc: 'Gerencia sua residência e cofre.'} ]}, 
             { cat: 'Segurança & Admin', icon: 'shield-alert', desc: 'Ferramentas de moderação.', items: [ { cmd: '!prefixo', desc: 'Altera o prefixo do servidor.'}, { cmd: '!lock', desc: 'Tranca o canal atual.'} ]} 
         ];
-
         function renderWiki() {
-            document.getElementById('wikiNav').innerHTML = wikiDatabase.map(cat => `
-                <button onclick="scrollToWiki('${cat.cat}')" class="w-full text-left p-4 rounded-2xl hover:bg-white/5 text-gray-500 hover:text-white transition flex items-center gap-3 group">
-                    <i data-lucide="${cat.icon}" class="w-4 h-4 group-hover:text-red-600"></i>
-                    <span class="text-[10px] font-black uppercase tracking-widest">${cat.cat}</span>
-                </button>
-            `).join('');
-
-            document.getElementById('wikiContent').innerHTML = wikiDatabase.map(cat => `
-                <div id="cat-${cat.cat.replace(/\s/g, '-')}" class="wiki-section mb-16">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-red-600 mb-6 text-center">${cat.cat}</h3>
-                    <div class="grid gap-4">
-                        ${cat.items.map(cmd => `
-                            <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition group">
-                                <span class="mono text-lg font-black text-white">${cmd.cmd}</span>
-                                <p class="text-gray-400 text-sm mt-1">${cmd.desc}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
+            document.getElementById('wikiNav').innerHTML = wikiDatabase.map(cat => `<button onclick="scrollToWiki('${cat.cat}')" class="w-full text-left p-4 rounded-2xl hover:bg-white/5 text-gray-500 hover:text-white transition flex items-center gap-3 group"><i data-lucide="${cat.icon}" class="w-4 h-4 group-hover:text-red-600"></i><span class="text-[10px] font-black uppercase tracking-widest">${cat.cat}</span></button>`).join('');
+            document.getElementById('wikiContent').innerHTML = wikiDatabase.map(cat => `<div id="cat-${cat.cat.replace(/\s/g, '-')}" class="wiki-section mb-16"><h3 class="text-xs font-black uppercase tracking-widest text-red-600 mb-6 text-center">${cat.cat}</h3><div class="grid gap-4">${cat.items.map(cmd => `<div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition group"><span class="mono text-lg font-black text-white">${cmd.cmd}</span><p class="text-gray-400 text-sm mt-1">${cmd.desc}</p></div>`).join('')}</div></div>`).join('');
             lucide.createIcons();
         }
+        function scrollToWiki(cat) { window.scrollTo({ top: document.getElementById(`cat-${cat.replace(/\s/g, '-')}`).offsetTop - 150, behavior: 'smooth' }); }
+        function filterWiki() { const q = document.getElementById('wikiSearch').value.toLowerCase(); document.querySelectorAll('.wiki-section .glass').forEach(i => i.style.display = i.innerText.toLowerCase().includes(q) ? 'block' : 'none'); }
 
-        function scrollToWiki(cat) { 
-            window.scrollTo({ top: document.getElementById(`cat-${cat.replace(/\s/g, '-')}`).offsetTop - 150, behavior: 'smooth' }); 
-        }
-
-        function filterWiki() { 
-            const q = document.getElementById('wikiSearch').value.toLowerCase(); 
-            document.querySelectorAll('.wiki-section .glass').forEach(i => {
-                i.style.display = i.innerText.toLowerCase().includes(q) ? 'block' : 'none';
-            }); 
-        }
-
-        window.onload = async () => { 
-            renderWiki(); 
-            await checkAuth(); 
-            setTimeout(() => { 
-                document.getElementById('loader').classList.add('opacity-0'); 
-                setTimeout(() => document.getElementById('loader').remove(), 700); 
-            }, 1000); 
-            lucide.createIcons(); 
-        };
-
-        window.onscroll = () => { 
-            const nav = document.getElementById('mainNav'); 
-            if (window.scrollY > 50) {
-                nav.querySelector('div').classList.add('py-2', 'bg-black/80');
-            } else {
-                nav.querySelector('div').classList.remove('py-2', 'bg-black/80');
-            }
-        };
+        window.onload = async () => { renderWiki(); await checkAuth(); setTimeout(() => { document.getElementById('loader').classList.add('opacity-0'); setTimeout(() => document.getElementById('loader').remove(), 700); }, 1000); lucide.createIcons(); };
+        window.onscroll = () => { const nav = document.getElementById('mainNav'); window.scrollY > 50 ? nav.querySelector('div').classList.add('py-2', 'bg-black/80') : nav.querySelector('div').classList.remove('py-2', 'bg-black/80'); };
     </script>
-</body>
-</html>
 </body>
 </html>
