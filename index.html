@@ -70,23 +70,26 @@
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
             const db = getFirestore(app);
-            const appId = typeof __app_id !== 'undefined' ? __app_id : '1:1032087489431:web:b61ee3a3237e28c9d5d2d2';
+            const isCanvas = typeof __firebase_config !== 'undefined';
+            const appId = isCanvas && typeof __app_id !== 'undefined' ? __app_id : '1:1032087489431:web:b61ee3a3237e28c9d5d2d2';
 
             window.stellarDb = db;
             window.stellarAppId = appId;
+            window.isCanvasEnv = isCanvas;
             window.firebaseAuth = auth;
 
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     console.log("Autenticação segura estabelecida com o Firebase.");
                     window.firebaseUserId = user.uid;
+                    window.firebaseUser = user;
                 }
             });
 
             // 🔥 CORREÇÃO DA PERMISSÃO: Tenta logar primeiro com o token forte de edição, ou cai pro anônimo 🔥
             const initAuth = async () => {
                 try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    if (isCanvas && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
                         await signInAnonymously(auth);
@@ -823,9 +826,17 @@
 
             try {
                 if (!window.stellarDb) throw new Error("Base de dados não conectada.");
+                if (!window.firebaseUser) throw new Error("Aguardando sincronização com o Firebase... Tente novamente em 2 segundos.");
                 
-                // 🔥 CAMINHO PÚBLICO: public/data/guildConfigs/{id} 🔥
-                const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id);
+                let docRef;
+                if (window.isCanvasEnv) {
+                    // Caminho exigido apenas para rodar aqui no ambiente de testes
+                    docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id);
+                } else {
+                    // 🔥 CAMINHO REAL NO SEU FIREBASE 🔥 (Mais limpo, direto na pasta 'guildConfigs')
+                    docRef = window.fbDoc(window.stellarDb, 'guildConfigs', id);
+                }
+                
                 const snap = await window.fbGetDoc(docRef);
                 
                 if (snap.exists()) {
@@ -945,9 +956,16 @@
             try {
                 if (!window.stellarDb) throw new Error("Base de dados desconectada.");
                 if (window.firebaseAuthError) throw new Error(`Autenticação negada. Certifique-se de configurar o Firebase corretamente.`);
+                if (!window.firebaseUser) throw new Error(`Aguarde a autenticação concluir para salvar.`);
                 
-                // 🔥 CAMINHO PÚBLICO: public/data/guildConfigs/{id} 🔥
-                const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id);
+                let docRef;
+                if (window.isCanvasEnv) {
+                    docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id);
+                } else {
+                    // Salva direto na coleção limpa do seu banco de dados
+                    docRef = window.fbDoc(window.stellarDb, 'guildConfigs', selectedGuild.id);
+                }
+                
                 await window.fbSetDoc(docRef, data, { merge: true });
                 
                 btn.classList.replace('bg-red-600', 'bg-green-600');
