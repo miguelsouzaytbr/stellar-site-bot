@@ -42,17 +42,30 @@
         import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'stellar-default';
+        // Expor as funções do Firestore para o escopo global para serem usadas no script principal
+        window.fbDoc = doc;
+        window.fbSetDoc = setDoc;
+        window.fbGetDoc = getDoc;
 
-        window.stellarDb = db;
-        window.stellarAppId = appId;
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'stellar-default';
 
-        // Login anônimo para permitir escrita no Firestore via regras de segurança
-        signInAnonymously(auth).catch(console.error);
+                window.stellarDb = db;
+                window.stellarAppId = appId;
+
+                // Login anônimo para permitir escrita no Firestore via regras de segurança
+                signInAnonymously(auth).catch(console.error);
+            } else {
+                console.warn("⚠️ Variáveis do Firebase do Canvas não encontradas. Se estás no GitHub Pages, tens de substituir a inicialização pelas tuas próprias credenciais do Firebase.");
+            }
+        } catch (e) {
+            console.error("Erro fatal ao iniciar Firebase:", e);
+        }
     </script>
 
     <!-- Tailwind & Icons -->
@@ -685,17 +698,17 @@
 
             openTab('geral'); // Abre a aba Geral por padrão
 
-            // Carregar do Firestore
-            const docRef = doc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id);
-            const snap = await getDoc(docRef);
-            
-            if (snap.exists()) {
-                const d = snap.data();
+            try {
+                if (!window.stellarDb) throw new Error("Base de dados Firebase não conectada.");
+
+                // Carregar do Firestore
+                const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id);
+                const snap = await window.fbGetDoc(docRef);
                 
-                // Geral
-                document.getElementById('cfg-prefix').value = d.prefix || '!';
-                document.getElementById('current-prefix').innerText = d.prefix || '!';
-                document.getElementById('cfg-logs').value = d.logs || '';
+                if (snap.exists()) {
+                    const d = snap.data();
+                    
+                    // Geral
                 
                 // Segurança
                 document.getElementById('cfg-sec-spam').checked = d.security?.antispam || false;
@@ -720,21 +733,21 @@
                 document.getElementById('cfg-tk-img').value = d.ticket?.image || '';
 
                 // Staff
-                document.getElementById('cfg-st-painel').value = d.staff?.channel || '';
-                document.getElementById('cfg-st-logs').value = d.staff?.logs || '';
-                document.getElementById('cfg-st-msg').value = d.staff?.text || 'Deseja fazer parte da equipe? Clique abaixo!';
-                document.getElementById('cfg-st-img').value = d.staff?.image || '';
+                    // Economia
+                    document.getElementById('cfg-eco-active').checked = d.economy?.active ?? true;
+                    document.getElementById('cfg-eco-channel').value = d.economy?.channel || '';
 
-                // Economia
-                document.getElementById('cfg-eco-active').checked = d.economy?.active ?? true;
-                document.getElementById('cfg-eco-channel').value = d.economy?.channel || '';
-
-            } else {
-                // Se não existir dados, reseta os inputs visuais
+                } else {
+                    // Se não existir dados, reseta os inputs visuais
+                    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
+                    document.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
+                    document.getElementById('cfg-prefix').value = '!';
+                    document.getElementById('current-prefix').innerText = '!';
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados do painel:", error);
                 document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
                 document.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
-                document.getElementById('cfg-prefix').value = '!';
-                document.getElementById('current-prefix').innerText = '!';
             }
         }
 
@@ -794,8 +807,10 @@
             };
 
             try {
-                const docRef = doc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id);
-                await setDoc(docRef, data, { merge: true });
+                if (!window.stellarDb) throw new Error("Firebase não configurado. Não é possível salvar dados localmente fora do Canvas.");
+
+                const docRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id);
+                await window.fbSetDoc(docRef, data, { merge: true });
                 
                 btn.classList.replace('bg-red-600', 'bg-green-600');
                 btn.innerHTML = '<i data-lucide="check"></i> Protocolo Sincronizado!';
@@ -808,7 +823,15 @@
                     lucide.createIcons();
                 }, 2000);
             } catch (e) {
-                btn.innerHTML = 'Erro ao Sincronizar';
+                console.error("Erro detalhado ao sincronizar (Abre o F12 para investigar):", e);
+                btn.classList.replace('bg-red-600', 'bg-red-800');
+                btn.innerHTML = '<i data-lucide="x-circle"></i> Falha (Ver Console)';
+                lucide.createIcons();
+                setTimeout(() => {
+                    btn.classList.replace('bg-red-800', 'bg-red-600');
+                    btn.innerHTML = '<i data-lucide="save"></i> Sincronizar Protocolos';
+                    lucide.createIcons();
+                }, 3000);
             }
         }
 
