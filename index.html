@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stellar Hub | O Sistema Operacional Definitivo</title>
+    <title>Stellar Hub | Dashboard de Gerenciamento</title>
     
     <!-- SEO & Favicon -->
     <link rel="icon" type="image/jpeg" href="https://i.imgur.com/PDEZ4HT.jpeg">
@@ -17,7 +17,7 @@
     <meta itemprop="name" content="Stellar Hub">
     <meta itemprop="description" content="O Stellar transforma seu Discord em um ecossistema vivo com economia, governo e alertas VIP.">
 
-    <!-- DADOS ESTRUTURADOS (SCHEMA.ORG) PARA O GOOGLE ENTENDER O SITE E PUXAR A FOTO -->
+    <!-- DADOS ESTRUTURADOS (SCHEMA.ORG) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -36,16 +36,26 @@
     }
     </script>
 
-    <!-- OPEN GRAPH (ISSO FAZ A FOTO APARECER NO WHATSAPP E DISCORD) -->
-    <meta property="og:title" content="Stellar Hub | Sistema Operacional Discord">
-    <meta property="og:description" content="Controle sua economia, governe sua nação e não perca nenhuma oferta. Entre no nosso ecossistema!">
-    <meta property="og:image" content="https://i.imgur.com/PDEZ4HT.jpeg">
-    <meta property="og:url" content="https://miguelsouzaytbr.github.io/stellar-site-bot/">
-    <meta property="og:type" content="website">
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://i.imgur.com/PDEZ4HT.jpeg">
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'stellar-default';
 
+        window.stellarDb = db;
+        window.stellarAppId = appId;
+
+        // Login anônimo para permitir escrita no Firestore via regras de segurança
+        signInAnonymously(auth).catch(console.error);
+    </script>
+
+    <!-- Tailwind & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -78,32 +88,21 @@
         .glow-stellar { box-shadow: 0 0 20px rgba(237, 28, 36, 0.2); }
         .glow-stellar-strong { box-shadow: 0 0 40px rgba(237, 28, 36, 0.4); }
 
-        /* Glassmorphism Evolution */
+        /* Glassmorphism */
         .glass { 
             background: rgba(18, 18, 20, 0.7); 
             backdrop-filter: blur(15px); 
             border: 1px solid var(--stellar-border); 
         }
-        .glass-bright {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
 
-        /* Animações de Página */
+        /* Animações */
         .page { display: none; opacity: 0; transform: scale(0.98); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .page.active { display: block; opacity: 1; transform: scale(1); }
 
-        /* Navbar Active State */
         .nav-link { position: relative; transition: all 0.3s; }
-        .nav-link::after { 
-            content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; 
-            background: var(--stellar-red); transition: width 0.3s; 
-        }
         .nav-link.active { color: white; }
-        .nav-link.active::after { width: 100%; }
+        .nav-link.active::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px; background: var(--stellar-red); }
 
-        /* Grid Background Animado */
         .grid-bg {
             background-image: linear-gradient(rgba(237, 28, 36, 0.05) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(237, 28, 36, 0.05) 1px, transparent 1px);
@@ -111,69 +110,61 @@
             mask-image: radial-gradient(circle at center, black, transparent 80%);
         }
 
-        /* Card Hover Effects */
-        .hover-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .hover-card:hover { 
-            transform: translateY(-8px) scale(1.02); 
-            border-color: var(--stellar-red);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 0 0 20px rgba(237, 28, 36, 0.1);
-        }
+        .guild-card { transition: all 0.3s ease; }
+        .guild-card:hover { transform: translateY(-5px); border-color: var(--stellar-red); }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--stellar-dark); }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; transition: 0.3s; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--stellar-red); }
+        /* Custom Checkbox / Toggle */
+        .switch { position: relative; display: inline-block; width: 48px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--stellar-red); }
+        input:checked + .slider:before { transform: translateX(24px); }
 
-        /* Discord Message Mockup */
-        .discord-mockup {
-            background-color: #313338;
-            font-family: 'gg sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
+        .discord-mockup { background-color: #313338; font-family: 'gg sans', sans-serif; }
     </style>
 </head>
 <body class="selection:bg-red-600 selection:text-white">
 
-    <!-- OVERLAY DE CARREGAMENTO INICIAL -->
+    <!-- LOADER -->
     <div id="loader" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center transition-opacity duration-700">
         <div class="text-center">
             <div class="relative w-24 h-24 mx-auto mb-6">
                 <div class="absolute inset-0 border-4 border-red-600/20 rounded-full"></div>
                 <div class="absolute inset-0 border-4 border-red-600 rounded-full border-t-transparent animate-spin"></div>
-                <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="absolute inset-4 w-16 h-16 rounded-full opacity-50" alt="Loader">
             </div>
-            <p class="mono text-[10px] uppercase tracking-[0.5em] text-red-600 animate-pulse">Initializing Stellar OS...</p>
+            <p class="mono text-[10px] uppercase tracking-[0.5em] text-red-600 animate-pulse">Initializing Stellar Dashboard...</p>
         </div>
     </div>
 
-    <!-- BACKGROUND DECORATION -->
-    <div class="fixed inset-0 pointer-events-none z-[-1]">
-        <div class="grid-bg absolute inset-0 opacity-40"></div>
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-red-600/10 blur-[150px] rounded-full"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-red-600/5 blur-[120px] rounded-full"></div>
-    </div>
+    <div class="fixed inset-0 pointer-events-none z-[-1] grid-bg opacity-40"></div>
 
-    <!-- NAVBAR PRINCIPAL -->
+    <!-- NAVBAR -->
     <nav class="fixed top-0 w-full z-[100] transition-all duration-500" id="mainNav">
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="glass rounded-[2rem] px-8 py-4 flex items-center justify-between border-white/5">
                 <div class="flex items-center gap-10">
                     <div class="flex items-center gap-3 group cursor-pointer" onclick="switchPage('home')">
-                        <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-xl border border-red-600/30 group-hover:border-red-600 transition-colors" alt="Stellar Logo">
+                        <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-xl border border-red-600/30 group-hover:border-red-600 transition-colors" alt="Logo">
                         <span class="text-2xl font-black tracking-tighter uppercase hidden md:block">STELLAR<span class="text-red-600">.</span></span>
                     </div>
 
                     <div class="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
-                        <button onclick="switchPage('home')" class="nav-link active hover:text-white" data-page="home">Início</button>
-                        <button onclick="switchPage('wiki')" class="nav-link hover:text-white" data-page="wiki">Comandos (Wiki)</button>
-                        <button onclick="switchPage('staff')" class="nav-link hover:text-white" data-page="staff">Staff</button>
+                        <button onclick="switchPage('home')" class="nav-link active" data-page="home">Início</button>
+                        <button onclick="switchPage('wiki')" class="nav-link" data-page="wiki">Wiki</button>
+                        <button onclick="switchPage('staff')" class="nav-link" data-page="staff">Staff</button>
+                        <button onclick="switchPage('dashboard')" class="nav-link text-red-500" data-page="dashboard">Dashboard</button>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <a href="https://discord.gg/MhJPqajwfT" target="_blank" class="hidden sm:flex bg-[#5865F2] hover:bg-[#4752C4] px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all items-center gap-2 text-white">
-                        <i data-lucide="message-square" class="w-4 h-4"></i> Discord
-                    </a>
+                    <div id="user-info" class="hidden flex items-center gap-3 bg-white/5 p-1 pr-4 rounded-full border border-white/10">
+                        <img id="user-avatar" class="w-8 h-8 rounded-full" src="" alt="">
+                        <span id="user-tag" class="text-[10px] font-bold uppercase">User</span>
+                    </div>
+                    <button id="btn-login-discord" onclick="loginDiscord()" class="bg-red-600 hover:bg-red-700 px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 text-white">
+                        <i data-lucide="log-in" class="w-4 h-4"></i> Login
+                    </button>
                 </div>
             </div>
         </div>
@@ -185,6 +176,7 @@
             <button onclick="switchPage('home')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="home"></i></button>
             <button onclick="switchPage('wiki')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="book-open"></i></button>
             <button onclick="switchPage('staff')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="shield"></i></button>
+            <button onclick="switchPage('dashboard')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="layout-dashboard"></i></button>
         </div>
     </div>
 
@@ -203,20 +195,17 @@
                     <p class="text-gray-400 text-lg md:text-xl max-w-xl mb-12 leading-relaxed">
                         O Stellar transforma seu servidor em um ecossistema vivo. Economia avançada, mercado de ações, governo, e as <b>melhores promoções e alertas VIP</b> integrados.
                     </p>
-                    
-                    <!-- Botões de Ação Principais -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=4504838994390134&integration_type=0&scope=applications.commands+bot" target="_blank" class="bg-red-600 hover:bg-red-700 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest text-white transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(237,28,36,0.3)] hover:scale-105">
+                            <i data-lucide="plus-circle" class="w-5 h-5"></i> Adicionar Bot
+                        </a>
                         <a href="https://discord.gg/MhJPqajwfT" target="_blank" class="bg-[#5865F2] hover:bg-[#4752C4] px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest text-white transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(88,101,242,0.2)] hover:scale-105">
                             <i data-lucide="message-square" class="w-5 h-5"></i> Comunidade Discord
-                        </a>
-                        <a href="https://www.whatsapp.com/channel/0029VbCltpZ8kyyRIHtW460n" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest text-white transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(37,211,102,0.2)] hover:scale-105">
-                            <i data-lucide="phone" class="w-5 h-5"></i> Grupo VIP WhatsApp
                         </a>
                     </div>
                 </div>
 
                 <div class="relative hidden lg:block">
-                    <!-- Discord Mockup Visual (Isso substitui o visual de documentação pura) -->
                     <div class="discord-mockup rounded-xl p-5 shadow-2xl border border-[#1e1f22] transform rotate-2 hover:rotate-0 transition-all duration-500 relative z-10 w-full max-w-md ml-auto">
                         <div class="flex items-start gap-4">
                             <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-full" alt="Bot Avatar">
@@ -226,8 +215,6 @@
                                     <span class="bg-[#5865F2] text-white text-[10px] uppercase font-bold px-1.5 py-0.5 rounded flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> BOT</span>
                                     <span class="text-[#949ba4] text-xs text-medium">Hoje às 14:32</span>
                                 </div>
-                                
-                                <!-- Embed Mockup -->
                                 <div class="bg-[#2b2d31] border-l-4 border-[#ED1C24] rounded pb-4 mt-2">
                                     <div class="p-4">
                                         <div class="flex items-center gap-2 text-white font-bold mb-2">
@@ -237,64 +224,172 @@
                                         <h3 class="text-[#00a8fc] font-semibold text-base mb-2">🔴 Sistema Operacional Ativo</h3>
                                         <p class="text-[#dbdee1] text-sm leading-relaxed mb-4">
                                             Bem-vindo à interface Stellar Wiki. O prefixo deste servidor é <code class="bg-[#1e1f22] px-1 rounded text-sm">!</code><br><br>
-                                            **Como usar este menu?**<br>
                                             1️⃣ Selecione uma Categoria no primeiro menu.<br>
-                                            2️⃣ Selecione um Comando no segundo menu para ler como ele funciona!
+                                            2️⃣ Selecione um Comando no segundo menu.
                                         </p>
                                         <div class="grid grid-cols-2 gap-4">
                                             <div>
                                                 <h4 class="text-white font-bold text-sm mb-1">📊 Estatísticas</h4>
-                                                <p class="text-[#dbdee1] text-sm"><code class="bg-[#1e1f22] px-1 rounded text-sm">34</code> Comandos<br><code class="bg-[#1e1f22] px-1 rounded text-sm">12ms</code> Latência</p>
+                                                <p class="text-[#dbdee1] text-sm"><code class="bg-[#1e1f22] px-1 rounded text-sm">34</code> Comandos</p>
                                             </div>
                                             <div>
-                                                <h4 class="text-white font-bold text-sm mb-1">🌍 Localização</h4>
-                                                <p class="text-[#dbdee1] text-sm">Região: <code class="bg-[#1e1f22] px-1 rounded text-sm">PT-BR</code></p>
+                                                <h4 class="text-white font-bold text-sm mb-1">🌍 Região</h4>
+                                                <p class="text-[#dbdee1] text-sm"><code class="bg-[#1e1f22] px-1 rounded text-sm">PT-BR</code></p>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Discord Select Menu Mockup -->
-                                    <div class="mx-4 mt-2 bg-[#1e1f22] rounded flex justify-between items-center p-2 border border-[#313338] cursor-pointer hover:bg-[#2b2d31]">
-                                        <span class="text-[#dbdee1] text-sm">📁 1. Selecione um setor do sistema...</span>
+                                    <div class="mx-4 mt-2 bg-[#1e1f22] rounded flex justify-between items-center p-2 border border-[#313338] cursor-pointer">
+                                        <span class="text-[#dbdee1] text-sm">📁 Selecione um setor...</span>
                                         <i data-lucide="chevron-down" class="w-4 h-4 text-[#949ba4]"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Glow Effect -->
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-red-600/30 blur-[80px] rounded-full z-0 pointer-events-none"></div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- #################### PÁGINA: WIKI (HELP) #################### -->
+    <!-- #################### PÁGINA: DASHBOARD (LOGIN & SELEÇÃO) #################### -->
+    <main id="page-dashboard" class="page pt-40 pb-32 px-6">
+        <section class="max-w-7xl mx-auto">
+            
+            <!-- Estado: Não logado -->
+            <div id="dash-logged-out" class="text-center py-20">
+                <div class="w-24 h-24 bg-red-600/10 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border border-red-600/20">
+                    <i data-lucide="shield-lock" class="w-10 h-10 text-red-600"></i>
+                </div>
+                <h2 class="text-4xl font-black uppercase tracking-tighter mb-4">Acesso Restrito</h2>
+                <p class="text-gray-500 max-w-md mx-auto mb-10 font-medium italic">Faça login com sua conta do Discord para gerenciar os protocolos de segurança dos seus servidores.</p>
+                <button onclick="loginDiscord()" class="bg-[#5865F2] hover:bg-[#4752C4] px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest text-white transition-all inline-flex items-center gap-3 shadow-2xl">
+                    <i data-lucide="log-in" class="w-5 h-5"></i> Entrar com Discord
+                </button>
+            </div>
+
+            <!-- Estado: Logado (Seleção de Guild) -->
+            <div id="dash-logged-in" class="hidden">
+                <div class="flex items-center justify-between mb-12">
+                    <div>
+                        <h2 class="text-4xl font-black uppercase tracking-tighter">Meus Servidores</h2>
+                        <p class="text-gray-500 font-medium">Exibindo apenas servidores onde você é <span class="text-red-500 font-bold uppercase">Administrador</span>.</p>
+                    </div>
+                    <button onclick="logoutDiscord()" class="text-gray-500 hover:text-red-500 text-[10px] font-black uppercase tracking-widest">Sair da Conta</button>
+                </div>
+
+                <div id="guild-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Gerado via JS -->
+                    <div class="col-span-full py-20 flex flex-col items-center justify-center text-gray-600">
+                        <div class="animate-spin mb-4"><i data-lucide="refresh-cw"></i></div>
+                        <p class="mono text-[10px] uppercase tracking-widest">Sincronizando com API do Discord...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado: Gerenciar Servidor -->
+            <div id="dash-manage-guild" class="hidden">
+                <button onclick="backToGuilds()" class="flex items-center gap-2 text-gray-500 hover:text-white transition mb-10 font-bold uppercase text-[10px] tracking-widest">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar para lista
+                </button>
+
+                <div class="grid lg:grid-cols-3 gap-12">
+                    <!-- Sidebar Server Info -->
+                    <aside class="lg:col-span-1">
+                        <div class="glass p-10 rounded-[3rem] text-center sticky top-32">
+                            <img id="manage-icon" class="w-24 h-24 rounded-3xl mx-auto mb-6 border-2 border-red-600/50" src="" alt="">
+                            <h3 id="manage-name" class="text-2xl font-black uppercase tracking-tighter mb-2">Server Name</h3>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-8">Gestão de Protocolos</p>
+                            
+                            <div class="space-y-3">
+                                <button class="w-full p-4 rounded-2xl bg-red-600 text-[10px] font-black uppercase tracking-widest text-white flex items-center gap-3">
+                                    <i data-lucide="settings" class="w-4 h-4"></i> Gerais
+                                </button>
+                                <button class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
+                                    <i data-lucide="coins" class="w-4 h-4"></i> Economia
+                                </button>
+                                <button class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
+                                    <i data-lucide="shield" class="w-4 h-4"></i> Segurança
+                                </button>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Painel de Inputs -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="glass p-10 rounded-[3rem]">
+                            <h4 class="text-xl font-black uppercase tracking-tighter mb-10 flex items-center gap-3">
+                                <span class="w-1 h-6 bg-red-600 rounded-full"></span> 
+                                Configurações Globais
+                            </h4>
+
+                            <div class="space-y-10">
+                                <!-- Prefixo -->
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Prefixo do Comando</label>
+                                    <div class="relative">
+                                        <input type="text" id="cfg-prefix" maxlength="3" placeholder="!" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl text-2xl font-bold focus:border-red-600 outline-none transition uppercase">
+                                        <div class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] text-gray-600 font-bold uppercase tracking-widest">Atual: <span id="current-prefix">!</span></div>
+                                    </div>
+                                </div>
+
+                                <!-- Log Channel -->
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">ID do Canal de Logs</label>
+                                    <input type="text" id="cfg-logs" placeholder="000000000000000000" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                </div>
+
+                                <!-- Toggles -->
+                                <div class="grid gap-4">
+                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
+                                        <div>
+                                            <h5 class="text-xs font-black uppercase">Sistema de Economia</h5>
+                                            <p class="text-[10px] text-gray-600 font-medium">Habilitar carteira e inventário global.</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="cfg-economy" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
+                                        <div>
+                                            <h5 class="text-xs font-black uppercase">Filtro Anti-Spam</h5>
+                                            <p class="text-[10px] text-gray-600 font-medium">Monitoramento de mensagens repetitivas.</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="cfg-antispam">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button id="btn-save" onclick="saveGuildSettings()" class="w-full bg-red-600 hover:bg-red-700 py-6 rounded-[2rem] font-black uppercase tracking-[0.4em] text-white transition shadow-xl shadow-red-600/20 active:scale-95 flex items-center justify-center gap-3">
+                                    <i data-lucide="save" class="w-5 h-5"></i> Sincronizar Protocolos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- #################### PÁGINA: WIKI #################### -->
     <main id="page-wiki" class="page pt-40 pb-32 px-6">
         <section class="max-w-7xl mx-auto">
             <div class="text-center mb-20">
                 <h2 class="text-5xl font-black tracking-tighter uppercase mb-4 text-white">Central de Comandos</h2>
                 <p class="text-gray-500 max-w-2xl mx-auto font-medium">Wiki oficial. Aprenda a usar a economia, criar negócios e dominar o sistema.</p>
             </div>
-
             <div class="flex flex-col lg:flex-row gap-12">
-                <!-- Sidebar Categorias -->
-                <aside class="lg:w-1/4">
-                    <div class="sticky top-32 space-y-2" id="wikiNav">
-                        <!-- Categorias injetadas via JS -->
-                    </div>
-                </aside>
-
-                <!-- Área de Comandos -->
+                <aside class="lg:w-1/4"><div class="sticky top-32 space-y-2" id="wikiNav"></div></aside>
                 <div class="flex-1">
                     <div class="relative mb-12">
                         <i data-lucide="search" class="absolute left-6 top-1/2 -translate-y-1/2 text-red-600"></i>
-                        <input type="text" id="wikiSearch" oninput="filterWiki()" placeholder="Procurar protocolo (ex: !loja, !pay)..." class="w-full bg-white/5 border border-white/10 py-6 pl-16 pr-6 rounded-[2rem] text-lg font-bold focus:border-red-600 outline-none transition-all">
+                        <input type="text" id="wikiSearch" oninput="filterWiki()" placeholder="Procurar protocolo..." class="w-full bg-white/5 border border-white/10 py-6 pl-16 pr-6 rounded-[2rem] text-lg font-bold focus:border-red-600 outline-none transition">
                     </div>
-
-                    <div id="wikiContent" class="space-y-6">
-                        <!-- Comandos injetados via JS -->
-                    </div>
+                    <div id="wikiContent" class="space-y-6"></div>
                 </div>
             </div>
         </section>
@@ -304,48 +399,24 @@
     <main id="page-staff" class="page pt-40 pb-32 px-6">
         <section class="max-w-7xl mx-auto text-center">
             <h2 class="text-5xl font-black tracking-tighter uppercase mb-20 text-white">⁝ Gestão Interna ‧₊</h2>
-            
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Direção -->
                 <div class="glass p-10 rounded-[3rem] border-red-600/30 glow-stellar">
-                    <div class="w-16 h-16 bg-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-red-600/20">
-                        <i data-lucide="crown" class="w-8 h-8 text-white"></i>
-                    </div>
-                    <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Diretoria Executiva</h4>
+                    <div class="w-16 h-16 bg-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6"><i data-lucide="crown" class="w-8 h-8 text-white"></i></div>
+                    <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Diretoria</h4>
                     <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Poder Central</p>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-center gap-3 p-4 bg-black/30 rounded-2xl border border-white/5">
-                            <span class="font-bold text-sm">Fast21 ‧₊</span>
-                        </div>
-                    </div>
+                    <div class="flex items-center justify-center gap-3 p-4 bg-black/30 rounded-2xl border border-white/5"><span class="font-bold text-sm">Fast21 ‧₊</span></div>
                 </div>
-
-                <!-- Administração -->
                 <div class="glass p-10 rounded-[3rem]">
-                    <div class="w-16 h-16 bg-zinc-800 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
-                        <i data-lucide="shield-check" class="w-8 h-8 text-red-600"></i>
-                    </div>
+                    <div class="w-16 h-16 bg-zinc-800 rounded-3xl flex items-center justify-center mx-auto mb-6"><i data-lucide="shield-check" class="w-8 h-8 text-red-600"></i></div>
                     <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Administração</h4>
                     <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Gestão de Operações</p>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-center gap-2 text-gray-400 text-sm py-4 italic">
-                            Aguardando nomeações...
-                        </div>
-                    </div>
+                    <div class="text-gray-400 text-sm py-4 italic">Aguardando nomeações...</div>
                 </div>
-
-                <!-- Suporte -->
                 <div class="glass p-10 rounded-[3rem]">
-                    <div class="w-16 h-16 bg-zinc-800 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
-                        <i data-lucide="message-square" class="w-8 h-8 text-red-600"></i>
-                    </div>
+                    <div class="w-16 h-16 bg-zinc-800 rounded-3xl flex items-center justify-center mx-auto mb-6"><i data-lucide="message-square" class="w-8 h-8 text-red-600"></i></div>
                     <h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Ajudantes Elite</h4>
                     <p class="text-gray-500 text-xs font-bold uppercase tracking-[0.3em] mb-6">Suporte ao Usuário</p>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-center gap-2 text-gray-400 text-sm py-4 italic">
-                            Processo seletivo aberto.
-                        </div>
-                    </div>
+                    <div class="text-gray-400 text-sm py-4 italic">Processo seletivo aberto.</div>
                 </div>
             </div>
         </section>
@@ -358,123 +429,218 @@
                 <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-8 h-8 rounded-xl" alt="Logo">
                 <span class="text-xl font-black tracking-tighter uppercase">STELLAR<span class="text-red-600">.</span></span>
             </div>
-            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest text-center">© 2026 Stellar Hub. Desenvolvido para Comunidades de Elite.</p>
+            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest text-center">© 2026 Stellar Hub. O Sistema Definitivo.</p>
         </div>
     </footer>
 
-    <!-- LÓGICA CORE DA WIKI -->
     <script>
-        // --- BANCO DE DADOS DA WIKI (Importado do seu help.js) ---
+        // CONFIG DISCORD REAL
+        const CLIENT_ID = '976607745102979092'; // O ID que você mandou no invite
+        const REDIRECT_URI = 'https://miguelsouzaytbr.github.io/stellar-site-bot/';
+        const SCOPES = 'identify guilds';
+
+        let userAccessToken = null;
+        let selectedGuild = null;
+
+        // --- DASHBOARD LOGIC (REAL LOGIN) ---
+
+        function loginDiscord() {
+            const url = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}`;
+            window.location.href = url;
+        }
+
+        function logoutDiscord() {
+            localStorage.removeItem('stellar_token');
+            window.location.hash = '';
+            location.reload();
+        }
+
+        async function checkAuth() {
+            const hash = window.location.hash;
+            let token = localStorage.getItem('stellar_token');
+
+            if (hash && hash.includes('access_token')) {
+                const params = new URLSearchParams(hash.substring(1));
+                token = params.get('access_token');
+                localStorage.setItem('stellar_token', token);
+                window.location.hash = ''; // Limpa URL
+            }
+
+            if (token) {
+                userAccessToken = token;
+                document.getElementById('dash-logged-out').classList.add('hidden');
+                document.getElementById('dash-logged-in').classList.remove('hidden');
+                document.getElementById('btn-login-discord').classList.add('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                
+                await fetchUser();
+                await fetchGuilds();
+            }
+        }
+
+        async function fetchUser() {
+            try {
+                const res = await fetch('https://discord.com/api/users/@me', {
+                    headers: { 'Authorization': `Bearer ${userAccessToken}` }
+                });
+                const data = await res.json();
+                if (data.id) {
+                    document.getElementById('user-tag').innerText = data.username;
+                    document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`;
+                } else {
+                    logoutDiscord(); // Token expirado
+                }
+            } catch (e) { logoutDiscord(); }
+        }
+
+        async function fetchGuilds() {
+            const listEl = document.getElementById('guild-list');
+            try {
+                const res = await fetch('https://discord.com/api/users/@me/guilds', {
+                    headers: { 'Authorization': `Bearer ${userAccessToken}` }
+                });
+                const guilds = await res.json();
+                
+                // Filtra: Administradores (permissão 0x8 ou 0x200000000000)
+                const adminGuilds = guilds.filter(g => (g.permissions & 0x8) === 0x8 || (g.permissions & 0x20) === 0x20);
+
+                if (adminGuilds.length === 0) {
+                    listEl.innerHTML = `<div class="col-span-full py-20 text-center opacity-50 font-bold uppercase text-xs">Nenhum servidor com permissão de Admin encontrado.</div>`;
+                    return;
+                }
+
+                listEl.innerHTML = adminGuilds.map(g => `
+                    <div class="glass p-6 rounded-[2.5rem] guild-card cursor-pointer flex flex-col justify-between" onclick="manageGuild('${g.id}', '${g.name}', '${g.icon}')">
+                        <div class="flex items-center gap-4 mb-6">
+                            ${g.icon 
+                                ? `<img class="w-14 h-14 rounded-2xl border border-white/10" src="https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png">`
+                                : `<div class="w-14 h-14 bg-zinc-800 rounded-2xl flex items-center justify-center font-black">${g.name.charAt(0)}</div>`
+                            }
+                            <div>
+                                <h4 class="font-black text-sm uppercase truncate max-w-[150px]">${g.name}</h4>
+                                <span class="text-[9px] font-black text-red-600 uppercase tracking-widest">Protocolo Ativo</span>
+                            </div>
+                        </div>
+                        <button class="w-full py-3 bg-red-600/10 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition">Configurar</button>
+                    </div>
+                `).join('');
+                
+                lucide.createIcons();
+            } catch (e) {
+                listEl.innerHTML = `<div class="col-span-full py-20 text-center text-red-500 font-bold uppercase text-xs">Erro ao carregar servidores. Verifique sua conexão.</div>`;
+            }
+        }
+
+        async function manageGuild(id, name, icon) {
+            selectedGuild = { id, name };
+            document.getElementById('dash-logged-in').classList.add('hidden');
+            document.getElementById('dash-manage-guild').classList.remove('hidden');
+            
+            document.getElementById('manage-name').innerText = name;
+            document.getElementById('manage-icon').src = icon 
+                ? `https://cdn.discordapp.com/icons/${id}/${icon}.png`
+                : 'https://i.imgur.com/PDEZ4HT.jpeg';
+
+            // Carregar do Firestore
+            const docRef = doc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id);
+            const snap = await getDoc(docRef);
+            
+            if (snap.exists()) {
+                const data = snap.data();
+                document.getElementById('cfg-prefix').value = data.prefix || '!';
+                document.getElementById('current-prefix').innerText = data.prefix || '!';
+                document.getElementById('cfg-logs').value = data.logs || '';
+                document.getElementById('cfg-economy').checked = data.economy ?? true;
+                document.getElementById('cfg-antispam').checked = data.antispam ?? false;
+            }
+        }
+
+        function backToGuilds() {
+            document.getElementById('dash-manage-guild').classList.add('hidden');
+            document.getElementById('dash-logged-in').classList.remove('hidden');
+            selectedGuild = null;
+        }
+
+        async function saveGuildSettings() {
+            if (!selectedGuild) return;
+
+            const btn = document.getElementById('btn-save');
+            btn.innerHTML = '<i class="animate-spin" data-lucide="refresh-cw"></i> Sincronizando...';
+            lucide.createIcons();
+
+            const data = {
+                guildId: selectedGuild.id,
+                guildName: selectedGuild.name,
+                prefix: document.getElementById('cfg-prefix').value || '!',
+                logs: document.getElementById('cfg-logs').value,
+                economy: document.getElementById('cfg-economy').checked,
+                antispam: document.getElementById('cfg-antispam').checked,
+                lastUpdated: new Date().toISOString()
+            };
+
+            try {
+                const docRef = doc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id);
+                await setDoc(docRef, data, { merge: true });
+                
+                btn.classList.replace('bg-red-600', 'bg-green-600');
+                btn.innerHTML = '<i data-lucide="check"></i> Protocolo Sincronizado!';
+                lucide.createIcons();
+                document.getElementById('current-prefix').innerText = data.prefix;
+
+                setTimeout(() => {
+                    btn.classList.replace('bg-green-600', 'bg-red-600');
+                    btn.innerHTML = '<i data-lucide="save"></i> Sincronizar Protocolos';
+                    lucide.createIcons();
+                }, 2000);
+            } catch (e) {
+                btn.innerHTML = 'Erro ao Sincronizar';
+            }
+        }
+
+        // --- NAVEGAÇÃO & WIKI ---
+
         const wikiDatabase = [
-            { cat: 'Comércio & Patrimônio', icon: 'shopping-cart', desc: 'Gerenciamento de bens, itens e propriedades.', items: [
-                { cmd: '!loja', desc: 'Abre o catálogo para compra de itens de consumo e utilitários.'},
-                { cmd: '!mercado', desc: 'Acessa o mercado de ações e venda de itens globais.'},
-                { cmd: '!inventario', desc: 'Abre sua mochila para ver os itens que você possui.'},
-                { cmd: '!imoveis', desc: 'Lista os imóveis disponíveis para compra na imobiliária.'},
-                { cmd: '!casa', desc: 'Gerencia a casa que você comprou (visitas, cofre, etc).'},
-                { cmd: '!concessionaria', desc: 'Catálogo de veículos disponíveis para compra.'},
-                { cmd: '!garagem', desc: 'Veja e gerencie seus carros comprados.'},
-                { cmd: '!abastecer', desc: 'Enche o tanque do seu veículo em uso.'},
-                { cmd: '!tuning', desc: 'Melhora o motor e a estética do seu veículo.'},
-                { cmd: '!racha [@user]', desc: 'Desafia outro jogador para uma corrida valendo dinheiro.'},
-                { cmd: '!petshop', desc: 'Compre animais de estimação para te fazer companhia.'},
-                { cmd: '!pet', desc: 'Cuide, alimente e brinque com seu pet.'},
-                { cmd: '!bau', desc: 'Abre o baú da sua casa para guardar itens pesados.'}
+            { cat: 'Comércio & Patrimônio', icon: 'shopping-cart', desc: 'Gerenciamento de bens e propriedades.', items: [
+                { cmd: '!loja', desc: 'Abre o catálogo para compra de itens.'},
+                { cmd: '!casa', desc: 'Gerencia sua residência e cofre.'}
             ]},
-            { cat: 'Carreiras & Desenvolvimento', icon: 'briefcase', desc: 'Formas honestas de ganhar dinheiro e subir de nível.', items: [
-                { cmd: '!work', desc: 'Trabalha no seu emprego atual para receber seu salário.'},
-                { cmd: '!daily', desc: 'Resgata sua recompensa financeira diária.'},
-                { cmd: '!minerar', desc: 'Vai para as minas extrair minérios valiosos. Requer Picareta.'},
-                { cmd: '!pescar', desc: 'Pesca peixes no lago municipal. Requer Vara de Pesca.'},
-                { cmd: '!cacar', desc: 'Vai caçar na floresta. Requer licença e arma.'},
-                { cmd: '!explorar', desc: 'Explora o mapa em busca de itens abandonados.'},
-                { cmd: '!youtube', desc: 'Gerencia sua carreira como criador de conteúdo.'},
-                { cmd: '!postar', desc: 'Grava e posta um vídeo no seu canal para ganhar views.'},
-                { cmd: '!canal', desc: 'Mostra as estatísticas do seu canal.'},
-                { cmd: '!estudar', desc: 'Aumenta sua inteligência para conseguir empregos melhores.'},
-                { cmd: '!xp', desc: 'Mostra seu nível atual e experiência.'},
-                { cmd: '!top', desc: 'Mostra o ranking dos jogadores mais ricos/experientes.'}
-            ]},
-            { cat: 'Sistema Bancário & Risco', icon: 'landmark', desc: 'Gestão financeira, PIX e atividades ilícitas.', items: [
-                { cmd: '!atm', desc: 'Abre o caixa eletrônico para ver seu saldo, banco e dívidas.'},
-                { cmd: '!depositar [valor]', desc: 'Guarda dinheiro da carteira no banco (protegido de roubos).'},
-                { cmd: '!sacar [valor]', desc: 'Retira dinheiro do banco para a carteira.'},
-                { cmd: '!pay [@user] [valor]', desc: 'Envia dinheiro via PIX para outro usuário.'},
-                { cmd: '!apostar [valor]', desc: 'Aposta dinheiro no cassino.'},
-                { cmd: '!coinflip [cara/coroa]', desc: 'Aposta cara ou coroa contra outro jogador.'},
-                { cmd: '!roubar [@user]', desc: 'Tenta bater a carteira de outro usuário. (Pode dar cadeia!)'},
-                { cmd: '!assaltar', desc: 'Forma uma equipe para assaltar o banco central.'}
-            ]},
-            { cat: 'Governo & Macroeconomia', icon: 'building-2', desc: 'Administração da cidade e pólos industriais.', items: [
-                { cmd: '!governo', desc: 'Painel do Prefeito para gerenciar tesouraria e impostos.'},
-                { cmd: '!industria', desc: 'Constrói e gerencia fábricas usando o fundo do governo.'},
-                { cmd: '!topgovernos', desc: 'Ranking das cidades (servidores) mais ricas e populosas.'}
-            ]},
-            { cat: 'Segurança & Admin', icon: 'shield-alert', desc: 'Ferramentas exclusivas para a staff do servidor.', items: [
-                { cmd: '!prefixo [novo]', desc: 'Altera o prefixo do bot neste servidor.'},
-                { cmd: '!setlang', desc: 'Altera o idioma do bot no servidor.'},
-                { cmd: '!ban [@user]', desc: 'Bane um usuário do servidor.'},
-                { cmd: '!kick [@user]', desc: 'Expulsa um usuário do servidor.'},
-                { cmd: '!clear [1-100]', desc: 'Apaga uma quantidade de mensagens do canal.'},
-                { cmd: '!lock', desc: 'Tranca o canal atual (impede envio de mensagens).'},
-                { cmd: '!unlock', desc: 'Destranca o canal atual.'},
-                { cmd: '!seguranca', desc: 'Abre o painel de proteção anti-raid/anti-nuke.'},
-                { cmd: '!addmoney', desc: '(Admin Eco) Adiciona dinheiro a um usuário.'},
-                { cmd: '!reseteco', desc: '(Admin Eco) Reseta toda a economia do servidor.'}
+            { cat: 'Segurança & Admin', icon: 'shield-alert', desc: 'Ferramentas de moderação.', items: [
+                { cmd: '!prefixo', desc: 'Altera o prefixo do servidor.'},
+                { cmd: '!lock', desc: 'Tranca o canal atual.'}
             ]}
         ];
-
-        // --- CORE FUNCTIONS ---
 
         function switchPage(pageId) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => {
-                l.classList.remove('active', 'text-white');
-                if(l.dataset.page === pageId) l.classList.add('active', 'text-white');
+                l.classList.remove('active');
+                if(l.dataset.page === pageId) l.classList.add('active');
             });
-            
-            const targetPage = document.getElementById(`page-${pageId}`);
-            if(targetPage) {
-                targetPage.classList.add('active');
-            }
+            const target = document.getElementById(`page-${pageId}`);
+            if(target) target.classList.add('active');
         }
 
         function renderWiki() {
-            const nav = document.getElementById('wikiNav');
-            const content = document.getElementById('wikiContent');
-            
-            nav.innerHTML = wikiDatabase.map(cat => `
+            document.getElementById('wikiNav').innerHTML = wikiDatabase.map(cat => `
                 <button onclick="scrollToWiki('${cat.cat}')" class="w-full text-left p-4 rounded-2xl hover:bg-white/5 text-gray-500 hover:text-white transition flex items-center gap-3 group">
                     <i data-lucide="${cat.icon}" class="w-4 h-4 group-hover:text-red-600"></i>
                     <span class="text-[10px] font-black uppercase tracking-widest">${cat.cat}</span>
                 </button>
             `).join('');
-
-            content.innerHTML = wikiDatabase.map(cat => `
+            document.getElementById('wikiContent').innerHTML = wikiDatabase.map(cat => `
                 <div id="cat-${cat.cat.replace(/\s/g, '-')}" class="wiki-section mb-16">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="h-px flex-1 bg-white/5"></div>
-                        <h3 class="text-[10px] font-black uppercase tracking-[0.5em] text-red-600">${cat.cat}</h3>
-                        <div class="h-px flex-1 bg-white/5"></div>
-                    </div>
-                    <p class="text-center text-gray-500 text-sm mb-8">${cat.desc}</p>
-                    
+                    <h3 class="text-xs font-black uppercase tracking-widest text-red-600 mb-6 text-center">${cat.cat}</h3>
                     <div class="grid gap-4">
                         ${cat.items.map(cmd => `
-                            <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group">
-                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                    <div>
-                                        <span class="mono text-lg font-black text-white">${cmd.cmd}</span>
-                                        <p class="text-gray-400 text-sm font-medium mt-1">${cmd.desc}</p>
-                                    </div>
-                                </div>
+                            <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition group">
+                                <span class="mono text-lg font-black text-white">${cmd.cmd}</span>
+                                <p class="text-gray-400 text-sm mt-1">${cmd.desc}</p>
                             </div>
                         `).join('')}
                     </div>
                 </div>
             `).join('');
-            
             lucide.createIcons();
         }
 
@@ -485,34 +651,22 @@
 
         function filterWiki() {
             const q = document.getElementById('wikiSearch').value.toLowerCase();
-            const items = document.querySelectorAll('.wiki-section .glass');
-            items.forEach(i => {
-                const text = i.innerText.toLowerCase();
-                i.style.display = text.includes(q) ? 'block' : 'none';
-            });
+            document.querySelectorAll('.wiki-section .glass').forEach(i => i.style.display = i.innerText.toLowerCase().includes(q) ? 'block' : 'none');
         }
 
-        // --- INIT ---
-        window.onload = () => {
+        window.onload = async () => {
+            renderWiki();
+            await checkAuth();
             setTimeout(() => {
                 document.getElementById('loader').classList.add('opacity-0');
                 setTimeout(() => document.getElementById('loader').remove(), 700);
             }, 1000);
-
             lucide.createIcons();
-            renderWiki();
         };
 
-        // Efeito de scroll na navbar
         window.onscroll = () => {
             const nav = document.getElementById('mainNav');
-            if (window.scrollY > 50) {
-                nav.querySelector('div').classList.add('py-2', 'bg-black/80');
-                nav.querySelector('div').classList.remove('py-4');
-            } else {
-                nav.querySelector('div').classList.remove('py-2', 'bg-black/80');
-                nav.querySelector('div').classList.add('py-4');
-            }
+            window.scrollY > 50 ? nav.querySelector('div').classList.add('py-2', 'bg-black/80') : nav.querySelector('div').classList.remove('py-2', 'bg-black/80');
         };
     </script>
 </body>
