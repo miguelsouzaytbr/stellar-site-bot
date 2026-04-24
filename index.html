@@ -48,24 +48,15 @@
         window.fbGetDoc = getDoc;
 
         try {
-            if (typeof __firebase_config !== 'undefined') {
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                const db = getFirestore(app);
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'stellar-default';
-
-                window.stellarDb = db;
-                window.stellarAppId = appId;
-
-                // Login anônimo para permitir escrita no Firestore via regras de segurança
-                signInAnonymously(auth).catch(console.error);
-            } else {
-                console.warn("⚠️ Variáveis do Firebase do Canvas não encontradas. Se estás no GitHub Pages, tens de substituir a inicialização pelas tuas próprias credenciais do Firebase.");
-            }
-        } catch (e) {
-            console.error("Erro fatal ao iniciar Firebase:", e);
-        }
+            // Tira a verificação do typeof __firebase_config e coloca as tuas chaves direto:
+             const firebaseConfig = {
+                 apiKey: "AIzaSyB...", // COLA A TUA AQUI
+                 authDomain: "teu-projeto.firebaseapp.com",
+                 projectId: "teu-projeto",
+                 storageBucket: "teu-projeto.appspot.com",
+                 messagingSenderId: "123456789",
+                 appId: "1:123456789:web:abcdef"
+             };
     </script>
 
     <!-- Tailwind & Icons -->
