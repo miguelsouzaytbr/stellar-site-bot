@@ -467,6 +467,9 @@
                                 <button onclick="openTab('vip')" id="btn-tab-vip" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-[#F1C40F] hover:bg-[#F1C40F]/10 transition flex items-center gap-3 border border-transparent hover:border-[#F1C40F]/30">
                                     <i data-lucide="crown" class="w-4 h-4"></i> Benefícios VIP
                                 </button>
+                                <button onclick="openTab('boost')" id="btn-tab-boost" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-[#ff73fa] hover:bg-[#ff73fa]/10 transition flex items-center gap-3 border border-transparent hover:border-[#ff73fa]/30">
+                                    <i data-lucide="rocket" class="w-4 h-4"></i> Impulsos (Boost)
+                                </button>
                                 <button onclick="openTab('seguranca')" id="btn-tab-seguranca" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
                                     <i data-lucide="shield" class="w-4 h-4"></i> Segurança
                                 </button>
@@ -485,7 +488,6 @@
                                 <button onclick="openTab('economia')" id="btn-tab-economia" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
                                     <i data-lucide="coins" class="w-4 h-4"></i> Economia
                                 </button>
-                                <!-- 🔥 NOVO BOTÃO DE XP E NÍVEIS 🔥 -->
                                 <button onclick="openTab('xp')" id="btn-tab-xp" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
                                     <i data-lucide="trending-up" class="w-4 h-4"></i> XP e Níveis
                                 </button>
@@ -607,6 +609,50 @@
 
                                     </div>
                                     <p class="text-[10px] text-gray-500 mt-4 font-bold uppercase tracking-widest">⚠️ Os fundos premium só funcionarão no Discord se o plano VIP correspondente estiver ativo na sua conta.</p>
+                                </div>
+                            </div>
+
+                            <!-- BOOST (IMPULSOS) -->
+                            <div id="tab-boost" class="tab-content hidden space-y-10">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+                                        <span class="w-1 h-6 bg-[#ff73fa] rounded-full"></span> Módulo de Impulsos (Boost)
+                                    </h4>
+                                    <button onclick="triggerTest('test_boost')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
+                                        <i data-lucide="send" class="w-3 h-3"></i> Testar Anúncio no Chat
+                                    </button>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5 mb-6">
+                                    <div>
+                                        <h5 class="text-xs font-black uppercase">Anúncio de Boost Ativo</h5>
+                                        <p class="text-[10px] text-gray-400 font-medium mt-1">Avisa no chat quando alguém impulsiona o servidor.</p>
+                                    </div>
+                                    <label class="switch"><input type="checkbox" id="cfg-boost-active" checked><span class="slider"></span></label>
+                                </div>
+
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal de Anúncio</label>
+                                        <select id="cfg-boost-channel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                            <option value="">Carregando canais...</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Cor do Embed (Ex: #ff73fa)</label>
+                                        <input type="text" id="cfg-boost-color" placeholder="#ff73fa" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Mensagem de Boost</label>
+                                    <textarea id="cfg-boost-msg" rows="3" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition"></textarea>
+                                    <p class="text-[10px] text-gray-500 mt-2 font-bold uppercase tracking-widest">Variáveis: {user}, {guild}, {level}, {boosts}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">URL da Imagem/Banner (Opcional)</label>
+                                    <input type="text" id="cfg-boost-img" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
                                 </div>
                             </div>
 
@@ -1203,14 +1249,32 @@
             document.getElementById('preview-content').innerHTML = `<p class="text-[#dbdee1] text-sm mt-2">🛰️ <strong>[LOG DE INVITE]</strong><br>${parseMessage(document.getElementById('cfg-wel-inv-msg').value)}</p>`;
             document.getElementById('preview-modal').classList.remove('hidden');
         }
+
+        // Navegação das Abas de Configuração
         function openTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('[id^="btn-tab-"]').forEach(btn => { btn.classList.remove('bg-red-600', 'text-white', 'text-[#F1C40F]'); btn.classList.add('bg-white/5', 'text-gray-400'); if (btn.id === 'btn-tab-vip') btn.classList.add('text-[#F1C40F]');});
+            
+            document.querySelectorAll('[id^="btn-tab-"]').forEach(btn => { 
+                btn.classList.remove('bg-red-600', 'text-white', 'text-[#F1C40F]', 'text-[#ff73fa]', 'bg-[#F1C40F]', 'bg-[#ff73fa]'); 
+                btn.classList.add('bg-white/5', 'text-gray-400'); 
+                
+                if (btn.id === 'btn-tab-vip') btn.classList.add('text-[#F1C40F]');
+                if (btn.id === 'btn-tab-boost') btn.classList.add('text-[#ff73fa]');
+            });
+            
             document.getElementById('tab-' + tabName).classList.remove('hidden');
             document.getElementById('tab-' + tabName).classList.add('block');
+            
             const btn = document.getElementById('btn-tab-' + tabName);
-            btn.classList.remove('bg-white/5', 'text-gray-400', 'text-[#F1C40F]'); 
-            if(tabName === 'vip') { btn.classList.add('bg-[#F1C40F]', 'text-black'); } else { btn.classList.add('bg-red-600', 'text-white'); }
+            btn.classList.remove('bg-white/5', 'text-gray-400', 'text-[#F1C40F]', 'text-[#ff73fa]'); 
+            
+            if(tabName === 'vip') { 
+                btn.classList.add('bg-[#F1C40F]', 'text-black'); 
+            } else if(tabName === 'boost') { 
+                btn.classList.add('bg-[#ff73fa]', 'text-black'); 
+            } else { 
+                btn.classList.add('bg-red-600', 'text-white'); 
+            }
         }
         
         function switchPage(pageId) {
@@ -1314,6 +1378,7 @@
                     populateSelect('cfg-st-painel', window.cachedChannels, d.staff?.channel, "Nenhum Canal Selecionado");
                     populateSelect('cfg-st-logs', window.cachedChannels, d.staff?.logs, "Nenhum Canal Selecionado");
                     populateSelect('cfg-eco-channel', window.cachedChannels, d.economy?.channel, "Nenhum Canal Selecionado");
+                    populateSelect('cfg-boost-channel', window.cachedChannels, d.boost?.channel, "Nenhum Canal Selecionado");
                     populateSelect('cfg-cmd-select', window.cachedChannels, '', "Selecione um canal da lista...");
                     
                     // Popula Selects de XP (Canais e Cargos)
@@ -1349,6 +1414,13 @@
                     if(bgRadio) bgRadio.checked = true;
                     window.applySiteBackground(bgVal);
 
+                    // Boost
+                    document.getElementById('cfg-boost-active').checked = d.boost?.active ?? true;
+                    document.getElementById('cfg-boost-msg').value = d.boost?.msg || '🎉 Muito obrigado por impulsionar o servidor, {user}! Você acabou de receber as vantagens exclusivas de Booster!';
+                    document.getElementById('cfg-boost-img').value = d.boost?.image || '';
+                    document.getElementById('cfg-boost-color').value = d.boost?.color || '#ff73fa';
+
+                    // Segurança
                     document.getElementById('cfg-sec-spam').checked = d.security?.antispam || false;
                     document.getElementById('cfg-sec-link').checked = d.security?.antilink || false;
                     document.getElementById('cfg-sec-words').checked = d.security?.antiwords || false;
@@ -1356,6 +1428,7 @@
                     document.getElementById('cfg-sec-limit').value = d.security?.limitBan || 3;
                     document.getElementById('cfg-sec-forbid').value = d.security?.forbiddenWords || '';
 
+                    // Boas Vindas
                     document.getElementById('cfg-wel-msg').value = d.welcome?.msg || '# <a:dindon:1468425730240286774> Boas-vindas, {user}!\n> Você acaba de entrar no **{guild}**! Sinta-se em casa.\n\n<a:seta1Img_adm:1468419286631710821> **Passos Iniciais:**\n* 📖 Leia as <#1458092487171379270> para evitar qualquer <a:warning:1468425732668784834> `Aviso`.\n* 🧭 Entenda o nosso ecossistema no <#1487555523888021777>.\n* 💸 Pegue as <#1489786478434324621> e acumule <:cash:1493784655319666789> `coins`.\n* 🛠️ Dúvidas? Abra um ticket no <#1482187262862037155> para a <:staff:1493289738981998652> **Equipe**.\n\n<:student:1493290481264754729> *Você é o membro número **#{total}**!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
                     document.getElementById('cfg-wel-inv-msg').value = d.welcome?.inviteMsg || '🛰️ **[LOG DE INVITE]**\nO membro {user} acabou de entrar.\nConvidado por: {inviter}\nTotal de convites: **{invites}**';
                     document.getElementById('cfg-wel-img').value = d.welcome?.image || '';
@@ -1411,6 +1484,7 @@
             const data = {
                 guildId: selectedGuild.id, guildName: selectedGuild.name, prefix: document.getElementById('cfg-prefix').value || '!', logs: document.getElementById('cfg-logs').value,
                 vip: { active: document.getElementById('cfg-vip-active').checked, background: document.querySelector('input[name="vip-bg"]:checked')?.value || 'default' },
+                boost: { active: document.getElementById('cfg-boost-active').checked, channel: document.getElementById('cfg-boost-channel').value, msg: document.getElementById('cfg-boost-msg').value, image: document.getElementById('cfg-boost-img').value, color: document.getElementById('cfg-boost-color').value },
                 security: { antispam: document.getElementById('cfg-sec-spam').checked, antilink: document.getElementById('cfg-sec-link').checked, antiwords: document.getElementById('cfg-sec-words').checked, globalMode: document.getElementById('cfg-sec-global').checked, limitBan: parseInt(document.getElementById('cfg-sec-limit').value) || 3, forbiddenWords: document.getElementById('cfg-sec-forbid').value },
                 welcome: { channel: document.getElementById('cfg-wel-channel').value, inviteChannel: document.getElementById('cfg-wel-inv-channel').value, msg: document.getElementById('cfg-wel-msg').value, inviteMsg: document.getElementById('cfg-wel-inv-msg').value, image: document.getElementById('cfg-wel-img').value },
                 ticket: { canalPainel: document.getElementById('cfg-tk-painel').value, canalLogs: document.getElementById('cfg-tk-logs').value, categoriaId: document.getElementById('cfg-tk-cat').value, text: document.getElementById('cfg-tk-msg').value, image: document.getElementById('cfg-tk-img').value },
