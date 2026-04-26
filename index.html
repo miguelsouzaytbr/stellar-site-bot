@@ -344,25 +344,28 @@
         <section class="max-w-2xl mx-auto">
             <div class="text-center mb-10">
                 <h2 class="text-4xl font-black tracking-tighter uppercase text-white mb-2">Stellar Network</h2>
-                <p class="text-gray-400 font-medium text-sm">Compartilhe suas conquistas, mansões e convites com a comunidade global do Stellar.</p>
+                <p class="text-gray-400 font-medium text-sm">Compartilhe suas conquistas, propriedades e conecte-se com a comunidade global do Stellar.</p>
             </div>
 
             <!-- Caixa de Criação de Post -->
             <div class="glass p-6 rounded-3xl mb-10 border-white/5 relative z-10">
                 <div class="flex gap-4">
-                    <img id="feed-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-12 h-12 rounded-full border border-white/10" alt="Avatar">
+                    <img id="feed-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-12 h-12 rounded-full border border-white/10 object-cover" alt="Avatar">
                     <div class="flex-1 space-y-3">
                         <textarea id="post-content" rows="3" placeholder="O que está acontecendo no seu império hoje?" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-white placeholder-gray-500 focus:border-red-600 outline-none transition resize-none"></textarea>
                         
-                        <!-- Input Opcional de Imagem -->
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="image" class="w-5 h-5 text-gray-500"></i>
-                            <input type="text" id="post-image" placeholder="URL da imagem (Opcional, ex: imgur.com/...)" class="flex-1 bg-transparent border-b border-white/10 pb-1 text-xs text-gray-300 outline-none focus:border-red-500 transition">
+                        <!-- Upload Real de Imagem -->
+                        <div class="flex items-center gap-4">
+                            <label for="post-image" class="cursor-pointer flex items-center gap-2 text-gray-500 hover:text-red-500 transition font-bold text-xs uppercase tracking-widest">
+                                <i data-lucide="image" class="w-5 h-5"></i>
+                                <span id="file-name">Anexar Imagem</span>
+                            </label>
+                            <input type="file" id="post-image" accept="image/*" class="hidden" onchange="document.getElementById('file-name').innerText = this.files[0] ? this.files[0].name : 'Anexar Imagem'">
                         </div>
 
                         <div class="flex justify-end pt-2">
-                            <button onclick="createPost()" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest text-white transition-all shadow-[0_0_15px_rgba(237,28,36,0.3)]">
-                                Transmitir
+                            <button onclick="createPost()" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest text-white transition-all shadow-[0_0_15px_rgba(237,28,36,0.3)] flex items-center gap-2">
+                                <i data-lucide="send" class="w-4 h-4"></i> Transmitir
                             </button>
                         </div>
                     </div>
@@ -378,49 +381,40 @@
 
             <!-- Container do Feed -->
             <div id="feed-container" class="space-y-6">
-                
-                <!-- Mock Post 1 (Com Imagem) -->
-                <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group">
+                <!-- Único Post do Bot (Mock Inicial) -->
+                <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group" id="post-bot">
                     <div class="flex gap-4">
                         <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-12 h-12 rounded-full border border-white/10" alt="Stellar">
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="font-bold text-white">Stellar Oficial</span>
                                 <span class="text-blue-400"><i data-lucide="badge-check" class="w-4 h-4"></i></span>
-                                <span class="text-gray-500 text-xs">@stellar_bot • 2h</span>
+                                <span class="text-gray-500 text-xs">@stellar_bot • Agora</span>
                             </div>
-                            <p class="text-gray-300 text-sm mb-3">Bem-vindos à nova rede social integrada na dashboard! Compartilhem seus convites e conquistas da economia aqui. 🚀🔥</p>
+                            <p class="text-gray-300 text-sm mb-3 whitespace-pre-wrap">Bem-vindos à nova rede social integrada na dashboard! Compartilhem suas conquistas da economia aqui. 🚀🔥</p>
                             <div class="rounded-2xl overflow-hidden border border-white/5 mb-4">
-                                <img src="https://i.imgur.com/3q15UuJ.jpeg" class="w-full h-auto object-cover" alt="Cyberpunk City">
+                                <img src="https://i.imgur.com/UvvJQ8Q.jpeg" class="w-full h-auto object-cover max-h-96" alt="Minimalist Banner">
                             </div>
                             <div class="flex items-center gap-8 text-gray-500">
-                                <button class="flex items-center gap-2 hover:text-red-500 transition text-xs font-bold"><i data-lucide="heart" class="w-4 h-4"></i> 1.2k</button>
-                                <button class="flex items-center gap-2 hover:text-blue-500 transition text-xs font-bold"><i data-lucide="message-circle" class="w-4 h-4"></i> 48</button>
-                                <button class="flex items-center gap-2 hover:text-green-500 transition text-xs font-bold"><i data-lucide="repeat-2" class="w-4 h-4"></i> 12</button>
+                                <button onclick="toggleLike(this)" class="flex items-center gap-2 hover:text-red-500 transition text-xs font-bold"><i data-lucide="heart" class="w-4 h-4"></i> <span>1200</span></button>
+                                <button onclick="toggleComments('bot')" class="flex items-center gap-2 hover:text-blue-500 transition text-xs font-bold"><i data-lucide="message-circle" class="w-4 h-4"></i> <span id="comment-count-bot">0</span></button>
+                                <button onclick="toggleRepost(this)" class="flex items-center gap-2 hover:text-green-500 transition text-xs font-bold"><i data-lucide="repeat-2" class="w-4 h-4"></i> <span>142</span></button>
                             </div>
+                            
+                            <!-- Comentários (Escondido por padrão) -->
+                            <div id="comments-bot" class="hidden mt-4 pt-4 border-t border-white/5">
+                                <div class="flex gap-3 mb-4">
+                                    <input type="text" id="comment-input-bot" placeholder="Escreva uma resposta..." class="flex-1 bg-black/40 border border-white/5 px-4 py-2 rounded-xl text-white text-sm outline-none focus:border-blue-500 transition">
+                                    <button onclick="addComment('bot')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white text-xs font-bold uppercase tracking-widest transition">Enviar</button>
+                                </div>
+                                <div id="comment-list-bot" class="space-y-3">
+                                    <!-- Comentários injetados aqui -->
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-
-                <!-- Mock Post 2 (Sem Imagem) -->
-                <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group">
-                    <div class="flex gap-4">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-12 h-12 rounded-full border border-white/10" alt="User">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="font-bold text-white">Magnata de Los Santos</span>
-                                <span class="text-yellow-500 text-xs font-bold px-1.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20">VIP OURO</span>
-                                <span class="text-gray-500 text-xs">@magnata_ls • 5h</span>
-                            </div>
-                            <p class="text-gray-300 text-sm mb-4">Acabei de comprar a Mansão Stellar Hills! O sistema de construtora e imobiliária está surreal. Quem quiser participar da minha Máfia, o invite do server tá na bio! 🏰💸</p>
-                            <div class="flex items-center gap-8 text-gray-500">
-                                <button class="flex items-center gap-2 hover:text-red-500 transition text-xs font-bold"><i data-lucide="heart" class="w-4 h-4"></i> 342</button>
-                                <button class="flex items-center gap-2 hover:text-blue-500 transition text-xs font-bold"><i data-lucide="message-circle" class="w-4 h-4"></i> 15</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </section>
     </main>
@@ -1152,13 +1146,6 @@
             } catch (error) { console.error(error); }
         }
 
-        function backToGuilds() { 
-            document.getElementById('dash-manage-guild').classList.add('hidden'); 
-            document.getElementById('dash-logged-in').classList.remove('hidden'); 
-            selectedGuild = null; 
-            window.applySiteBackground('default');
-        }
-
         async function saveGuildSettings() {
             if (!selectedGuild) return;
             const btn = document.getElementById('btn-save');
@@ -1190,21 +1177,66 @@
             }
         }
 
-        // 🔥 FUNÇÃO DE CRIAR POST NO FRONT-END (MOCK) 🔥
-        window.createPost = function() {
+        // =====================================================================
+        // 🔥 SISTEMA DO FEED COMUNITÁRIO (INTERATIVO)
+        // =====================================================================
+
+        function buildPostHtml(id, name, avatar, handle, content, imageUrl, time, likes, comments, reposts) {
+            let imageHtml = '';
+            if (imageUrl) {
+                imageHtml = `
+                <div class="rounded-2xl overflow-hidden border border-white/5 mb-4 mt-3">
+                    <img src="${imageUrl}" class="w-full h-auto object-cover max-h-96">
+                </div>`;
+            }
+
+            return `
+            <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group post-enter" id="post-${id}">
+                <div class="flex gap-4">
+                    <img src="${avatar}" class="w-12 h-12 rounded-full border border-white/10 object-cover" alt="User">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-white">${name}</span>
+                            ${handle === '@stellar_bot' ? '<span class="text-blue-400"><i data-lucide="badge-check" class="w-4 h-4"></i></span>' : ''}
+                            <span class="text-gray-500 text-xs">${handle} • ${time}</span>
+                        </div>
+                        <p class="text-gray-300 text-sm whitespace-pre-wrap">${content}</p>
+                        ${imageHtml}
+                        <div class="flex items-center gap-8 text-gray-500 mt-2">
+                            <button onclick="toggleLike(this)" class="flex items-center gap-2 hover:text-red-500 transition text-xs font-bold"><i data-lucide="heart" class="w-4 h-4"></i> <span>${likes}</span></button>
+                            <button onclick="toggleComments('${id}')" class="flex items-center gap-2 hover:text-blue-500 transition text-xs font-bold"><i data-lucide="message-circle" class="w-4 h-4"></i> <span id="comment-count-${id}">${comments}</span></button>
+                            <button onclick="toggleRepost(this)" class="flex items-center gap-2 hover:text-green-500 transition text-xs font-bold"><i data-lucide="repeat-2" class="w-4 h-4"></i> <span>${reposts}</span></button>
+                        </div>
+
+                        <!-- Seção de Comentários -->
+                        <div id="comments-${id}" class="hidden mt-4 pt-4 border-t border-white/5">
+                            <div class="flex gap-3 mb-4">
+                                <input type="text" id="comment-input-${id}" placeholder="Escreva um comentário..." class="flex-1 bg-black/40 border border-white/5 px-4 py-2 rounded-xl text-white text-sm outline-none focus:border-blue-500 transition">
+                                <button onclick="addComment('${id}')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white text-xs font-bold uppercase tracking-widest transition">Enviar</button>
+                            </div>
+                            <div id="comment-list-${id}" class="space-y-3">
+                                <!-- Comentários aparecem aqui -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        window.createPost = async function() {
             const contentInput = document.getElementById('post-content');
             const imageInput = document.getElementById('post-image');
             const feedContainer = document.getElementById('feed-container');
-            const username = document.getElementById('user-tag').innerText || 'Usuário Desconhecido';
-            const avatar = document.getElementById('user-avatar').src || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            const username = document.getElementById('user-tag').innerText || 'Visitante';
+            let avatar = document.getElementById('user-avatar').src;
+            if (!avatar || avatar.includes('undefined')) avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
 
             const content = contentInput.value.trim();
-            const imageUrl = imageInput.value.trim();
+            const file = imageInput.files[0];
 
-            if (!content && !imageUrl) {
-                // Alerta nativo simples caso o input esteja vazio
+            if (!content && !file) {
                 const originalPlaceholder = contentInput.placeholder;
-                contentInput.placeholder = "Escreva algo ou cole um link de imagem!";
+                contentInput.placeholder = "Escreva algo ou anexe uma imagem!";
                 contentInput.classList.add('border-red-500');
                 setTimeout(() => {
                     contentInput.placeholder = originalPlaceholder;
@@ -1213,44 +1245,92 @@
                 return;
             }
 
-            // HTML da Imagem caso exista
-            let imageHtml = '';
-            if (imageUrl) {
-                imageHtml = `
-                <div class="rounded-2xl overflow-hidden border border-white/5 mb-4">
-                    <img src="${imageUrl}" class="w-full h-auto object-cover" onerror="this.style.display='none'">
-                </div>`;
+            let imageUrl = '';
+            if (file) {
+                // Converte a imagem do input de file para Data URL (Base64)
+                const reader = new FileReader();
+                imageUrl = await new Promise((resolve) => {
+                    reader.onload = e => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
             }
 
-            // Constrói o HTML do Post
-            const postHtml = `
-            <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group post-enter">
-                <div class="flex gap-4">
-                    <img src="${avatar}" class="w-12 h-12 rounded-full border border-white/10" alt="User">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="font-bold text-white">${username}</span>
-                            <span class="text-gray-500 text-xs">@${username.toLowerCase().replace(/\s/g, '_')} • Agora</span>
-                        </div>
-                        <p class="text-gray-300 text-sm mb-4">${content}</p>
-                        ${imageHtml}
-                        <div class="flex items-center gap-8 text-gray-500">
-                            <button class="flex items-center gap-2 hover:text-red-500 transition text-xs font-bold"><i data-lucide="heart" class="w-4 h-4"></i> 0</button>
-                            <button class="flex items-center gap-2 hover:text-blue-500 transition text-xs font-bold"><i data-lucide="message-circle" class="w-4 h-4"></i> 0</button>
-                            <button class="flex items-center gap-2 hover:text-green-500 transition text-xs font-bold"><i data-lucide="repeat-2" class="w-4 h-4"></i> 0</button>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+            const postId = Date.now().toString();
+            const handle = '@' + username.toLowerCase().replace(/\s/g, '_');
+            const postHtml = buildPostHtml(postId, username, avatar, handle, content, imageUrl, 'Agora', 0, 0, 0);
 
-            // Adiciona no topo do feed
             feedContainer.insertAdjacentHTML('afterbegin', postHtml);
             lucide.createIcons();
 
-            // Limpa os inputs
+            // Limpa o formulário
             contentInput.value = '';
             imageInput.value = '';
+            document.getElementById('file-name').innerText = 'Anexar Imagem';
         };
+
+        window.toggleLike = function(btn) {
+            const icon = btn.querySelector('i');
+            const span = btn.querySelector('span');
+            let count = parseInt(span.innerText);
+            
+            if (btn.classList.contains('text-red-500')) {
+                btn.classList.remove('text-red-500');
+                icon.setAttribute('fill', 'none');
+                span.innerText = count - 1;
+            } else {
+                btn.classList.add('text-red-500');
+                icon.setAttribute('fill', 'currentColor');
+                span.innerText = count + 1;
+            }
+        };
+
+        window.toggleRepost = function(btn) {
+            const span = btn.querySelector('span');
+            let count = parseInt(span.innerText);
+            if (btn.classList.contains('text-green-500')) {
+                btn.classList.remove('text-green-500');
+                span.innerText = count - 1;
+            } else {
+                btn.classList.add('text-green-500');
+                span.innerText = count + 1;
+            }
+        };
+
+        window.toggleComments = function(id) {
+            const div = document.getElementById('comments-' + id);
+            div.classList.toggle('hidden');
+        };
+
+        window.addComment = function(id) {
+            const input = document.getElementById('comment-input-' + id);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const list = document.getElementById('comment-list-' + id);
+            const username = document.getElementById('user-tag').innerText || 'Visitante';
+            let avatar = document.getElementById('user-avatar').src;
+            if (!avatar || avatar.includes('undefined')) avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+
+            const commentHtml = `
+            <div class="flex gap-3 text-sm">
+                <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/10 object-cover">
+                <div class="bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-3 flex-1">
+                    <span class="font-bold text-white block mb-1">${username}</span>
+                    <span class="text-gray-300">${text}</span>
+                </div>
+            </div>`;
+
+            list.insertAdjacentHTML('afterbegin', commentHtml);
+            input.value = '';
+            
+            // Atualiza o contador de comentários do post
+            const countSpan = document.getElementById('comment-count-' + id);
+            countSpan.innerText = parseInt(countSpan.innerText) + 1;
+        };
+
+        // =====================================================================
+        // WIKI E INICIALIZAÇÃO
+        // =====================================================================
 
         const wikiDatabase = [ 
             { cat: 'Comércio & Patrimônio', icon: 'shopping-cart', desc: 'Gerenciamento de bens e propriedades.', items: [ { cmd: '!loja', desc: 'Abre o catálogo para compra de itens.'}, { cmd: '!casa', desc: 'Gerencia sua residência e cofre.'} ]}, 
@@ -1264,7 +1344,17 @@
         function scrollToWiki(cat) { window.scrollTo({ top: document.getElementById(`cat-${cat.replace(/\s/g, '-')}`).offsetTop - 150, behavior: 'smooth' }); }
         function filterWiki() { const q = document.getElementById('wikiSearch').value.toLowerCase(); document.querySelectorAll('.wiki-section .glass').forEach(i => i.style.display = i.innerText.toLowerCase().includes(q) ? 'block' : 'none'); }
 
-        window.onload = async () => { renderWiki(); await checkAuth(); setTimeout(() => { document.getElementById('loader').classList.add('opacity-0'); setTimeout(() => document.getElementById('loader').remove(), 700); }, 1000); lucide.createIcons(); };
+        window.onload = async () => { 
+            renderWiki(); 
+            await checkAuth(); 
+            
+            // Injeta o post inicial do Bot no Feed
+            const botPostHtml = buildPostHtml('bot_init', 'Stellar Oficial', 'https://i.imgur.com/PDEZ4HT.jpeg', '@stellar_bot', 'Bem-vindos à nova rede social integrada na dashboard! Compartilhem suas conquistas da economia aqui. 🚀🔥', 'https://i.imgur.com/UvvJQ8Q.jpeg', 'Post Fixado', 1200, 0, 142);
+            document.getElementById('feed-container').innerHTML = botPostHtml;
+            
+            setTimeout(() => { document.getElementById('loader').classList.add('opacity-0'); setTimeout(() => document.getElementById('loader').remove(), 700); }, 1000); 
+            lucide.createIcons(); 
+        };
         window.onscroll = () => { const nav = document.getElementById('mainNav'); window.scrollY > 50 ? nav.querySelector('div').classList.add('py-2', 'bg-black/80') : nav.querySelector('div').classList.remove('py-2', 'bg-black/80'); };
     </script>
 </body>
