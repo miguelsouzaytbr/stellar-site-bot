@@ -36,17 +36,25 @@
     }
     </script>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK com Imports para o Feed Social -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        // 🔥 IMPORTADO: Para liberar a permissão de gravação no banco de dados 🔥
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, onSnapshot, updateDoc, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Expor as funções do Firestore para o escopo global para serem usadas no script principal
+        // Expor as funções do Firestore para o escopo global
         window.fbDoc = doc;
         window.fbSetDoc = setDoc;
         window.fbGetDoc = getDoc;
+        window.fbCollection = collection;
+        window.fbAddDoc = addDoc;
+        window.fbQuery = query;
+        window.fbOrderBy = orderBy;
+        window.fbOnSnapshot = onSnapshot;
+        window.fbUpdateDoc = updateDoc;
+        window.fbArrayUnion = arrayUnion;
+        window.fbArrayRemove = arrayRemove;
+        window.fbDeleteDoc = deleteDoc;
 
         try {
             let firebaseConfig;
@@ -237,7 +245,7 @@
                     <div class="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
                         <button onclick="switchPage('home')" class="nav-link active" data-page="home">Início</button>
                         <button onclick="switchPage('wiki')" class="nav-link" data-page="wiki">Wiki</button>
-                        <button onclick="switchPage('social')" class="nav-link" data-page="social">Comunidade</button> <!-- NOVA ABA -->
+                        <button onclick="switchPage('social')" class="nav-link" data-page="social">Comunidade</button>
                         <button onclick="switchPage('staff')" class="nav-link" data-page="staff">Staff</button>
                         <button onclick="switchPage('dashboard')" class="nav-link" data-page="dashboard">Dashboard</button>
                     </div>
@@ -261,7 +269,7 @@
         <div class="glass rounded-3xl p-4 flex justify-around items-center border-white/10 shadow-2xl">
             <button onclick="switchPage('home')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="home"></i></button>
             <button onclick="switchPage('wiki')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="book-open"></i></button>
-            <button onclick="switchPage('social')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="globe"></i></button> <!-- NOVA ABA -->
+            <button onclick="switchPage('social')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="globe"></i></button> 
             <button onclick="switchPage('staff')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="shield"></i></button>
             <button onclick="switchPage('dashboard')" class="p-3 text-gray-500 hover:text-red-500 transition"><i data-lucide="layout-dashboard"></i></button>
         </div>
@@ -347,20 +355,28 @@
                 <p class="text-gray-400 font-medium text-sm">Compartilhe suas conquistas, propriedades e conecte-se com a comunidade global do Stellar.</p>
             </div>
 
+            <!-- Lupinha de Pesquisa -->
+            <div class="relative mb-8">
+                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5"></i>
+                <input type="text" id="feed-search" onkeyup="filterFeed()" placeholder="Pesquisar por título, conteúdo, @autor ou #tags..." class="w-full bg-black/40 border border-white/5 py-4 pl-14 pr-6 rounded-2xl text-white font-medium focus:border-red-600 outline-none transition">
+            </div>
+
             <!-- Caixa de Criação de Post -->
             <div class="glass p-6 rounded-3xl mb-10 border-white/5 relative z-10">
                 <div class="flex gap-4">
                     <img id="feed-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-12 h-12 rounded-full border border-white/10 object-cover" alt="Avatar">
                     <div class="flex-1 space-y-3">
-                        <textarea id="post-content" rows="3" placeholder="O que está acontecendo no seu império hoje?" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-white placeholder-gray-500 focus:border-red-600 outline-none transition resize-none"></textarea>
+                        <input type="text" id="post-title" placeholder="Título (Opcional)" maxlength="100" class="w-full bg-transparent border-b border-white/10 pb-2 text-white font-bold outline-none focus:border-red-500 transition">
+                        <textarea id="post-content" rows="3" placeholder="O que está acontecendo no seu império hoje?" class="w-full bg-transparent text-white placeholder-gray-500 outline-none resize-none"></textarea>
+                        <input type="text" id="post-tags" placeholder="Tags (Ex: carros, mafia, cassino) - Opcional" class="w-full bg-transparent border-b border-white/10 pb-2 text-blue-400 text-sm outline-none focus:border-red-500 transition">
                         
                         <!-- Upload Real de Imagem -->
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-4 pt-2">
                             <label for="post-image" class="cursor-pointer flex items-center gap-2 text-gray-500 hover:text-red-500 transition font-bold text-xs uppercase tracking-widest">
                                 <i data-lucide="image" class="w-5 h-5"></i>
-                                <span id="file-name">Anexar Imagem</span>
+                                <span id="file-name">Anexar Imagem (Máx 5MB)</span>
                             </label>
-                            <input type="file" id="post-image" accept="image/*" class="hidden" onchange="document.getElementById('file-name').innerText = this.files[0] ? this.files[0].name : 'Anexar Imagem'">
+                            <input type="file" id="post-image" accept="image/*" class="hidden" onchange="previewImageFile(this)">
                         </div>
 
                         <div class="flex justify-end pt-2">
@@ -381,39 +397,10 @@
 
             <!-- Container do Feed -->
             <div id="feed-container" class="space-y-6">
-                <!-- Único Post do Bot (Mock Inicial) -->
-                <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group" id="post-bot">
-                    <div class="flex gap-4">
-                        <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-12 h-12 rounded-full border border-white/10" alt="Stellar">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="font-bold text-white">Stellar Oficial</span>
-                                <span class="text-blue-400"><i data-lucide="badge-check" class="w-4 h-4"></i></span>
-                                <span class="text-gray-500 text-xs">@stellar_bot • Agora</span>
-                            </div>
-                            <p class="text-gray-300 text-sm mb-3 whitespace-pre-wrap">Bem-vindos à nova rede social integrada na dashboard! Compartilhem suas conquistas da economia aqui. 🚀🔥</p>
-                            <div class="rounded-2xl overflow-hidden border border-white/5 mb-4">
-                                <img src="https://i.imgur.com/UvvJQ8Q.jpeg" class="w-full h-auto object-cover max-h-96" alt="Minimalist Banner">
-                            </div>
-                            <div class="flex items-center gap-8 text-gray-500">
-                                <button onclick="toggleLike(this)" class="flex items-center gap-2 hover:text-red-500 transition text-xs font-bold"><i data-lucide="heart" class="w-4 h-4"></i> <span>1200</span></button>
-                                <button onclick="toggleComments('bot')" class="flex items-center gap-2 hover:text-blue-500 transition text-xs font-bold"><i data-lucide="message-circle" class="w-4 h-4"></i> <span id="comment-count-bot">0</span></button>
-                                <button onclick="toggleRepost(this)" class="flex items-center gap-2 hover:text-green-500 transition text-xs font-bold"><i data-lucide="repeat-2" class="w-4 h-4"></i> <span>142</span></button>
-                            </div>
-                            
-                            <!-- Comentários (Escondido por padrão) -->
-                            <div id="comments-bot" class="hidden mt-4 pt-4 border-t border-white/5">
-                                <div class="flex gap-3 mb-4">
-                                    <input type="text" id="comment-input-bot" placeholder="Escreva uma resposta..." class="flex-1 bg-black/40 border border-white/5 px-4 py-2 rounded-xl text-white text-sm outline-none focus:border-blue-500 transition">
-                                    <button onclick="addComment('bot')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white text-xs font-bold uppercase tracking-widest transition">Enviar</button>
-                                </div>
-                                <div id="comment-list-bot" class="space-y-3">
-                                    <!-- Comentários injetados aqui -->
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                <!-- Único Post do Bot (Inicial) -->
+                <div class="text-center text-gray-500 py-10">
+                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-3"></i>
+                    Sincronizando satélites de comunicação...
                 </div>
             </div>
         </section>
@@ -446,7 +433,6 @@
                 </div>
 
                 <div id="guild-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Gerado via JS -->
                     <div class="col-span-full py-20 flex flex-col items-center justify-center text-gray-600">
                         <div class="animate-spin mb-4"><i data-lucide="refresh-cw"></i></div>
                         <p class="mono text-[10px] uppercase tracking-widest">Sincronizando com API do Discord...</p>
@@ -529,7 +515,7 @@
                                 </div>
                             </div>
 
-                            <!-- VIP E PERSONALIZAÇÃO (NOVA ABA) -->
+                            <!-- VIP E PERSONALIZAÇÃO -->
                             <div id="tab-vip" class="tab-content hidden space-y-10">
                                 <div class="flex items-center justify-between mb-6">
                                     <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
@@ -858,7 +844,7 @@
         </section>
     </main>
 
-    <!-- WIKI / STAFF / FOOTER IGUAIS AO ORIGINAL -->
+    <!-- WIKI E FOOTER -->
     <main id="page-wiki" class="page pt-40 pb-32 px-6">
         <section class="max-w-7xl mx-auto"><div class="text-center mb-20"><h2 class="text-5xl font-black tracking-tighter uppercase mb-4 text-white">Central de Comandos</h2></div><div class="flex flex-col lg:flex-row gap-12"><aside class="lg:w-1/4"><div class="sticky top-32 space-y-2" id="wikiNav"></div></aside><div class="flex-1"><div class="relative mb-12"><i data-lucide="search" class="absolute left-6 top-1/2 -translate-y-1/2 text-red-600"></i><input type="text" id="wikiSearch" oninput="filterWiki()" placeholder="Procurar protocolo..." class="w-full bg-white/5 border border-white/10 py-6 pl-16 pr-6 rounded-[2rem] text-lg font-bold focus:border-red-600 outline-none transition"></div><div id="wikiContent" class="space-y-6"></div></div></div></section>
     </main>
@@ -886,6 +872,7 @@
         </div>
     </div>
 
+    <!-- SCRIPTS GERAIS -->
     <script>
         const CLIENT_ID = '976607745102979092';
         const REDIRECT_URI = 'https://miguelsouzaytbr.github.io/stellar-site-bot/';
@@ -902,6 +889,7 @@
             document.getElementById('error-text').innerText = msg;
             banner.classList.remove('hidden', 'bg-red-900/80', 'border-red-500', 'bg-green-900/80', 'border-green-500');
             banner.classList.add(isError ? 'bg-red-900/80' : 'bg-green-900/80', isError ? 'border-red-500' : 'border-green-500');
+            setTimeout(() => banner.classList.add('hidden'), 5000);
         }
 
         function populateSelect(elementId, items, selectedValue, defaultText = "Selecione uma opção...") {
@@ -1002,14 +990,17 @@
             btn.classList.remove('bg-white/5', 'text-gray-400', 'text-[#F1C40F]'); 
             if(tabName === 'vip') { btn.classList.add('bg-[#F1C40F]', 'text-black'); } else { btn.classList.add('bg-red-600', 'text-white'); }
         }
+        
         function switchPage(pageId) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => { l.classList.remove('active', 'text-red-500'); if(l.dataset.page === pageId) { l.classList.add('active'); if(pageId === 'dashboard') l.classList.add('text-red-500'); } });
             document.getElementById(`page-${pageId}`).classList.add('active');
         }
+        
         function loginDiscord() { window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}`; }
         function logoutDiscord() { localStorage.removeItem('stellar_token'); location.reload(); }
+        
         async function checkAuth() {
             let token = localStorage.getItem('stellar_token');
             if (window.location.hash && window.location.hash.includes('access_token')) {
@@ -1025,6 +1016,7 @@
                 await fetchUser(); await fetchGuilds();
             }
         }
+        
         async function fetchUser() {
             try {
                 const res = await fetch('https://discord.com/api/users/@me', { headers: { 'Authorization': `Bearer ${userAccessToken}` } });
@@ -1032,10 +1024,11 @@
                 if (data.id) { 
                     document.getElementById('user-tag').innerText = data.username; 
                     document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`; 
-                    document.getElementById('feed-avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`; // Avatar pro Feed
+                    document.getElementById('feed-avatar').src = `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`; 
                 } else logoutDiscord();
             } catch (e) { logoutDiscord(); }
         }
+        
         async function fetchGuilds() {
             try {
                 const res = await fetch('https://discord.com/api/users/@me/guilds', { headers: { 'Authorization': `Bearer ${userAccessToken}` } });
@@ -1049,7 +1042,7 @@
                         <button class="w-full py-3 bg-red-600/10 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition">Configurar</button>
                     </div>`).join('');
                 lucide.createIcons();
-            } catch (e) { document.getElementById('guild-list').innerHTML = `<div class="col-span-full py-20 text-center text-red-500 font-bold uppercase text-xs">Erro.</div>`; }
+            } catch (e) { document.getElementById('guild-list').innerHTML = `<div class="col-span-full py-20 text-center text-red-500 font-bold uppercase text-xs">Erro ao carregar servidores.</div>`; }
         }
 
         async function manageGuild(id, name, icon) {
@@ -1059,91 +1052,30 @@
             document.getElementById('manage-name').innerText = name;
             document.getElementById('manage-icon').src = icon && icon !== 'null' ? `https://cdn.discordapp.com/icons/${id}/${icon}.png` : 'https://i.imgur.com/PDEZ4HT.jpeg';
             openTab('geral'); 
-
+            
             try {
-                if (!window.stellarDb) throw new Error("Base não conectada.");
-
-                let cacheRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildCache', id) : window.fbDoc(window.stellarDb, 'guildCache', id);
-                const cacheSnap = await window.fbGetDoc(cacheRef);
-                
-                if (cacheSnap.exists()) {
-                    const cacheData = cacheSnap.data();
-                    window.cachedChannels = cacheData.channels || [];
-                    window.cachedCategories = cacheData.categories || [];
-                } else {
-                    window.cachedChannels = [];
-                    window.cachedCategories = [];
-                    showToast("Aviso: Lista de Canais vazia. O seu bot está online no Discord?", true);
-                }
-
                 let docRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id) : window.fbDoc(window.stellarDb, 'guildConfigs', id);
                 const snap = await window.fbGetDoc(docRef);
-                
                 if (snap.exists()) {
                     const d = snap.data();
-                    
-                    populateSelect('cfg-logs', window.cachedChannels, d.logs, "Nenhum Canal de Log Selecionado");
-                    populateSelect('cfg-wel-channel', window.cachedChannels, d.welcome?.channel, "Nenhum Canal Selecionado");
-                    populateSelect('cfg-wel-inv-channel', window.cachedChannels, d.welcome?.inviteChannel, "Usar mesmo de Boas-Vindas");
-                    populateSelect('cfg-tk-painel', window.cachedChannels, d.ticket?.canalPainel, "Nenhum Canal Selecionado");
-                    populateSelect('cfg-tk-logs', window.cachedChannels, d.ticket?.canalLogs, "Nenhum Canal Selecionado");
-                    populateSelect('cfg-tk-cat', window.cachedCategories, d.ticket?.categoriaId, "Nenhuma Categoria Selecionada");
-                    populateSelect('cfg-parc-painel', window.cachedChannels, d.parceria?.painel, "Nenhum Canal Selecionado");
-                    populateSelect('cfg-parc-post', window.cachedChannels, d.parceria?.postagem, "Nenhum Canal Selecionado");
-                    populateSelect('cfg-parc-cat', window.cachedCategories, d.parceria?.categoria, "Nenhuma Categoria Selecionada");
-                    populateSelect('cfg-st-painel', window.cachedChannels, d.staff?.channel, "Nenhum Canal Selecionado");
-                    populateSelect('cfg-st-logs', window.cachedChannels, d.staff?.logs, "Nenhum Canal Selecionado");
-                    populateSelect('cfg-eco-channel', window.cachedChannels, d.economy?.channel, "Nenhum Canal Selecionado");
-                    populateSelect('cfg-cmd-select', window.cachedChannels, '', "Selecione um canal da lista...");
-
                     document.getElementById('cfg-prefix').value = d.prefix || '!';
                     document.getElementById('current-prefix').innerText = d.prefix || '!';
-                
-                    // VIP
                     document.getElementById('cfg-vip-active').checked = d.vip?.active || false;
-                    const bgVal = d.vip?.background || 'default';
-                    const bgRadio = document.querySelector(`input[name="vip-bg"][value="${bgVal}"]`);
-                    if(bgRadio) bgRadio.checked = true;
-                    window.applySiteBackground(bgVal);
-
                     document.getElementById('cfg-sec-spam').checked = d.security?.antispam || false;
-                    document.getElementById('cfg-sec-link').checked = d.security?.antilink || false;
-                    document.getElementById('cfg-sec-words').checked = d.security?.antiwords || false;
-                    document.getElementById('cfg-sec-global').checked = d.security?.globalMode || false;
-                    document.getElementById('cfg-sec-limit').value = d.security?.limitBan || 3;
-                    document.getElementById('cfg-sec-forbid').value = d.security?.forbiddenWords || '';
-
-                    document.getElementById('cfg-wel-msg').value = d.welcome?.msg || '# <a:dindon:1468425730240286774> Boas-vindas, {user}!\n> Você acaba de entrar no **{guild}**! Sinta-se em casa.\n\n<a:seta1Img_adm:1468419286631710821> **Passos Iniciais:**\n* 📖 Leia as <#1458092487171379270> para evitar qualquer <a:warning:1468425732668784834> `Aviso`.\n* 🧭 Entenda o nosso ecossistema no <#1487555523888021777>.\n* 💸 Pegue as <#1489786478434324621> e acumule <:cash:1493784655319666789> `coins`.\n* 🛠️ Dúvidas? Abra um ticket no <#1482187262862037155> para a <:staff:1493289738981998652> **Equipe**.\n\n<:student:1493290481264754729> *Você é o membro número **#{total}**!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
-                    document.getElementById('cfg-wel-inv-msg').value = d.welcome?.inviteMsg || '🛰️ **[LOG DE INVITE]**\nO membro {user} acabou de entrar.\nConvidado por: {inviter}\nTotal de convites: **{invites}**';
-                    document.getElementById('cfg-wel-img').value = d.welcome?.image || '';
-
-                    document.getElementById('cfg-tk-msg').value = d.ticket?.text || '# <a:dindon:1468425730240286774> Central de Atendimento\n> Precisa de ajuda, tem uma dúvida ou quer fazer uma denúncia? Você está no lugar certo!\n\n<a:seta1Img_adm:1468419286631710821> **Como abrir seu ticket:**\n* Selecione o motivo do seu contato no menu logo abaixo.\n* Evite abrir tickets sem necessidade para não levar um <a:warning:1468425732668784834> `Aviso`.\n* Aguarde pacientemente. Nossa <:staff:1493289738981998652> **Equipe** vai te atender o mais rápido possível.\n\n<:student:1493290481264754729> *Dica: Muitas dúvidas já estão respondidas no <#1487555523888021777>!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
-                    document.getElementById('cfg-tk-img').value = d.ticket?.image || '';
-
-                    document.getElementById('cfg-parc-msg').value = d.parceria?.text || 'Clique no botão abaixo para abrir uma parceria.';
-                    document.getElementById('cfg-parc-color').value = d.parceria?.color || '#2ECC71';
-                    document.getElementById('cfg-parc-img').value = d.parceria?.image || '';
-
-                    document.getElementById('cfg-st-msg').value = d.staff?.text || 'Deseja fazer parte da equipe? Clique abaixo!';
-                    document.getElementById('cfg-st-img').value = d.staff?.image || '';
-
-                    document.getElementById('cfg-eco-active').checked = d.economy?.active ?? true;
-
-                    window.blockedChannelsList = d.commands?.blockedChannels || [];
-                    window.renderBlockedChannels();
-
                 } else {
-                    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
-                    document.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
                     document.getElementById('cfg-prefix').value = '!';
                     document.getElementById('current-prefix').innerText = '!';
-                    document.querySelector('input[name="vip-bg"][value="default"]').checked = true;
-                    
-                    window.applySiteBackground('default');
-                    window.blockedChannelsList = [];
-                    window.renderBlockedChannels();
+                    document.getElementById('cfg-vip-active').checked = false;
+                    document.getElementById('cfg-sec-spam').checked = false;
                 }
             } catch (error) { console.error(error); }
+        }
+
+        function backToGuilds() { 
+            document.getElementById('dash-manage-guild').classList.add('hidden'); 
+            document.getElementById('dash-logged-in').classList.remove('hidden'); 
+            selectedGuild = null; 
+            window.applySiteBackground('default');
         }
 
         async function saveGuildSettings() {
@@ -1151,71 +1083,117 @@
             const btn = document.getElementById('btn-save');
             btn.innerHTML = '<i class="animate-spin" data-lucide="refresh-cw"></i> Sincronizando...'; lucide.createIcons();
             const data = {
-                guildId: selectedGuild.id, guildName: selectedGuild.name, prefix: document.getElementById('cfg-prefix').value || '!', logs: document.getElementById('cfg-logs').value,
-                vip: { active: document.getElementById('cfg-vip-active').checked, background: document.querySelector('input[name="vip-bg"]:checked')?.value || 'default' },
-                security: { antispam: document.getElementById('cfg-sec-spam').checked, antilink: document.getElementById('cfg-sec-link').checked, antiwords: document.getElementById('cfg-sec-words').checked, globalMode: document.getElementById('cfg-sec-global').checked, limitBan: parseInt(document.getElementById('cfg-sec-limit').value) || 3, forbiddenWords: document.getElementById('cfg-sec-forbid').value },
-                welcome: { channel: document.getElementById('cfg-wel-channel').value, inviteChannel: document.getElementById('cfg-wel-inv-channel').value, msg: document.getElementById('cfg-wel-msg').value, inviteMsg: document.getElementById('cfg-wel-inv-msg').value, image: document.getElementById('cfg-wel-img').value },
-                ticket: { canalPainel: document.getElementById('cfg-tk-painel').value, canalLogs: document.getElementById('cfg-tk-logs').value, categoriaId: document.getElementById('cfg-tk-cat').value, text: document.getElementById('cfg-tk-msg').value, image: document.getElementById('cfg-tk-img').value },
-                parceria: { painel: document.getElementById('cfg-parc-painel').value, postagem: document.getElementById('cfg-parc-post').value, categoria: document.getElementById('cfg-parc-cat').value, text: document.getElementById('cfg-parc-msg').value, color: document.getElementById('cfg-parc-color').value, image: document.getElementById('cfg-parc-img').value },
-                staff: { channel: document.getElementById('cfg-st-painel').value, logs: document.getElementById('cfg-st-logs').value, text: document.getElementById('cfg-st-msg').value, image: document.getElementById('cfg-st-img').value },
-                economy: { active: document.getElementById('cfg-eco-active').checked, channel: document.getElementById('cfg-eco-channel').value },
-                commands: { blockedChannels: window.blockedChannelsList },
+                prefix: document.getElementById('cfg-prefix').value || '!',
+                vip: { active: document.getElementById('cfg-vip-active').checked },
+                security: { antispam: document.getElementById('cfg-sec-spam').checked },
                 lastUpdated: new Date().toISOString()
             };
-
             try {
                 let docRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id) : window.fbDoc(window.stellarDb, 'guildConfigs', selectedGuild.id);
                 await window.fbSetDoc(docRef, data, { merge: true });
                 showToast("✅ Protocolo Sincronizado!");
-                setTimeout(() => document.getElementById('error-banner').classList.add('hidden'), 3000);
-                btn.classList.replace('bg-red-600', 'bg-green-600'); btn.innerHTML = '<i data-lucide="check"></i> Protocolo Sincronizado!'; lucide.createIcons(); document.getElementById('current-prefix').innerText = data.prefix;
-                setTimeout(() => { btn.classList.replace('bg-green-600', 'bg-red-600'); btn.innerHTML = '<i data-lucide="save"></i> Salvar e Sincronizar'; lucide.createIcons(); }, 2000);
+                btn.innerHTML = '<i data-lucide="check"></i> Protocolo Sincronizado!'; lucide.createIcons();
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="save"></i> Salvar e Sincronizar'; lucide.createIcons(); }, 2000);
             } catch (e) {
                 showToast("Falha ao Salvar: " + e.message, true);
-                btn.classList.replace('bg-red-600', 'bg-red-800'); btn.innerHTML = '<i data-lucide="x-circle"></i> Falha ao Salvar'; lucide.createIcons();
-                setTimeout(() => { btn.classList.replace('bg-red-800', 'bg-red-600'); btn.innerHTML = '<i data-lucide="save"></i> Tentar Novamente'; lucide.createIcons(); }, 3000);
+                btn.innerHTML = '<i data-lucide="x-circle"></i> Falha ao Salvar'; lucide.createIcons();
             }
         }
 
         // =====================================================================
-        // 🔥 SISTEMA DO FEED COMUNITÁRIO (INTERATIVO)
+        // 🔥 SISTEMA DO FEED COMUNITÁRIO (FIREBASE REAL-TIME BLINDADO) 🔥
         // =====================================================================
 
-        function buildPostHtml(id, name, avatar, handle, content, imageUrl, time, likes, comments, reposts) {
+        let unsubscribeFeed = null;
+
+        function buildPostHtml(id, data) {
+            const uid = window.firebaseUserId || 'visitante';
+            const isLiked = data.likes && data.likes.includes(uid);
+            const isReposted = data.reposts && data.reposts.includes(uid);
+            const likeCount = data.likes ? data.likes.length : 0;
+            const repostCount = data.reposts ? data.reposts.length : 0;
+            const commentCount = data.comments ? data.comments.length : 0;
+
             let imageHtml = '';
-            if (imageUrl) {
+            if (data.imageUrl) {
                 imageHtml = `
                 <div class="rounded-2xl overflow-hidden border border-white/5 mb-4 mt-3">
-                    <img src="${imageUrl}" class="w-full h-auto object-cover max-h-96">
+                    <img src="${data.imageUrl}" class="w-full h-auto object-cover max-h-96" onerror="this.style.display='none'">
                 </div>`;
             }
 
-            return `
-            <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group post-enter" id="post-${id}">
-                <div class="flex gap-4">
-                    <img src="${avatar}" class="w-12 h-12 rounded-full border border-white/10 object-cover" alt="User">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="font-bold text-white">${name}</span>
-                            ${handle === '@stellar_bot' ? '<span class="text-blue-400"><i data-lucide="badge-check" class="w-4 h-4"></i></span>' : ''}
-                            <span class="text-gray-500 text-xs">${handle} • ${time}</span>
+            let tagsHtml = '';
+            if (data.tags && data.tags.length > 0) {
+                tagsHtml = '<div class="flex flex-wrap gap-2 mb-3">' + data.tags.map(t => `<span class="text-blue-400 text-xs font-bold bg-blue-900/20 px-2 py-1 rounded">#${t}</span>`).join('') + '</div>';
+            }
+
+            let titleHtml = '';
+            if (data.title) {
+                titleHtml = `<h4 class="text-white font-bold text-lg mb-1">${data.title}</h4>`;
+            }
+
+            let commentsHtml = '';
+            if (data.comments && data.comments.length > 0) {
+                commentsHtml = data.comments.map(c => `
+                    <div class="flex gap-3 text-sm mt-3">
+                        <img src="${c.authorAvatar}" class="w-8 h-8 rounded-full border border-white/10 object-cover" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                        <div class="bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-3 flex-1">
+                            <span class="font-bold text-white block mb-1">${c.authorName}</span>
+                            <span class="text-gray-300 break-words">${c.text}</span>
                         </div>
-                        <p class="text-gray-300 text-sm whitespace-pre-wrap">${content}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Tratamento especial de tempo
+            let timeStr = 'Agora';
+            if (id === 'post_bot_init') {
+                timeStr = 'Post Fixado';
+            } else if (data.timestamp) {
+                const timeAgo = Math.floor((Date.now() - data.timestamp) / 60000);
+                timeStr = timeAgo < 1 ? 'Agora' : timeAgo < 60 ? `${timeAgo}m` : (timeAgo < 1440 ? `${Math.floor(timeAgo/60)}h` : `${Math.floor(timeAgo/1440)}d`);
+            }
+
+            return `
+            <div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group feed-post-card" id="post-${id}" data-search="${(data.title||'').toLowerCase()} ${(data.content||'').toLowerCase()} ${(data.authorName||'').toLowerCase()} ${(data.tags||[]).join(' ')}">
+                <div class="flex gap-4">
+                    <img src="${data.authorAvatar}" class="w-12 h-12 rounded-full border border-white/10 object-cover" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center gap-2 truncate">
+                                <span class="font-bold text-white truncate">${data.authorName}</span>
+                                ${data.authorHandle === '@stellar_bot' ? '<span class="text-blue-400"><i data-lucide="badge-check" class="w-4 h-4"></i></span>' : ''}
+                                <span class="text-gray-500 text-xs truncate">${data.authorHandle} • ${timeStr}</span>
+                            </div>
+                            <button onclick="openDM('${data.authorId}', '${data.authorName.replace(/'/g, "\\'")}')" class="text-gray-500 hover:text-blue-400 transition p-1" title="Enviar Mensagem Direta">
+                                <i data-lucide="mail" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        ${titleHtml}
+                        <p class="text-gray-300 text-sm mb-3 whitespace-pre-wrap break-words">${data.content}</p>
+                        ${tagsHtml}
                         ${imageHtml}
                         <div class="flex items-center gap-8 text-gray-500 mt-2">
-                            <button onclick="toggleLike(this)" class="flex items-center gap-2 hover:text-red-500 transition text-xs font-bold"><i data-lucide="heart" class="w-4 h-4"></i> <span>${likes}</span></button>
-                            <button onclick="toggleComments('${id}')" class="flex items-center gap-2 hover:text-blue-500 transition text-xs font-bold"><i data-lucide="message-circle" class="w-4 h-4"></i> <span id="comment-count-${id}">${comments}</span></button>
-                            <button onclick="toggleRepost(this)" class="flex items-center gap-2 hover:text-green-500 transition text-xs font-bold"><i data-lucide="repeat-2" class="w-4 h-4"></i> <span>${reposts}</span></button>
+                            <button onclick="toggleLike('${id}', ${isLiked})" class="flex items-center gap-2 transition text-xs font-bold ${isLiked ? 'text-red-500' : 'hover:text-red-500'}">
+                                <i data-lucide="heart" class="w-4 h-4" ${isLiked ? 'fill="currentColor"' : ''}></i> <span>${likeCount}</span>
+                            </button>
+                            <button onclick="toggleComments('${id}')" class="flex items-center gap-2 hover:text-blue-500 transition text-xs font-bold">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i> <span>${commentCount}</span>
+                            </button>
+                            <button onclick="toggleRepost('${id}', ${isReposted})" class="flex items-center gap-2 transition text-xs font-bold ${isReposted ? 'text-green-500' : 'hover:text-green-500'}">
+                                <i data-lucide="repeat-2" class="w-4 h-4"></i> <span>${repostCount}</span>
+                            </button>
+                            ${(data.authorId === uid || uid === 'admin') && id !== 'post_bot_init' ? `<button onclick="deletePost('${id}')" class="flex items-center gap-2 hover:text-red-500 transition text-xs font-bold ml-auto" title="Apagar Publicação"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
                         </div>
 
                         <!-- Seção de Comentários -->
                         <div id="comments-${id}" class="hidden mt-4 pt-4 border-t border-white/5">
                             <div class="flex gap-3 mb-4">
-                                <input type="text" id="comment-input-${id}" placeholder="Escreva um comentário..." class="flex-1 bg-black/40 border border-white/5 px-4 py-2 rounded-xl text-white text-sm outline-none focus:border-blue-500 transition">
+                                <input type="text" id="comment-input-${id}" placeholder="Escreva uma resposta..." class="flex-1 bg-black/40 border border-white/5 px-4 py-2 rounded-xl text-white text-sm outline-none focus:border-blue-500 transition">
                                 <button onclick="addComment('${id}')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white text-xs font-bold uppercase tracking-widest transition">Enviar</button>
                             </div>
                             <div id="comment-list-${id}" class="space-y-3">
-                                <!-- Comentários aparecem aqui -->
+                                ${commentsHtml}
                             </div>
                         </div>
                     </div>
@@ -1223,77 +1201,224 @@
             </div>`;
         }
 
-        window.createPost = async function() {
-            const contentInput = document.getElementById('post-content');
-            const imageInput = document.getElementById('post-image');
-            const feedContainer = document.getElementById('feed-container');
-            const username = document.getElementById('user-tag').innerText || 'Visitante';
-            let avatar = document.getElementById('user-avatar').src;
-            if (!avatar || avatar.includes('undefined')) avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-
-            const content = contentInput.value.trim();
-            const file = imageInput.files[0];
-
-            if (!content && !file) {
-                const originalPlaceholder = contentInput.placeholder;
-                contentInput.placeholder = "Escreva algo ou anexe uma imagem!";
-                contentInput.classList.add('border-red-500');
-                setTimeout(() => {
-                    contentInput.placeholder = originalPlaceholder;
-                    contentInput.classList.remove('border-red-500');
-                }, 2000);
+        async function initFeed() {
+            if (!window.stellarDb) {
+                setTimeout(initFeed, 1000);
                 return;
             }
 
-            let imageUrl = '';
-            if (file) {
-                // Converte a imagem do input de file para Data URL (Base64)
-                const reader = new FileReader();
-                imageUrl = await new Promise((resolve) => {
-                    reader.onload = e => resolve(e.target.result);
-                    reader.readAsDataURL(file);
+            const postsRef = window.fbCollection(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts');
+            
+            // 1. GARANTE QUE O POST DO BOT EXISTA NO FIREBASE PARA PODER RECEBER LIKES/COMENTÁRIOS REAIS
+            const botPostRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', 'post_bot_init');
+            const botPostSnap = await window.fbGetDoc(botPostRef);
+            
+            if (!botPostSnap.exists()) {
+                await window.fbSetDoc(botPostRef, {
+                    authorId: 'bot',
+                    authorName: 'Stellar Oficial',
+                    authorAvatar: 'https://i.imgur.com/PDEZ4HT.jpeg',
+                    authorHandle: '@stellar_bot',
+                    title: 'Bem-vindos à Stellar Network! 🚀',
+                    content: 'Compartilhem suas conquistas da economia aqui. Vocês podem usar #tags, imagens do PC e curtir as publicações uns dos outros!',
+                    imageUrl: 'https://i.imgur.com/UvvJQ8Q.jpeg',
+                    tags: ['atualização', 'comunidade'],
+                    likes: [],
+                    comments: [],
+                    reposts: [],
+                    timestamp: 0 // Zero para ficar sempre no topo na lógica se precisasse, mas fixaremos visualmente
                 });
             }
 
-            const postId = Date.now().toString();
-            const handle = '@' + username.toLowerCase().replace(/\s/g, '_');
-            const postHtml = buildPostHtml(postId, username, avatar, handle, content, imageUrl, 'Agora', 0, 0, 0);
+            const q = window.fbQuery(postsRef, window.fbOrderBy('timestamp', 'desc'));
 
-            feedContainer.insertAdjacentHTML('afterbegin', postHtml);
+            if (unsubscribeFeed) unsubscribeFeed();
+
+            unsubscribeFeed = window.fbOnSnapshot(q, (snapshot) => {
+                const container = document.getElementById('feed-container');
+                let html = '';
+                
+                let botPostData = null;
+
+                // Separar o post do bot para renderizar primeiro
+                snapshot.forEach(doc => {
+                    if (doc.id === 'post_bot_init') {
+                        botPostData = doc.data();
+                    }
+                });
+
+                if (botPostData) {
+                    html += buildPostHtml('post_bot_init', botPostData);
+                }
+
+                snapshot.forEach(doc => {
+                    if (doc.id !== 'post_bot_init') {
+                        html += buildPostHtml(doc.id, doc.data());
+                    }
+                });
+
+                container.innerHTML = html;
+                lucide.createIcons();
+                filterFeed(); // Aplica o filtro se tiver algo na pesquisa
+            }, (error) => {
+                console.error("Erro ao carregar feed:", error);
+            });
+        }
+
+        // Preview da Imagem no Input
+        window.previewImageFile = function(input) {
+            const fileNameSpan = document.getElementById('file-name');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast("❌ A imagem não pode ultrapassar 5MB.", true);
+                    input.value = ''; // Reseta
+                    fileNameSpan.innerText = 'Anexar Imagem (Máx 5MB)';
+                    return;
+                }
+                fileNameSpan.innerText = file.name;
+            } else {
+                fileNameSpan.innerText = 'Anexar Imagem (Máx 5MB)';
+            }
+        };
+
+        // Pesquisa no Feed
+        window.filterFeed = function() {
+            const q = document.getElementById('feed-search').value.toLowerCase();
+            const posts = document.querySelectorAll('.feed-post-card');
+            posts.forEach(post => {
+                if (post.id === 'post-post_bot_init') return; // Nunca esconde o post fixado
+                const dataSearch = post.getAttribute('data-search') || "";
+                if (dataSearch.includes(q)) {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        };
+
+        // Filtro de Segurança / Palavrões
+        const PALAVROES = ['porno', 'sexo', 'nude', 'xxx', 'gore', 'puta', 'merda', 'caralho', 'buceta', 'pqp', 'filha da puta'];
+        const verificaNSFW = (texto) => {
+            const str = texto.toLowerCase();
+            return PALAVROES.some(palavra => str.includes(palavra));
+        };
+
+        window.createPost = async function() {
+            if (!window.firebaseUserId) return showToast("Faça login com o Discord para publicar.", true);
+
+            const titleInput = document.getElementById('post-title');
+            const contentInput = document.getElementById('post-content');
+            const tagsInput = document.getElementById('post-tags');
+            const imageInput = document.getElementById('post-image');
+            const fileNameSpan = document.getElementById('file-name');
+
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+            const tagsRaw = tagsInput.value.trim();
+            const file = imageInput.files[0];
+
+            if (!content && !file) {
+                showToast("Escreva algo ou anexe uma imagem!", true);
+                contentInput.classList.add('border-red-500');
+                setTimeout(() => contentInput.classList.remove('border-red-500'), 2000);
+                return;
+            }
+
+            if (verificaNSFW(title + " " + content + " " + tagsRaw)) {
+                return showToast("⚠️ Linguagem imprópria detectada. Publicação bloqueada pelo Filtro de Segurança.", true);
+            }
+
+            const btn = document.querySelector('button[onclick="createPost()"]');
+            const btnOriginalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Analisando...';
+            btn.disabled = true;
             lucide.createIcons();
 
-            // Limpa o formulário
-            contentInput.value = '';
-            imageInput.value = '';
-            document.getElementById('file-name').innerText = 'Anexar Imagem';
-        };
+            try {
+                let imageUrl = '';
+                if (file) {
+                    // Check Mock para "vídeo" via tipo de arquivo, mas vamos ler como Base64 para exibir a foto
+                    if (file.type.includes('video')) {
+                        throw new Error("Envio de vídeos não suportado ainda. Use imagens.");
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                        throw new Error("A imagem excede o limite de 5MB do banco de dados.");
+                    }
+                    
+                    btn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> Processando Imagem...';
+                    lucide.createIcons();
 
-        window.toggleLike = function(btn) {
-            const icon = btn.querySelector('i');
-            const span = btn.querySelector('span');
-            let count = parseInt(span.innerText);
-            
-            if (btn.classList.contains('text-red-500')) {
-                btn.classList.remove('text-red-500');
-                icon.setAttribute('fill', 'none');
-                span.innerText = count - 1;
-            } else {
-                btn.classList.add('text-red-500');
-                icon.setAttribute('fill', 'currentColor');
-                span.innerText = count + 1;
+                    const reader = new FileReader();
+                    imageUrl = await new Promise((resolve) => {
+                        reader.onload = e => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                const tags = tagsRaw.split(',').map(t => t.trim().replace(/^#/, '')).filter(t => t.length > 0);
+                const username = document.getElementById('user-tag').innerText || 'Usuário';
+                let avatar = document.getElementById('user-avatar').src;
+                if (!avatar || avatar.includes('undefined')) avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                const handle = '@' + username.toLowerCase().replace(/\s/g, '_');
+
+                const postsRef = window.fbCollection(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts');
+                
+                await window.fbAddDoc(postsRef, {
+                    authorId: window.firebaseUserId,
+                    authorName: username,
+                    authorAvatar: avatar,
+                    authorHandle: handle,
+                    title: title,
+                    content: content,
+                    imageUrl: imageUrl,
+                    tags: tags,
+                    likes: [],
+                    comments: [],
+                    reposts: [],
+                    timestamp: Date.now()
+                });
+
+                showToast("✅ Publicado com sucesso na Stellar Network!");
+                
+                titleInput.value = '';
+                contentInput.value = '';
+                tagsInput.value = '';
+                imageInput.value = '';
+                fileNameSpan.innerText = 'Anexar Imagem (Máx 5MB)';
+
+            } catch (e) {
+                console.error(e);
+                showToast("Falha ao publicar: " + e.message, true);
+            } finally {
+                btn.innerHTML = btnOriginalHtml;
+                btn.disabled = false;
+                lucide.createIcons();
             }
         };
 
-        window.toggleRepost = function(btn) {
-            const span = btn.querySelector('span');
-            let count = parseInt(span.innerText);
-            if (btn.classList.contains('text-green-500')) {
-                btn.classList.remove('text-green-500');
-                span.innerText = count - 1;
-            } else {
-                btn.classList.add('text-green-500');
-                span.innerText = count + 1;
-            }
+        window.toggleLike = async function(postId, isLiked) {
+            if (!window.firebaseUserId) return showToast("Faça login para interagir.", true);
+            try {
+                const postRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+                if (isLiked) {
+                    await window.fbUpdateDoc(postRef, { likes: window.fbArrayRemove(window.firebaseUserId) });
+                } else {
+                    await window.fbUpdateDoc(postRef, { likes: window.fbArrayUnion(window.firebaseUserId) });
+                }
+            } catch (e) { console.error(e); showToast("Erro ao processar curtida.", true); }
+        };
+
+        window.toggleRepost = async function(postId, isReposted) {
+            if (!window.firebaseUserId) return showToast("Faça login para interagir.", true);
+            try {
+                const postRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+                if (isReposted) {
+                    await window.fbUpdateDoc(postRef, { reposts: window.fbArrayRemove(window.firebaseUserId) });
+                } else {
+                    await window.fbUpdateDoc(postRef, { reposts: window.fbArrayUnion(window.firebaseUserId) });
+                }
+            } catch (e) { console.error(e); showToast("Erro ao processar repost.", true); }
         };
 
         window.toggleComments = function(id) {
@@ -1301,37 +1426,65 @@
             div.classList.toggle('hidden');
         };
 
-        window.addComment = function(id) {
-            const input = document.getElementById('comment-input-' + id);
+        window.addComment = async function(postId) {
+            if (!window.firebaseUserId) return showToast("Faça login para comentar.", true);
+            
+            const input = document.getElementById('comment-input-' + postId);
             const text = input.value.trim();
             if (!text) return;
 
-            const list = document.getElementById('comment-list-' + id);
-            const username = document.getElementById('user-tag').innerText || 'Visitante';
+            if (verificaNSFW(text)) {
+                return showToast("⚠️ Seu comentário foi bloqueado pelo filtro de segurança.", true);
+            }
+
+            const username = document.getElementById('user-tag').innerText || 'Usuário';
             let avatar = document.getElementById('user-avatar').src;
             if (!avatar || avatar.includes('undefined')) avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
 
-            const commentHtml = `
-            <div class="flex gap-3 text-sm">
-                <img src="${avatar}" class="w-8 h-8 rounded-full border border-white/10 object-cover">
-                <div class="bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-3 flex-1">
-                    <span class="font-bold text-white block mb-1">${username}</span>
-                    <span class="text-gray-300">${text}</span>
-                </div>
-            </div>`;
+            try {
+                const postRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+                const commentData = {
+                    authorId: window.firebaseUserId,
+                    authorName: username,
+                    authorAvatar: avatar,
+                    text: text,
+                    timestamp: Date.now()
+                };
+                
+                await window.fbUpdateDoc(postRef, { comments: window.fbArrayUnion(commentData) });
+                input.value = '';
+            } catch (e) {
+                console.error(e);
+                showToast("Erro ao enviar comentário.", true);
+            }
+        };
 
-            list.insertAdjacentHTML('afterbegin', commentHtml);
-            input.value = '';
-            
-            // Atualiza o contador de comentários do post
-            const countSpan = document.getElementById('comment-count-' + id);
-            countSpan.innerText = parseInt(countSpan.innerText) + 1;
+        window.deletePost = async function(postId) {
+            if (!confirm("Tem certeza que deseja apagar permanentemente esta publicação?")) return;
+            try {
+                const postRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+                await window.fbDeleteDoc(postRef);
+                showToast("🗑️ Publicação deletada do sistema.");
+            } catch (e) {
+                console.error(e);
+                showToast("Erro ao excluir.", true);
+            }
+        };
+
+        window.openDM = function(targetId, targetName) {
+            if (!window.firebaseUserId) return showToast("Faça login para enviar mensagens.", true);
+            if (targetId === window.firebaseUserId) {
+                return showToast("❌ Você não pode mandar mensagem direta para si mesmo.", true);
+            }
+            if (targetId === 'bot') {
+                return showToast("❌ A conta oficial da Stellar não recebe mensagens diretas.", true);
+            }
+            showToast(`💬 Abrindo Chat Direto com ${targetName}... (Em Breve)`, false);
         };
 
         // =====================================================================
         // WIKI E INICIALIZAÇÃO
         // =====================================================================
-
         const wikiDatabase = [ 
             { cat: 'Comércio & Patrimônio', icon: 'shopping-cart', desc: 'Gerenciamento de bens e propriedades.', items: [ { cmd: '!loja', desc: 'Abre o catálogo para compra de itens.'}, { cmd: '!casa', desc: 'Gerencia sua residência e cofre.'} ]}, 
             { cat: 'Segurança & Admin', icon: 'shield-alert', desc: 'Ferramentas de moderação.', items: [ { cmd: '!prefixo', desc: 'Altera o prefixo do servidor.'}, { cmd: '!lock', desc: 'Tranca o canal atual.'} ]} 
@@ -1342,16 +1495,11 @@
             lucide.createIcons();
         }
         function scrollToWiki(cat) { window.scrollTo({ top: document.getElementById(`cat-${cat.replace(/\s/g, '-')}`).offsetTop - 150, behavior: 'smooth' }); }
-        function filterWiki() { const q = document.getElementById('wikiSearch').value.toLowerCase(); document.querySelectorAll('.wiki-section .glass').forEach(i => i.style.display = i.innerText.toLowerCase().includes(q) ? 'block' : 'none'); }
-
+        
         window.onload = async () => { 
             renderWiki(); 
             await checkAuth(); 
-            
-            // Injeta o post inicial do Bot no Feed
-            const botPostHtml = buildPostHtml('bot_init', 'Stellar Oficial', 'https://i.imgur.com/PDEZ4HT.jpeg', '@stellar_bot', 'Bem-vindos à nova rede social integrada na dashboard! Compartilhem suas conquistas da economia aqui. 🚀🔥', 'https://i.imgur.com/UvvJQ8Q.jpeg', 'Post Fixado', 1200, 0, 142);
-            document.getElementById('feed-container').innerHTML = botPostHtml;
-            
+            initFeed(); // Inicia o carregamento do feed via Firebase
             setTimeout(() => { document.getElementById('loader').classList.add('opacity-0'); setTimeout(() => document.getElementById('loader').remove(), 700); }, 1000); 
             lucide.createIcons(); 
         };
