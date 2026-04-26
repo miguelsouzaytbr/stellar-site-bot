@@ -92,11 +92,11 @@
                         console.log("Autenticação segura estabelecida com o Firebase.");
                         window.firebaseUserId = user.uid;
                         window.firebaseUser = user;
+                        resolve(user);
                     } else {
                         window.firebaseUserId = null;
                         window.firebaseUser = null;
                     }
-                    resolve(user);
                 });
             });
 
@@ -485,6 +485,10 @@
                                 <button onclick="openTab('economia')" id="btn-tab-economia" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
                                     <i data-lucide="coins" class="w-4 h-4"></i> Economia
                                 </button>
+                                <!-- 🔥 NOVO BOTÃO DE XP E NÍVEIS 🔥 -->
+                                <button onclick="openTab('xp')" id="btn-tab-xp" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
+                                    <i data-lucide="trending-up" class="w-4 h-4"></i> XP e Níveis
+                                </button>
                                 <button onclick="openTab('comandos')" id="btn-tab-comandos" class="w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition flex items-center gap-3">
                                     <i data-lucide="terminal" class="w-4 h-4"></i> Comandos
                                 </button>
@@ -815,6 +819,91 @@
                                 </div>
                             </div>
 
+                            <!-- 🔥 XP E NÍVEIS 🔥 -->
+                            <div id="tab-xp" class="tab-content hidden space-y-10">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+                                        <span class="w-1 h-6 bg-red-600 rounded-full"></span> Sistema de XP e Níveis
+                                    </h4>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5 mb-6">
+                                    <div>
+                                        <h5 class="text-xs font-black uppercase">Sistema de XP Ativo</h5>
+                                        <p class="text-[10px] text-gray-400 font-medium mt-1">Habilite para que os membros ganhem experiência ao conversar no servidor.</p>
+                                    </div>
+                                    <label class="switch"><input type="checkbox" id="cfg-xp-active" checked><span class="slider"></span></label>
+                                </div>
+
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">XP Mínimo por Mensagem</label>
+                                        <input type="number" id="cfg-xp-min" placeholder="15" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">XP Máximo por Mensagem</label>
+                                        <input type="number" id="cfg-xp-max" placeholder="25" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition">
+                                    </div>
+                                </div>
+
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal de Anúncio de Level Up</label>
+                                        <select id="cfg-xp-channel" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                            <option value="current">Mesmo canal da mensagem</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canais Ignorados (Sem XP)</label>
+                                        <div class="flex gap-2">
+                                            <select id="cfg-xp-blocked-select" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                                <option value="">Carregando canais...</option>
+                                            </select>
+                                            <button type="button" onclick="window.addXpBlockedChannel()" class="bg-[#5865F2] hover:bg-[#4752C4] text-white px-6 py-4 rounded-2xl font-black uppercase tracking-widest transition flex items-center gap-2">
+                                                <i data-lucide="plus" class="w-4 h-4"></i> Add
+                                            </button>
+                                        </div>
+                                        <div id="xp-blocked-list" class="flex flex-wrap gap-2 mt-4"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Mensagem de Level Up</label>
+                                    <textarea id="cfg-xp-msg" rows="2" placeholder="🎉 Parabéns {user}, você alcançou o nível **{level}**!" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition"></textarea>
+                                    <p class="text-[10px] text-gray-500 mt-2 font-bold uppercase tracking-widest">Variáveis: {user}, {level}, {xp}</p>
+                                </div>
+                                
+                                <!-- Recompensas por Nível -->
+                                <div class="p-6 bg-black/20 rounded-3xl border border-white/5">
+                                    <h5 class="text-xs font-black uppercase text-white mb-4 flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-yellow-400"></i> Recompensas por Nível (Cargos Automáticos)</h5>
+                                    <div class="flex gap-2 mb-4">
+                                        <select id="cfg-xp-reward-role" class="flex-1 bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                            <option value="">Carregando cargos...</option>
+                                        </select>
+                                        <input type="number" id="cfg-xp-reward-level" placeholder="Nível (Ex: 10)" class="w-32 bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition text-center">
+                                        <button type="button" onclick="window.addXpReward()" class="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-4 rounded-2xl font-black uppercase tracking-widest transition flex items-center gap-2">
+                                            <i data-lucide="plus" class="w-4 h-4"></i> Add
+                                        </button>
+                                    </div>
+                                    <div id="xp-rewards-list" class="flex flex-wrap gap-2"></div>
+                                </div>
+
+                                <!-- Multiplicadores de XP -->
+                                <div class="p-6 bg-black/20 rounded-3xl border border-white/5">
+                                    <h5 class="text-xs font-black uppercase text-white mb-4 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 text-blue-400"></i> Multiplicadores de XP por Cargo (VIPs, Boosters)</h5>
+                                    <div class="flex gap-2 mb-4">
+                                        <select id="cfg-xp-mult-role" class="flex-1 bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300">
+                                            <option value="">Carregando cargos...</option>
+                                        </select>
+                                        <input type="number" step="0.1" id="cfg-xp-mult-value" placeholder="Valor (Ex: 1.5)" class="w-32 bg-black/40 border border-white/5 p-4 rounded-2xl font-bold focus:border-red-600 outline-none transition text-center">
+                                        <button type="button" onclick="window.addXpMultiplier()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-4 rounded-2xl font-black uppercase tracking-widest transition flex items-center gap-2">
+                                            <i data-lucide="plus" class="w-4 h-4"></i> Add
+                                        </button>
+                                    </div>
+                                    <div id="xp-multipliers-list" class="flex flex-wrap gap-2"></div>
+                                </div>
+                            </div>
+
                             <!-- COMANDOS -->
                             <div id="tab-comandos" class="tab-content hidden space-y-10">
                                 <div class="flex items-center justify-between mb-6">
@@ -888,7 +977,13 @@
         
         window.cachedChannels = [];
         window.cachedCategories = [];
+        window.cachedRoles = []; // Adicionado para carregar cargos no painel
         window.blockedChannelsList = [];
+        
+        // Arrays do Sistema de XP
+        window.xpBlockedChannelsList = [];
+        window.xpRoleRewardsList = [];
+        window.xpMultipliersList = [];
 
         function showToast(msg, isError = false) {
             const banner = document.getElementById('error-banner');
@@ -902,7 +997,7 @@
             const el = document.getElementById(elementId);
             if (!el) return;
             el.innerHTML = `<option value="">${defaultText}</option>` + 
-                items.map(i => `<option value="${i.id}" ${i.id === selectedValue ? 'selected' : ''}># ${i.name}</option>`).join('');
+                items.map(i => `<option value="${i.id}" ${i.id === selectedValue ? 'selected' : ''}>${i.name.startsWith('@') ? i.name : '# ' + i.name}</option>`).join('');
         }
 
         window.triggerTest = async function(actionType) {
@@ -922,6 +1017,9 @@
             }
         };
 
+        // ==========================================
+        // LÓGICA DE CANAIS BLOQUEADOS (COMANDOS)
+        // ==========================================
         window.addBlockedChannel = function() {
             const select = document.getElementById('cfg-cmd-select');
             const val = select.value;
@@ -953,6 +1051,121 @@
             `).join('');
             lucide.createIcons();
         };
+
+        // ==========================================
+        // LÓGICA DO SISTEMA DE XP
+        // ==========================================
+        window.addXpBlockedChannel = function() {
+            const select = document.getElementById('cfg-xp-blocked-select');
+            const val = select.value;
+            if (val && !window.xpBlockedChannelsList.find(c => c.id === val)) {
+                const text = select.options[select.selectedIndex].text.replace('# ', '');
+                window.xpBlockedChannelsList.push({ id: val, name: text });
+                window.renderXpBlockedChannels();
+            }
+            select.value = '';
+        };
+
+        window.removeXpBlockedChannel = function(id) {
+            window.xpBlockedChannelsList = window.xpBlockedChannelsList.filter(c => c.id !== id);
+            window.renderXpBlockedChannels();
+        };
+
+        window.renderXpBlockedChannels = function() {
+            const container = document.getElementById('xp-blocked-list');
+            if (window.xpBlockedChannelsList.length === 0) {
+                container.innerHTML = '<span class="text-xs text-gray-600 italic font-bold">Ganha XP em todos os canais.</span>';
+                return;
+            }
+            container.innerHTML = window.xpBlockedChannelsList.map(c => `
+                <div class="flex items-center gap-2 bg-gray-600/20 text-gray-400 px-3 py-1.5 rounded-lg border border-gray-600/30 text-xs font-bold tracking-widest uppercase">
+                    #${c.name}
+                    <button type="button" onclick="window.removeXpBlockedChannel('${c.id}')" class="hover:text-white transition"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
+        // Recompensas por Cargo
+        window.addXpReward = function() {
+            const select = document.getElementById('cfg-xp-reward-role');
+            const levelInput = document.getElementById('cfg-xp-reward-level');
+            const roleId = select.value;
+            const level = parseInt(levelInput.value);
+
+            if (!roleId || isNaN(level) || level <= 0) return showToast("Selecione um cargo e informe um nível válido.", true);
+            
+            // Remove se já existir aquele cargo ou nível
+            window.xpRoleRewardsList = window.xpRoleRewardsList.filter(r => r.roleId !== roleId && r.level !== level);
+            
+            const roleName = select.options[select.selectedIndex].text;
+            window.xpRoleRewardsList.push({ roleId, roleName, level });
+            window.xpRoleRewardsList.sort((a, b) => a.level - b.level); // Ordenar por nível
+            window.renderXpRewards();
+            
+            select.value = '';
+            levelInput.value = '';
+        };
+
+        window.removeXpReward = function(level) {
+            window.xpRoleRewardsList = window.xpRoleRewardsList.filter(r => r.level !== level);
+            window.renderXpRewards();
+        };
+
+        window.renderXpRewards = function() {
+            const container = document.getElementById('xp-rewards-list');
+            if (window.xpRoleRewardsList.length === 0) {
+                container.innerHTML = '<span class="text-xs text-gray-600 italic font-bold mt-2">Nenhum cargo configurado.</span>';
+                return;
+            }
+            container.innerHTML = window.xpRoleRewardsList.map(r => `
+                <div class="flex items-center gap-2 bg-yellow-500/20 text-yellow-400 px-3 py-2 rounded-lg border border-yellow-500/30 text-xs font-bold tracking-widest uppercase mt-2">
+                    NÍVEL ${r.level} ➔ ${r.roleName}
+                    <button type="button" onclick="window.removeXpReward(${r.level})" class="hover:text-white transition ml-2"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
+        // Multiplicadores
+        window.addXpMultiplier = function() {
+            const select = document.getElementById('cfg-xp-mult-role');
+            const multInput = document.getElementById('cfg-xp-mult-value');
+            const roleId = select.value;
+            const multiplier = parseFloat(multInput.value);
+
+            if (!roleId || isNaN(multiplier) || multiplier <= 0) return showToast("Selecione um cargo e informe um valor válido (Ex: 1.5).", true);
+            
+            window.xpMultipliersList = window.xpMultipliersList.filter(m => m.roleId !== roleId);
+            
+            const roleName = select.options[select.selectedIndex].text;
+            window.xpMultipliersList.push({ roleId, roleName, multiplier });
+            window.renderXpMultipliers();
+            
+            select.value = '';
+            multInput.value = '';
+        };
+
+        window.removeXpMultiplier = function(roleId) {
+            window.xpMultipliersList = window.xpMultipliersList.filter(m => m.roleId !== roleId);
+            window.renderXpMultipliers();
+        };
+
+        window.renderXpMultipliers = function() {
+            const container = document.getElementById('xp-multipliers-list');
+            if (window.xpMultipliersList.length === 0) {
+                container.innerHTML = '<span class="text-xs text-gray-600 italic font-bold mt-2">Nenhum multiplicador configurado.</span>';
+                return;
+            }
+            container.innerHTML = window.xpMultipliersList.map(m => `
+                <div class="flex items-center gap-2 bg-blue-500/20 text-blue-400 px-3 py-2 rounded-lg border border-blue-500/30 text-xs font-bold tracking-widest uppercase mt-2">
+                    ${m.roleName} ➔ ${m.multiplier}x
+                    <button type="button" onclick="window.removeXpMultiplier('${m.roleId}')" class="hover:text-white transition ml-2"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
 
         // 🔥 FUNÇÃO PARA MUDAR O FUNDO DO DASHBOARD (VIP) 🔥
         window.applySiteBackground = function(bgType) {
@@ -1074,10 +1287,12 @@
                     const cacheData = cacheSnap.data();
                     window.cachedChannels = cacheData.channels || [];
                     window.cachedCategories = cacheData.categories || [];
+                    window.cachedRoles = cacheData.roles || []; // Cargos enviados pelo bot
                 } else {
                     window.cachedChannels = [];
                     window.cachedCategories = [];
-                    showToast("Aviso: Lista de Canais vazia. O seu bot está online no Discord?", true);
+                    window.cachedRoles = [];
+                    showToast("Aviso: Cache de canais e cargos vazio. O seu bot está online no Discord?", true);
                 }
 
                 let docRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id) : window.fbDoc(window.stellarDb, 'guildConfigs', id);
@@ -1086,7 +1301,8 @@
                 if (snap.exists()) {
                     const d = snap.data();
                     
-                    populateSelect('cfg-logs', window.cachedChannels, d.logs, "Nenhum Canal de Log Selecionado");
+                    // Popula Selects com dados do Discord
+                    populateSelect('cfg-logs', window.cachedChannels, d.logs, "Nenhum Canal Selecionado");
                     populateSelect('cfg-wel-channel', window.cachedChannels, d.welcome?.channel, "Nenhum Canal Selecionado");
                     populateSelect('cfg-wel-inv-channel', window.cachedChannels, d.welcome?.inviteChannel, "Usar mesmo de Boas-Vindas");
                     populateSelect('cfg-tk-painel', window.cachedChannels, d.ticket?.canalPainel, "Nenhum Canal Selecionado");
@@ -1099,6 +1315,29 @@
                     populateSelect('cfg-st-logs', window.cachedChannels, d.staff?.logs, "Nenhum Canal Selecionado");
                     populateSelect('cfg-eco-channel', window.cachedChannels, d.economy?.channel, "Nenhum Canal Selecionado");
                     populateSelect('cfg-cmd-select', window.cachedChannels, '', "Selecione um canal da lista...");
+                    
+                    // Popula Selects de XP (Canais e Cargos)
+                    populateSelect('cfg-xp-blocked-select', window.cachedChannels, '', "Selecione um canal...");
+                    populateSelect('cfg-xp-reward-role', window.cachedRoles, '', "Selecione um cargo...");
+                    populateSelect('cfg-xp-mult-role', window.cachedRoles, '', "Selecione um cargo...");
+
+                    // Configs XP
+                    document.getElementById('cfg-xp-active').checked = d.xp?.active ?? true;
+                    document.getElementById('cfg-xp-min').value = d.xp?.minXp || 15;
+                    document.getElementById('cfg-xp-max').value = d.xp?.maxXp || 25;
+                    document.getElementById('cfg-xp-msg').value = d.xp?.message || '🎉 Parabéns {user}, você alcançou o nível **{level}**!';
+                    
+                    // XP Channel Custom Select
+                    const xpChannelEl = document.getElementById('cfg-xp-channel');
+                    xpChannelEl.innerHTML = `<option value="current">Mesmo canal da mensagem</option>` + window.cachedChannels.map(c => `<option value="${c.id}" ${c.id === d.xp?.channel ? 'selected' : ''}># ${c.name}</option>`).join('');
+
+                    // XP Arrays
+                    window.xpBlockedChannelsList = d.xp?.blockedChannels || [];
+                    window.xpRoleRewardsList = d.xp?.roleRewards || [];
+                    window.xpMultipliersList = d.xp?.multipliers || [];
+                    window.renderXpBlockedChannels();
+                    window.renderXpRewards();
+                    window.renderXpMultipliers();
 
                     document.getElementById('cfg-prefix').value = d.prefix || '!';
                     document.getElementById('current-prefix').innerText = d.prefix || '!';
@@ -1146,6 +1385,14 @@
                     window.applySiteBackground('default');
                     window.blockedChannelsList = [];
                     window.renderBlockedChannels();
+                    
+                    // Reset XP arrays
+                    window.xpBlockedChannelsList = [];
+                    window.xpRoleRewardsList = [];
+                    window.xpMultipliersList = [];
+                    window.renderXpBlockedChannels();
+                    window.renderXpRewards();
+                    window.renderXpMultipliers();
                 }
             } catch (error) { console.error(error); }
         }
@@ -1170,6 +1417,16 @@
                 parceria: { painel: document.getElementById('cfg-parc-painel').value, postagem: document.getElementById('cfg-parc-post').value, categoria: document.getElementById('cfg-parc-cat').value, text: document.getElementById('cfg-parc-msg').value, color: document.getElementById('cfg-parc-color').value, image: document.getElementById('cfg-parc-img').value },
                 staff: { channel: document.getElementById('cfg-st-painel').value, logs: document.getElementById('cfg-st-logs').value, text: document.getElementById('cfg-st-msg').value, image: document.getElementById('cfg-st-img').value },
                 economy: { active: document.getElementById('cfg-eco-active').checked, channel: document.getElementById('cfg-eco-channel').value },
+                xp: { 
+                    active: document.getElementById('cfg-xp-active').checked, 
+                    minXp: parseInt(document.getElementById('cfg-xp-min').value) || 15,
+                    maxXp: parseInt(document.getElementById('cfg-xp-max').value) || 25,
+                    channel: document.getElementById('cfg-xp-channel').value,
+                    message: document.getElementById('cfg-xp-msg').value,
+                    blockedChannels: window.xpBlockedChannelsList,
+                    roleRewards: window.xpRoleRewardsList,
+                    multipliers: window.xpMultipliersList
+                },
                 commands: { blockedChannels: window.blockedChannelsList },
                 lastUpdated: new Date().toISOString()
             };
