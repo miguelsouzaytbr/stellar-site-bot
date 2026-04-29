@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Página Inicial (Prioridade Máxima) -->
+  <url>
+    <loc>https://miguelsouzaytbr.github.io/stellar-site-bot/</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
 
+  <!-- Página de Recursos (Muito forte para atrair novos usuários) -->
+  <url>
+    <loc>https://miguelsouzaytbr.github.io/stellar-site-bot/recursos.html</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-<url>
-  <loc>https://miguelsouzaytbr.github.io/stellar-site-bot/</loc>
-  <lastmod>2026-04-01T03:46:20+00:00</lastmod>
-</url>
+  <!-- Página de Comandos (Muito forte para retenção e buscas exatas) -->
+  <url>
+    <loc>https://miguelsouzaytbr.github.io/stellar-site-bot/comandos.html</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
+  <!-- Blog / Notícias (Bom manter atualizado para o Google voltar sempre) -->
+  <url>
+    <loc>https://miguelsouzaytbr.github.io/stellar-site-bot/blog.html</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Status (Menos prioridade de busca, mas útil existir) -->
+  <url>
+    <loc>https://miguelsouzaytbr.github.io/stellar-site-bot/status.html</loc>
+    <lastmod>2026-04-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
 
 </urlset>
