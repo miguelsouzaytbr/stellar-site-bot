@@ -247,7 +247,7 @@
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="glass rounded-[2rem] px-8 py-4 flex items-center justify-between border-white/5">
                 <div class="flex items-center gap-10">
-                    <div class="flex items-center gap-3 group cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="flex items-center gap-3 group cursor-pointer" onclick="switchPage('home')">
                         <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-xl border border-red-600/30 group-hover:border-red-600 transition-colors" alt="Logo">
                         <span class="text-2xl font-black tracking-tighter uppercase hidden xl:block">STELLAR<span class="text-red-600">.</span></span>
                     </div>
@@ -257,7 +257,6 @@
                         <a href="recursos.html" class="nav-link">Recursos</a>
                         <a href="comandos.html" class="nav-link">Comandos</a>
                         <a href="blog.html" class="nav-link">Notícias</a>
-                        <button onclick="switchPage('wiki')" class="nav-link" data-page="wiki">Wiki</button>
                         <button onclick="switchPage('social')" class="nav-link" data-page="social">Feed</button> 
                         <a href="status.html" class="nav-link">Status</a>
                         <button onclick="switchPage('dashboard')" class="nav-link" data-page="dashboard">Dashboard</button>
@@ -284,7 +283,6 @@
             <a href="recursos.html" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="layers"></i></a>
             <a href="comandos.html" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="terminal"></i></a>
             <button onclick="switchPage('social')" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="globe"></i></button> 
-            <button onclick="switchPage('wiki')" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="book-open"></i></button>
             <a href="blog.html" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="newspaper"></i></a>
             <a href="status.html" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="activity"></i></a>
             <button onclick="switchPage('dashboard')" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="layout-dashboard"></i></button>
@@ -995,10 +993,6 @@
         </section>
     </main>
 
-    <!-- WIKI E FOOTER -->
-    <main id="page-wiki" class="page pt-40 pb-32 px-6">
-        <section class="max-w-7xl mx-auto"><div class="text-center mb-20"><h2 class="text-5xl font-black tracking-tighter uppercase mb-4 text-white">Central de Comandos</h2></div><div class="flex flex-col lg:flex-row gap-12"><aside class="lg:w-1/4"><div class="sticky top-32 space-y-2" id="wikiNav"></div></aside><div class="flex-1"><div class="relative mb-12"><i data-lucide="search" class="absolute left-6 top-1/2 -translate-y-1/2 text-red-600"></i><input type="text" id="wikiSearch" oninput="filterWiki()" placeholder="Procurar protocolo..." class="w-full bg-white/5 border border-white/10 py-6 pl-16 pr-6 rounded-[2rem] text-lg font-bold focus:border-red-600 outline-none transition"></div><div id="wikiContent" class="space-y-6"></div></div></div></section>
-    </main>
     <main id="page-staff" class="page pt-40 pb-32 px-6">
         <section class="max-w-7xl mx-auto text-center"><h2 class="text-5xl font-black tracking-tighter uppercase mb-20 text-white">⁝ Gestão Interna ‧₊</h2><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10"><div class="glass p-10 rounded-[3rem] border-red-600/30 glow-stellar"><div class="w-16 h-16 bg-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6"><i data-lucide="crown" class="w-8 h-8 text-white"></i></div><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Diretoria</h4><div class="flex items-center justify-center gap-3 p-4 bg-black/30 rounded-2xl border border-white/5"><span class="font-bold text-sm">Fast21 ‧₊</span></div></div></div></section>
     </main>
@@ -1947,21 +1941,10 @@
         };
 
         // =====================================================================
-        // WIKI E INICIALIZAÇÃO
+        // INICIALIZAÇÃO
         // =====================================================================
-        const wikiDatabase = [ 
-            { cat: 'Comércio & Patrimônio', icon: 'shopping-cart', desc: 'Gerenciamento de bens e propriedades.', items: [ { cmd: '!loja', desc: 'Abre o catálogo para compra de itens.'}, { cmd: '!casa', desc: 'Gerencia sua residência e cofre.'} ]}, 
-            { cat: 'Segurança & Admin', icon: 'shield-alert', desc: 'Ferramentas de moderação.', items: [ { cmd: '!prefixo', desc: 'Altera o prefixo do servidor.'}, { cmd: '!lock', desc: 'Tranca o canal atual.'} ]} 
-        ];
-        function renderWiki() {
-            document.getElementById('wikiNav').innerHTML = wikiDatabase.map(cat => `<button onclick="scrollToWiki('${cat.cat}')" class="w-full text-left p-4 rounded-2xl hover:bg-white/5 text-gray-500 hover:text-white transition flex items-center gap-3 group"><i data-lucide="${cat.icon}" class="w-4 h-4 group-hover:text-red-600"></i><span class="text-[10px] font-black uppercase tracking-widest">${cat.cat}</span></button>`).join('');
-            document.getElementById('wikiContent').innerHTML = wikiDatabase.map(cat => `<div id="cat-${cat.cat.replace(/\s/g, '-')}" class="wiki-section mb-16"><h3 class="text-xs font-black uppercase tracking-widest text-red-600 mb-6 text-center">${cat.cat}</h3><div class="grid gap-4">${cat.items.map(cmd => `<div class="glass p-6 rounded-3xl border-white/5 hover:border-red-600/30 transition group"><span class="mono text-lg font-black text-white">${cmd.cmd}</span><p class="text-gray-400 text-sm mt-1">${cmd.desc}</p></div>`).join('')}</div></div>`).join('');
-            lucide.createIcons();
-        }
-        function scrollToWiki(cat) { window.scrollTo({ top: document.getElementById(`cat-${cat.replace(/\s/g, '-')}`).offsetTop - 150, behavior: 'smooth' }); }
         
         window.onload = async () => { 
-            renderWiki(); 
             await checkAuth(); 
             initFeed(); // Inicia o carregamento do feed via Firebase
             setTimeout(() => { document.getElementById('loader').classList.add('opacity-0'); setTimeout(() => document.getElementById('loader').remove(), 700); }, 1000); 
@@ -1970,7 +1953,7 @@
             // Navegação Inteligente via Hash
             if(window.location.hash) {
                 const page = window.location.hash.substring(1);
-                if(['home', 'wiki', 'social', 'staff', 'dashboard'].includes(page)) {
+                if(['home', 'social', 'staff', 'dashboard'].includes(page)) {
                     switchPage(page);
                 }
             }
