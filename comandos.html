@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atualizações e Notícias | Stellar Hub Bot de Economia</title>
+    <title>Comandos do Bot de Economia para Discord | Stellar Hub</title>
     
     <link rel="icon" type="image/jpeg" href="https://i.imgur.com/PDEZ4HT.jpeg">
-    <link rel="canonical" href="https://miguelsouzaytbr.github.io/stellar-site-bot/blog.html">
-    <meta name="description" content="Acompanhe as últimas atualizações, dicas de moderação e patch notes do sistema de economia mais avançado para Discord.">
+    <link rel="canonical" href="https://miguelsouzaytbr.github.io/stellar-site-bot/comandos.html">
+    <meta name="description" content="Lista completa de comandos para dominar o sistema de economia, mineração e as empresas no seu servidor do Discord com o Stellar Hub.">
     <meta name="theme-color" content="#ED1C24">
 
     <!-- SEO PARA MINIATURA NO GOOGLE SEARCH -->
     <meta name="thumbnail" content="https://i.imgur.com/PDEZ4HT.jpeg">
     <meta itemprop="image" content="https://i.imgur.com/PDEZ4HT.jpeg">
-    <meta itemprop="name" content="Notícias e Atualizações | Stellar Hub">
+    <meta itemprop="name" content="Comandos | Stellar Hub">
+    <meta itemprop="description" content="Lista completa de comandos do melhor bot de economia para Discord.">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -30,6 +31,12 @@
         .nav-link.active { color: white; }
         .nav-link.active::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px; background: var(--stellar-red); }
         .grid-bg { background-image: linear-gradient(rgba(237, 28, 36, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(237, 28, 36, 0.05) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(circle at center, black, transparent 80%); }
+        
+        /* Custom Scrollbar for Command Lists */
+        .cmd-scroll::-webkit-scrollbar { width: 4px; }
+        .cmd-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
+        .cmd-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .cmd-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
     </style>
 </head>
 <body class="selection:bg-red-600 selection:text-white">
@@ -40,7 +47,7 @@
                 <div class="absolute inset-0 border-4 border-red-600/20 rounded-full"></div>
                 <div class="absolute inset-0 border-4 border-red-600 rounded-full border-t-transparent animate-spin"></div>
             </div>
-            <p class="font-mono text-[10px] uppercase tracking-[0.5em] text-red-600 animate-pulse">Sincronizando Artigos...</p>
+            <p class="font-mono text-[10px] uppercase tracking-[0.5em] text-red-600 animate-pulse">Carregando Banco de Dados...</p>
         </div>
     </div>
 
@@ -58,9 +65,8 @@
                     <div class="hidden lg:flex items-center gap-6 text-[10px] font-bold uppercase tracking-[0.1em] text-gray-400">
                         <a href="index.html#home" class="nav-link">Início</a>
                         <a href="recursos.html" class="nav-link">Recursos</a>
-                        <a href="comandos.html" class="nav-link">Comandos</a>
-                        <a href="blog.html" class="nav-link active">Notícias</a>
-                        <a href="index.html#wiki" class="nav-link">Wiki</a>
+                        <a href="comandos.html" class="nav-link active">Comandos</a>
+                        <a href="blog.html" class="nav-link">Notícias</a>
                         <a href="index.html#social" class="nav-link">Feed</a> 
                         <a href="status.html" class="nav-link">Status</a>
                         <a href="index.html#dashboard" class="nav-link">Dashboard</a>
@@ -80,53 +86,257 @@
         <div class="glass rounded-3xl p-4 flex gap-6 overflow-x-auto items-center border-white/10 shadow-2xl hide-scrollbar justify-between">
             <a href="index.html#home" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="home"></i></a>
             <a href="recursos.html" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="layers"></i></a>
-            <a href="comandos.html" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="terminal"></i></a>
+            <a href="comandos.html" class="p-2 flex-shrink-0 text-red-500 transition"><i data-lucide="terminal"></i></a>
             <a href="index.html#social" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="globe"></i></a> 
-            <a href="index.html#wiki" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="book-open"></i></a>
-            <a href="blog.html" class="p-2 flex-shrink-0 text-red-500 transition"><i data-lucide="newspaper"></i></a>
+            <a href="blog.html" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="newspaper"></i></a>
             <a href="status.html" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="activity"></i></a>
             <a href="index.html#dashboard" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition"><i data-lucide="layout-dashboard"></i></a>
         </div>
     </div>
 
     <main class="pt-40 pb-32 px-6">
-        <section class="max-w-4xl mx-auto">
-            <div class="flex items-center justify-between mb-12 border-b border-white/5 pb-6">
-                <div>
-                    <h1 class="text-4xl font-black tracking-tighter uppercase text-white">Stellar Blog</h1>
-                    <p class="text-gray-400 mt-2">Acompanhe os Patch Notes e atualizações de desenvolvimento.</p>
-                </div>
-                <i data-lucide="rss" class="w-8 h-8 text-red-600"></i>
+        <section class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-black tracking-tighter uppercase text-white mb-4">Central de Comandos</h1>
+                <p class="text-gray-400 font-medium text-lg max-w-2xl mx-auto">Documentação completa dos módulos do <b>Stellar Hub</b>. Todos os comandos podem ter o prefixo alterado via Dashboard.</p>
             </div>
 
-            <div class="space-y-8">
-                <!-- Post 1 -->
-                <article class="glass p-8 rounded-3xl border-white/5 hover:border-white/10 transition-all">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Patch Note</span>
-                        <span class="text-gray-500 text-sm font-bold">25 de Abril, 2026</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                
+                <!-- Categoria: Comércio & Patrimônio -->
+                <div class="glass p-8 rounded-3xl border-white/5 hover:border-green-500/30 transition-all group">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="shopping-cart" class="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-black uppercase text-white leading-tight">Comércio &<br>Patrimônio</h3>
                     </div>
-                    <h3 class="text-2xl font-black uppercase mb-4 text-white">Atualização do Bot de Economia no Discord (v3.1)</h3>
-                    <p class="text-gray-400 leading-relaxed mb-6">
-                        - 🚀 Lançamento oficial da nova interface Web (Dashboard).<br>
-                        - 🌐 Novo sistema de Feed Global (Stellar Network).<br>
-                        - ⛏️ Melhorias na economia e grandes correções de bugs no sistema de mineração.
-                    </p>
-                    <a href="#" class="text-red-500 font-bold hover:text-red-400 transition flex items-center gap-2 text-sm uppercase tracking-widest">Ler Completo <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                </article>
+                    <ul class="space-y-4 max-h-[400px] overflow-y-auto pr-3 cmd-scroll">
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!loja</code>
+                            <p class="text-gray-400 text-sm mt-2">Abre o catálogo para compra de itens de consumo e utilitários.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!mercado</code>
+                            <p class="text-gray-400 text-sm mt-2">Acessa o mercado de ações e venda de itens globais.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!inventario</code>
+                            <p class="text-gray-400 text-sm mt-2">Abre sua mochila para ver os itens que você possui.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!imoveis</code>
+                            <p class="text-gray-400 text-sm mt-2">Lista os imóveis disponíveis para compra na imobiliária.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!casa</code>
+                            <p class="text-gray-400 text-sm mt-2">Gerencia a casa que você comprou (visitas, cofre, etc).</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!concessionaria</code>
+                            <p class="text-gray-400 text-sm mt-2">Catálogo de veículos disponíveis para compra.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!garagem</code>
+                            <p class="text-gray-400 text-sm mt-2">Veja e gerencie seus carros comprados.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!abastecer</code>
+                            <p class="text-gray-400 text-sm mt-2">Enche o tanque do seu veículo em uso.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!tuning</code>
+                            <p class="text-gray-400 text-sm mt-2">Melhora o motor e a estética do seu veículo.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!racha [@usuario] [valor]</code>
+                            <p class="text-gray-400 text-sm mt-2">Desafia outro jogador para uma corrida valendo dinheiro.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!petshop</code>
+                            <p class="text-gray-400 text-sm mt-2">Compre animais de estimação para te fazer companhia.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!pet</code>
+                            <p class="text-gray-400 text-sm mt-2">Cuide, alimente e brinque com seu pet.</p>
+                        </li>
+                        <li>
+                            <code class="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded">!bau</code>
+                            <p class="text-gray-400 text-sm mt-2">Abre o baú da sua casa para guardar itens pesados.</p>
+                        </li>
+                    </ul>
+                </div>
 
-                <!-- Post 2 -->
-                <article class="glass p-8 rounded-3xl border-white/5 hover:border-white/10 transition-all">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="bg-[#5865F2] text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Comunidade</span>
-                        <span class="text-gray-500 text-sm font-bold">10 de Março, 2026</span>
+                <!-- Categoria: Carreiras & Desenvolvimento -->
+                <div class="glass p-8 rounded-3xl border-white/5 hover:border-yellow-500/30 transition-all group">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="briefcase" class="w-8 h-8 text-yellow-500 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-black uppercase text-white leading-tight">Carreiras &<br>Trabalho</h3>
                     </div>
-                    <h3 class="text-2xl font-black uppercase mb-4 text-white">Como otimizar a Economia do seu Servidor</h3>
-                    <p class="text-gray-400 leading-relaxed mb-6">
-                        O sistema de economia do Stellar é robusto, mas precisa ser bem configurado para não causar inflação no seu servidor. Neste artigo, ensinamos as melhores práticas de valores iniciais, configurações de empresas e como evitar o acúmulo desnecessário de capital por usuários inativos.
-                    </p>
-                    <a href="#" class="text-red-500 font-bold hover:text-red-400 transition flex items-center gap-2 text-sm uppercase tracking-widest">Ler Completo <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-                </article>
+                    <ul class="space-y-4 max-h-[400px] overflow-y-auto pr-3 cmd-scroll">
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!work</code>
+                            <p class="text-gray-400 text-sm mt-2">Trabalha no seu emprego atual para receber seu salário.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!daily</code>
+                            <p class="text-gray-400 text-sm mt-2">Resgata sua recompensa financeira diária.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!minerar</code>
+                            <p class="text-gray-400 text-sm mt-2">Vai para as minas extrair minérios valiosos. Requer Picareta.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!pescar</code>
+                            <p class="text-gray-400 text-sm mt-2">Pesca peixes no lago municipal. Requer Vara de Pesca.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!cacar</code>
+                            <p class="text-gray-400 text-sm mt-2">Vai caçar na floresta. Requer licença e arma.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!explorar</code>
+                            <p class="text-gray-400 text-sm mt-2">Explora o mapa em busca de itens abandonados.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!youtube</code>
+                            <p class="text-gray-400 text-sm mt-2">Gerencia sua carreira como criador de conteúdo.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!postar</code>
+                            <p class="text-gray-400 text-sm mt-2">Grava e posta um vídeo no seu canal para ganhar views.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!canal</code>
+                            <p class="text-gray-400 text-sm mt-2">Mostra as estatísticas do seu canal.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!estudar</code>
+                            <p class="text-gray-400 text-sm mt-2">Aumenta sua inteligência para conseguir empregos melhores.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!xp</code>
+                            <p class="text-gray-400 text-sm mt-2">Mostra seu nível atual e experiência.</p>
+                        </li>
+                        <li>
+                            <code class="text-yellow-400 font-bold bg-yellow-500/10 px-2 py-1 rounded">!top</code>
+                            <p class="text-gray-400 text-sm mt-2">Mostra o ranking dos jogadores mais ricos/experientes.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Categoria: Banco & Risco -->
+                <div class="glass p-8 rounded-3xl border-white/5 hover:border-blue-500/30 transition-all group">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="landmark" class="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-black uppercase text-white leading-tight">Sistema Bancário<br>& Risco</h3>
+                    </div>
+                    <ul class="space-y-4 max-h-[400px] overflow-y-auto pr-3 cmd-scroll">
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">!atm</code>
+                            <p class="text-gray-400 text-sm mt-2">Abre o caixa eletrônico para ver seu saldo, banco e dívidas.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">!depositar [valor/all]</code>
+                            <p class="text-gray-400 text-sm mt-2">Guarda dinheiro da carteira no banco (protegido de roubos).</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">!sacar [valor/all]</code>
+                            <p class="text-gray-400 text-sm mt-2">Retira dinheiro do banco para a carteira.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">!pay [@usuario] [valor]</code>
+                            <p class="text-gray-400 text-sm mt-2">Envia dinheiro via PIX para outro usuário.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">!apostar [valor]</code>
+                            <p class="text-gray-400 text-sm mt-2">Aposta dinheiro no cassino.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">!coinflip [cara/coroa] [val]</code>
+                            <p class="text-gray-400 text-sm mt-2">Aposta cara ou coroa contra outro jogador.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">!roubar [@usuario]</code>
+                            <p class="text-gray-400 text-sm mt-2">Tenta bater a carteira de outro usuário. (Pode dar cadeia!)</p>
+                        </li>
+                        <li>
+                            <code class="text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded">!assaltar</code>
+                            <p class="text-gray-400 text-sm mt-2">Forma uma equipe para assaltar o banco central.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Categoria: Governo & Macroeconomia -->
+                <div class="glass p-8 rounded-3xl border-white/5 hover:border-purple-500/30 transition-all group">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="building-2" class="w-8 h-8 text-purple-500 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-black uppercase text-white leading-tight">Governo &<br>Indústria</h3>
+                    </div>
+                    <ul class="space-y-4 max-h-[400px] overflow-y-auto pr-3 cmd-scroll">
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-purple-400 font-bold bg-purple-500/10 px-2 py-1 rounded">!governo</code>
+                            <p class="text-gray-400 text-sm mt-2">Painel do Prefeito para gerenciar tesouraria e impostos.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-purple-400 font-bold bg-purple-500/10 px-2 py-1 rounded">!industria</code>
+                            <p class="text-gray-400 text-sm mt-2">Constrói e gerencia fábricas usando o fundo do governo.</p>
+                        </li>
+                        <li>
+                            <code class="text-purple-400 font-bold bg-purple-500/10 px-2 py-1 rounded">!topgovernos</code>
+                            <p class="text-gray-400 text-sm mt-2">Ranking das cidades (servidores) mais ricas e populosas.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Categoria: Segurança & Administração -->
+                <div class="glass p-8 rounded-3xl border-white/5 hover:border-red-600/30 transition-all group">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="shield-alert" class="w-8 h-8 text-red-600 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-xl font-black uppercase text-white leading-tight">Segurança &<br>Administração</h3>
+                    </div>
+                    <ul class="space-y-4 max-h-[400px] overflow-y-auto pr-3 cmd-scroll">
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!prefixo [novo]</code>
+                            <p class="text-gray-400 text-sm mt-2">Altera o prefixo do bot neste servidor.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!setlang [idioma]</code>
+                            <p class="text-gray-400 text-sm mt-2">Altera o idioma do bot no servidor (pt/en/es).</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!ban [@usuario] [motivo]</code>
+                            <p class="text-gray-400 text-sm mt-2">Bane um usuário do servidor.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!kick [@usuario] [motivo]</code>
+                            <p class="text-gray-400 text-sm mt-2">Expulsa um usuário do servidor.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!clear [1-100]</code>
+                            <p class="text-gray-400 text-sm mt-2">Apaga uma quantidade de mensagens do canal.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!lock</code>
+                            <p class="text-gray-400 text-sm mt-2">Tranca o canal atual (impede envio de mensagens).</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!unlock</code>
+                            <p class="text-gray-400 text-sm mt-2">Destranca o canal atual.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!seguranca</code>
+                            <p class="text-gray-400 text-sm mt-2">Abre o painel de proteção anti-raid/anti-nuke.</p>
+                        </li>
+                        <li class="border-b border-white/5 pb-4">
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!addmoney [@user] [valor]</code>
+                            <p class="text-gray-400 text-sm mt-2">(Admin Eco) Adiciona dinheiro a um usuário.</p>
+                        </li>
+                        <li>
+                            <code class="text-red-400 font-bold bg-red-600/10 px-2 py-1 rounded">!reseteco</code>
+                            <p class="text-gray-400 text-sm mt-2">(Admin Eco) Reseta toda a economia do servidor.</p>
+                        </li>
+                    </ul>
+                </div>
+                
             </div>
         </section>
     </main>
