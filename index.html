@@ -87,34 +87,43 @@
 
             // Criar uma Promise para aguardar o estado da autenticação estar pronto
             window.authReady = new Promise((resolve) => {
+                let resolved = false;
+                
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         console.log("Autenticação segura estabelecida com o Firebase.");
                         window.firebaseUserId = user.uid;
                         window.firebaseUser = user;
-                        resolve(user);
+                        if (!resolved) {
+                            resolved = true;
+                            resolve(user);
+                        }
                     } else {
                         window.firebaseUserId = null;
                         window.firebaseUser = null;
                     }
                 });
-            });
 
-            // 🔥 Tenta logar com token forte (edição local) ou Anônimo (nuvem) 🔥
-            const initAuth = async () => {
-                try {
-                    if (isCanvas && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
+                // 🔥 Tenta logar com token forte (edição local) ou Anônimo (nuvem) 🔥
+                const initAuth = async () => {
+                    try {
+                        if (isCanvas && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Falha na autenticação do Firebase:", error);
+                        window.firebaseAuthError = error.message;
+                        if (!resolved) {
+                            resolved = true;
+                            resolve(null);
+                        }
                     }
-                } catch (error) {
-                    console.error("Falha na autenticação:", error);
-                    window.firebaseAuthError = error.message;
-                }
-            };
-            
-            initAuth();
+                };
+                
+                initAuth();
+            });
 
         } catch (error) {
             console.error("Erro ao inicializar Firebase:", error);
@@ -510,6 +519,7 @@
                     <div class="lg:col-span-3 space-y-6">
                         <div class="glass p-10 rounded-[3rem]">
                             
+                            <!-- AVISO DE ERRO VISUAL NO SITE -->
                             <div id="error-banner" class="hidden text-white p-4 rounded-2xl mb-8 text-xs font-bold uppercase tracking-widest flex items-center justify-between">
                                 <span id="error-text">Mensagem aqui</span>
                                 <button onclick="document.getElementById('error-banner').classList.add('hidden')"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -873,6 +883,23 @@
                                 </div>
                             </div>
 
+                            <!-- SEGURANÇA (MOVIDO PARA DISCORD) -->
+                            <div id="tab-seguranca" class="tab-content hidden space-y-10">
+                                <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3 mb-6">
+                                    <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo de Segurança
+                                </h4>
+                                <div class="glass p-8 rounded-3xl text-center border-white/5 bg-red-600/5">
+                                    <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <i data-lucide="shield-alert" class="w-10 h-10 text-red-500"></i>
+                                    </div>
+                                    <h5 class="text-xl font-black uppercase text-white mb-4">A Segurança Evoluiu!</h5>
+                                    <p class="text-gray-400 font-medium leading-relaxed max-w-2xl mx-auto">
+                                        Para garantir a <b>máxima proteção</b> e evitar conflitos de configuração, todo o motor de segurança agora é gerenciado exclusivamente dentro do seu servidor.<br><br>
+                                        Abra o Discord e digite <code class="bg-black/50 text-red-400 px-2 py-1 rounded">!seguranca</code> para acessar o <b>Painel Mestre</b>. Lá você poderá configurar zonas livres, filtros de palavras, limites de mute/ban e permissões de staff de forma totalmente independente!
+                                    </p>
+                                </div>
+                            </div>
+
                             <!-- 🔥 XP E NÍVEIS 🔥 -->
                             <div id="tab-xp" class="tab-content hidden space-y-10">
                                 <div class="flex items-center justify-between mb-6">
@@ -1027,7 +1054,7 @@
         
         window.cachedChannels = [];
         window.cachedCategories = [];
-        window.cachedRoles = []; // Adicionado para carregar cargos no painel
+        window.cachedRoles = []; 
         window.blockedChannelsList = [];
         
         // Arrays do Sistema de XP
@@ -1331,6 +1358,16 @@
             try {
                 const res = await fetch('https://discord.com/api/users/@me/guilds', { headers: { 'Authorization': `Bearer ${userAccessToken}` } });
                 const guilds = await res.json();
+                
+                // Correção caso o token seja inválido ou API retorne erro em vez de array
+                if (!Array.isArray(guilds)) {
+                    if (guilds.message && guilds.message.includes('401')) {
+                        logoutDiscord();
+                        return;
+                    }
+                    throw new Error("Discord API devolveu um erro.");
+                }
+
                 const adminGuilds = guilds.filter(g => (g.permissions & 0x8) === 0x8 || (g.permissions & 0x20) === 0x20);
                 document.getElementById('guild-list').innerHTML = adminGuilds.map(g => `
                     <div class="glass p-6 rounded-[2.5rem] guild-card cursor-pointer flex flex-col justify-between" onclick="manageGuild('${g.id}', '${g.name.replace(/'/g, "\\'")}', '${g.icon}')">
@@ -1352,9 +1389,9 @@
             openTab('geral'); 
             
             try {
-                if (!window.stellarDb) throw new Error("Base não conectada.");
+                if (!window.stellarDb) throw new Error("Base do Firebase não conectada ou sem chaves.");
                 await window.authReady;
-                if (!window.firebaseUser) throw new Error("Usuário não autenticado no Firebase.");
+                if (!window.firebaseUser) throw new Error("Acesso bloqueado: Domínio do seu site não está autorizado no Firebase Authentication.");
 
                 let cacheRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildCache', id) : window.fbDoc(window.stellarDb, 'guildCache', id);
                 const cacheSnap = await window.fbGetDoc(cacheRef);
@@ -1363,12 +1400,12 @@
                     const cacheData = cacheSnap.data();
                     window.cachedChannels = cacheData.channels || [];
                     window.cachedCategories = cacheData.categories || [];
-                    window.cachedRoles = cacheData.roles || []; // Cargos enviados pelo bot
+                    window.cachedRoles = cacheData.roles || []; 
                 } else {
                     window.cachedChannels = [];
                     window.cachedCategories = [];
                     window.cachedRoles = [];
-                    showToast("Aviso: Cache de canais e cargos vazio. O seu bot está online no Discord?", true);
+                    showToast("Aviso: O Bot não enviou o Cache de Canais. Ele está online?", true);
                 }
 
                 let docRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id) : window.fbDoc(window.stellarDb, 'guildConfigs', id);
@@ -1393,7 +1430,7 @@
                     populateSelect('cfg-boost-channel', window.cachedChannels, d.boost?.channel, "Nenhum Canal Selecionado");
                     populateSelect('cfg-cmd-select', window.cachedChannels, '', "Selecione um canal da lista...");
                     
-                    // Popula Selects de XP (Canais e Cargos)
+                    // Popula Selects de XP
                     populateSelect('cfg-xp-blocked-select', window.cachedChannels, '', "Selecione um canal...");
                     populateSelect('cfg-xp-reward-role', window.cachedRoles, '', "Selecione um cargo...");
                     populateSelect('cfg-xp-mult-role', window.cachedRoles, '', "Selecione um cargo...");
@@ -1404,11 +1441,9 @@
                     document.getElementById('cfg-xp-max').value = d.xp?.maxXp || 25;
                     document.getElementById('cfg-xp-msg').value = d.xp?.message || '🎉 Parabéns {user}, você alcançou o nível **{level}**!';
                     
-                    // XP Channel Custom Select
                     const xpChannelEl = document.getElementById('cfg-xp-channel');
                     xpChannelEl.innerHTML = `<option value="current">Mesmo canal da mensagem</option>` + window.cachedChannels.map(c => `<option value="${c.id}" ${c.id === d.xp?.channel ? 'selected' : ''}># ${c.name}</option>`).join('');
 
-                    // XP Arrays
                     window.xpBlockedChannelsList = d.xp?.blockedChannels || [];
                     window.xpRoleRewardsList = d.xp?.roleRewards || [];
                     window.xpMultipliersList = d.xp?.multipliers || [];
@@ -1479,7 +1514,12 @@
                     window.renderXpRewards();
                     window.renderXpMultipliers();
                 }
-            } catch (error) { console.error(error); }
+            } catch (error) { 
+                console.error("Erro no painel:", error); 
+                showToast("Erro ao carregar os dados: " + error.message, true);
+                // Evita que os campos fiquem travados "Carregando..." se o Firebase der erro
+                document.querySelectorAll('select').forEach(s => s.innerHTML = '<option value="">Erro de conexão</option>');
+            }
         }
 
         function backToGuilds() { 
@@ -1497,7 +1537,6 @@
                 guildId: selectedGuild.id, guildName: selectedGuild.name, prefix: document.getElementById('cfg-prefix').value || '!', logs: document.getElementById('cfg-logs').value,
                 vip: { active: document.getElementById('cfg-vip-active').checked, background: document.querySelector('input[name="vip-bg"]:checked')?.value || 'default' },
                 boost: { active: document.getElementById('cfg-boost-active').checked, channel: document.getElementById('cfg-boost-channel').value, msg: document.getElementById('cfg-boost-msg').value, image: document.getElementById('cfg-boost-img').value, color: document.getElementById('cfg-boost-color').value },
-                security: { antispam: document.getElementById('cfg-sec-spam').checked, antilink: document.getElementById('cfg-sec-link').checked, antiwords: document.getElementById('cfg-sec-words').checked, globalMode: document.getElementById('cfg-sec-global').checked, limitBan: parseInt(document.getElementById('cfg-sec-limit').value) || 3, forbiddenWords: document.getElementById('cfg-sec-forbid').value },
                 welcome: { channel: document.getElementById('cfg-wel-channel').value, inviteChannel: document.getElementById('cfg-wel-inv-channel').value, msg: document.getElementById('cfg-wel-msg').value, inviteMsg: document.getElementById('cfg-wel-inv-msg').value, image: document.getElementById('cfg-wel-img').value },
                 ticket: { canalPainel: document.getElementById('cfg-tk-painel').value, canalLogs: document.getElementById('cfg-tk-logs').value, categoriaId: document.getElementById('cfg-tk-cat').value, text: document.getElementById('cfg-tk-msg').value, image: document.getElementById('cfg-tk-img').value },
                 parceria: { painel: document.getElementById('cfg-parc-painel').value, postagem: document.getElementById('cfg-parc-post').value, categoria: document.getElementById('cfg-parc-cat').value, text: document.getElementById('cfg-parc-msg').value, color: document.getElementById('cfg-parc-color').value, image: document.getElementById('cfg-parc-img').value },
@@ -1520,7 +1559,7 @@
             try {
                 if (!window.stellarDb) throw new Error("Base não conectada.");
                 await window.authReady;
-                if (!window.firebaseUser) throw new Error("Não autenticado no banco de dados.");
+                if (!window.firebaseUser) throw new Error("Acesso bloqueado: Domínio do seu site não está autorizado.");
 
                 let docRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id) : window.fbDoc(window.stellarDb, 'guildConfigs', selectedGuild.id);
                 await window.fbSetDoc(docRef, data, { merge: true });
