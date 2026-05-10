@@ -248,7 +248,7 @@
         </div>
     </div>
 
-    <!-- 🔥 Fundo do Site (Alterado para receber as imagens VIP) 🔥 -->
+    <!-- 🔥 Fundo do Site 🔥 -->
     <div id="site-bg" class="fixed inset-0 pointer-events-none z-[-1] grid-bg opacity-40 transition-all duration-1000"></div>
 
     <!-- NAVBAR -->
@@ -674,38 +674,20 @@
                                 </div>
                             </div>
 
-                            <!-- SEGURANÇA -->
+                            <!-- SEGURANÇA (MOVIDO PARA DISCORD) -->
                             <div id="tab-seguranca" class="tab-content hidden space-y-10">
                                 <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3 mb-6">
                                     <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo de Segurança
                                 </h4>
-                                <div class="grid md:grid-cols-2 gap-4">
-                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
-                                        <div><h5 class="text-xs font-black uppercase">Anti-Spam</h5></div>
-                                        <label class="switch"><input type="checkbox" id="cfg-sec-spam"><span class="slider"></span></label>
+                                <div class="glass p-8 rounded-3xl text-center border-white/5 bg-red-600/5">
+                                    <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <i data-lucide="shield-alert" class="w-10 h-10 text-red-500"></i>
                                     </div>
-                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
-                                        <div><h5 class="text-xs font-black uppercase">Anti-Link</h5></div>
-                                        <label class="switch"><input type="checkbox" id="cfg-sec-link"><span class="slider"></span></label>
-                                    </div>
-                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
-                                        <div><h5 class="text-xs font-black uppercase">Anti-Palavras</h5></div>
-                                        <label class="switch"><input type="checkbox" id="cfg-sec-words"><span class="slider"></span></label>
-                                    </div>
-                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
-                                        <div><h5 class="text-xs font-black uppercase text-red-500">Modo Global</h5></div>
-                                        <label class="switch"><input type="checkbox" id="cfg-sec-global"><span class="slider"></span></label>
-                                    </div>
-                                </div>
-                                <div class="grid md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Limite para BAN</label>
-                                        <input type="number" id="cfg-sec-limit" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Palavras Proibidas</label>
-                                        <input type="text" id="cfg-sec-forbid" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
-                                    </div>
+                                    <h5 class="text-xl font-black uppercase text-white mb-4">A Segurança Evoluiu!</h5>
+                                    <p class="text-gray-400 font-medium leading-relaxed max-w-2xl mx-auto">
+                                        Para garantir a <b>máxima proteção</b> e evitar conflitos de configuração, todo o motor de segurança agora é gerenciado exclusivamente dentro do seu servidor.<br><br>
+                                        Abra o Discord e digite <code class="bg-black/50 text-red-400 px-2 py-1 rounded">!seguranca</code> para acessar o <b>Painel Mestre</b>. Lá você poderá configurar zonas livres, filtros de palavras, limites de mute/ban e permissões de staff de forma totalmente independente!
+                                    </p>
                                 </div>
                             </div>
 
@@ -880,23 +862,6 @@
                                 <div>
                                     <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal de Notícias (Cotações)</label>
                                     <select id="cfg-eco-channel" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition text-gray-300"></select>
-                                </div>
-                            </div>
-
-                            <!-- SEGURANÇA (MOVIDO PARA DISCORD) -->
-                            <div id="tab-seguranca" class="tab-content hidden space-y-10">
-                                <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3 mb-6">
-                                    <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo de Segurança
-                                </h4>
-                                <div class="glass p-8 rounded-3xl text-center border-white/5 bg-red-600/5">
-                                    <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                                        <i data-lucide="shield-alert" class="w-10 h-10 text-red-500"></i>
-                                    </div>
-                                    <h5 class="text-xl font-black uppercase text-white mb-4">A Segurança Evoluiu!</h5>
-                                    <p class="text-gray-400 font-medium leading-relaxed max-w-2xl mx-auto">
-                                        Para garantir a <b>máxima proteção</b> e evitar conflitos de configuração, todo o motor de segurança agora é gerenciado exclusivamente dentro do seu servidor.<br><br>
-                                        Abra o Discord e digite <code class="bg-black/50 text-red-400 px-2 py-1 rounded">!seguranca</code> para acessar o <b>Painel Mestre</b>. Lá você poderá configurar zonas livres, filtros de palavras, limites de mute/ban e permissões de staff de forma totalmente independente!
-                                    </p>
                                 </div>
                             </div>
 
