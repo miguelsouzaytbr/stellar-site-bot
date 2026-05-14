@@ -674,21 +674,54 @@
                                 </div>
                             </div>
 
-                            <!-- SEGURANÇA (MOVIDO PARA DISCORD) -->
+                            <!-- 🔥 SEGURANÇA (RESTAURADA E SINCRONIZADA) 🔥 -->
                             <div id="tab-seguranca" class="tab-content hidden space-y-10">
-                                <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3 mb-6">
-                                    <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo de Segurança
-                                </h4>
-                                <div class="glass p-8 rounded-3xl text-center border-white/5 bg-red-600/5">
-                                    <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                                        <i data-lucide="shield-alert" class="w-10 h-10 text-red-500"></i>
-                                    </div>
-                                    <h5 class="text-xl font-black uppercase text-white mb-4">A Segurança Evoluiu!</h5>
-                                    <p class="text-gray-400 font-medium leading-relaxed max-w-2xl mx-auto">
-                                        Para garantir a <b>máxima proteção</b> e evitar conflitos de configuração, todo o motor de segurança agora é gerenciado exclusivamente dentro do seu servidor.<br><br>
-                                        Abra o Discord e digite <code class="bg-black/50 text-red-400 px-2 py-1 rounded">!seguranca</code> para acessar o <b>Painel Mestre</b>. Lá você poderá configurar zonas livres, filtros de palavras, limites de mute/ban e permissões de staff de forma totalmente independente!
-                                    </p>
+                                <div class="flex items-center justify-between mb-6">
+                                    <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+                                        <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo de Segurança
+                                    </h4>
                                 </div>
+                                
+                                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
+                                        <div>
+                                            <h5 class="text-xs font-black uppercase">Anti-Spam / Raid</h5>
+                                        </div>
+                                        <label class="switch"><input type="checkbox" id="cfg-sec-spam"><span class="slider"></span></label>
+                                    </div>
+                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
+                                        <div>
+                                            <h5 class="text-xs font-black uppercase">Anti-Link (Scam)</h5>
+                                        </div>
+                                        <label class="switch"><input type="checkbox" id="cfg-sec-link"><span class="slider"></span></label>
+                                    </div>
+                                    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
+                                        <div>
+                                            <h5 class="text-xs font-black uppercase">Filtro Léxico</h5>
+                                        </div>
+                                        <label class="switch"><input type="checkbox" id="cfg-sec-words"><span class="slider"></span></label>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-6 bg-red-600/10 rounded-3xl border border-red-600/20 mb-6">
+                                    <div>
+                                        <h5 class="text-xs font-black uppercase text-red-500">Modo de Punição Global</h5>
+                                        <p class="text-[10px] text-gray-400 font-medium mt-1">Ativo: Pune em todo o servidor. Desativado: Pune apenas nas "Zonas Seguras" configuradas no comando do Discord.</p>
+                                    </div>
+                                    <label class="switch"><input type="checkbox" id="cfg-sec-global" checked><span class="slider"></span></label>
+                                </div>
+
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Avisos Máximos para BAN</label>
+                                        <input type="number" id="cfg-sec-limit" placeholder="3" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Palavras Proibidas (Separe por vírgula)</label>
+                                        <textarea id="cfg-sec-forbid" rows="2" placeholder="palavra1, palavra2, ofensa3" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition"></textarea>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-gray-500 mt-2 font-bold uppercase tracking-widest text-center">Para gerenciar Cargos Imunes ou Zonas Seguras, use <code class="text-red-400">!seguranca</code> dentro do seu servidor Discord.</p>
                             </div>
 
                             <!-- BOAS VINDAS -->
@@ -1432,7 +1465,7 @@
                     document.getElementById('cfg-boost-img').value = d.boost?.image || '';
                     document.getElementById('cfg-boost-color').value = d.boost?.color || '#ff73fa';
 
-                    // Segurança
+                    // Segurança Restaurada 🔥
                     document.getElementById('cfg-sec-spam').checked = d.security?.antispam || false;
                     document.getElementById('cfg-sec-link').checked = d.security?.antilink || false;
                     document.getElementById('cfg-sec-words').checked = d.security?.antiwords || false;
@@ -1499,7 +1532,10 @@
             const btn = document.getElementById('btn-save');
             btn.innerHTML = '<i class="animate-spin" data-lucide="refresh-cw"></i> Sincronizando...'; lucide.createIcons();
             const data = {
-                guildId: selectedGuild.id, guildName: selectedGuild.name, prefix: document.getElementById('cfg-prefix').value || '!', logs: document.getElementById('cfg-logs').value,
+                guildId: selectedGuild.id, 
+                guildName: selectedGuild.name, 
+                prefix: document.getElementById('cfg-prefix').value || '!', 
+                logs: document.getElementById('cfg-logs').value,
                 vip: { active: document.getElementById('cfg-vip-active').checked, background: document.querySelector('input[name="vip-bg"]:checked')?.value || 'default' },
                 boost: { active: document.getElementById('cfg-boost-active').checked, channel: document.getElementById('cfg-boost-channel').value, msg: document.getElementById('cfg-boost-msg').value, image: document.getElementById('cfg-boost-img').value, color: document.getElementById('cfg-boost-color').value },
                 welcome: { channel: document.getElementById('cfg-wel-channel').value, inviteChannel: document.getElementById('cfg-wel-inv-channel').value, msg: document.getElementById('cfg-wel-msg').value, inviteMsg: document.getElementById('cfg-wel-inv-msg').value, image: document.getElementById('cfg-wel-img').value },
@@ -1507,6 +1543,14 @@
                 parceria: { painel: document.getElementById('cfg-parc-painel').value, postagem: document.getElementById('cfg-parc-post').value, categoria: document.getElementById('cfg-parc-cat').value, text: document.getElementById('cfg-parc-msg').value, color: document.getElementById('cfg-parc-color').value, image: document.getElementById('cfg-parc-img').value },
                 staff: { channel: document.getElementById('cfg-st-painel').value, logs: document.getElementById('cfg-st-logs').value, text: document.getElementById('cfg-st-msg').value, image: document.getElementById('cfg-st-img').value },
                 economy: { active: document.getElementById('cfg-eco-active').checked, channel: document.getElementById('cfg-eco-channel').value },
+                security: {
+                    antispam: document.getElementById('cfg-sec-spam').checked,
+                    antilink: document.getElementById('cfg-sec-link').checked,
+                    antiwords: document.getElementById('cfg-sec-words').checked,
+                    globalMode: document.getElementById('cfg-sec-global').checked,
+                    limitBan: parseInt(document.getElementById('cfg-sec-limit').value) || 3,
+                    forbiddenWords: document.getElementById('cfg-sec-forbid').value
+                },
                 xp: { 
                     active: document.getElementById('cfg-xp-active').checked, 
                     minXp: parseInt(document.getElementById('cfg-xp-min').value) || 15,
