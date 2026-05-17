@@ -764,9 +764,15 @@
                                     <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Mensagem de Invites</label>
                                     <textarea id="cfg-wel-inv-msg" rows="2" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-bold focus:border-red-600 outline-none transition"></textarea>
                                 </div>
-                                <div>
-                                    <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">URL da Imagem/Banner (Opcional)</label>
-                                    <input type="text" id="cfg-wel-img" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">URL da Imagem/Banner (Opcional)</label>
+                                        <input type="text" id="cfg-wel-img" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Cor do Embed (Ex: #7000FF)</label>
+                                        <input type="text" id="cfg-wel-color" placeholder="#7000FF" class="w-full bg-black/40 border border-white/5 p-6 rounded-2xl font-mono text-sm focus:border-red-600 outline-none transition">
+                                    </div>
                                 </div>
                             </div>
 
@@ -1269,7 +1275,8 @@
         function previewWelcome() {
             const rawMsg = document.getElementById('cfg-wel-msg').value || 'Bem-vindo(a) {user}!';
             const img = document.getElementById('cfg-wel-img').value;
-            let html = `<div class="mt-1 text-[#dbdee1] text-sm"><span class="bg-[#5865F2]/20 text-[#c9cdff] px-1 rounded">@Usuário</span></div><div class="bg-[#2b2d31] border-l-4 border-[#7000FF] rounded pb-4 mt-2 max-w-sm"><div class="p-4 pb-2"><div class="text-white font-bold mb-2">👋 Bem-vindo</div><p class="text-[#dbdee1] text-sm">${parseMessage(rawMsg)}</p></div>`;
+            const color = document.getElementById('cfg-wel-color').value || '#7000FF';
+            let html = `<div class="mt-1 text-[#dbdee1] text-sm"><span class="bg-[#5865F2]/20 text-[#c9cdff] px-1 rounded">@Usuário</span></div><div class="bg-[#2b2d31] border-l-4 rounded pb-4 mt-2 max-w-sm" style="border-left-color: ${color};"><div class="p-4 pb-2"><div class="text-white font-bold mb-2">👋 Bem-vindo</div><p class="text-[#dbdee1] text-sm">${parseMessage(rawMsg)}</p></div>`;
             if (img && img !== 'Nenhuma' && img.trim() !== '') html += `<div class="px-4"><img src="${img}" class="rounded w-full max-h-48 object-cover"></div>`;
             document.getElementById('preview-content').innerHTML = html + `</div>`;
             document.getElementById('preview-modal').classList.remove('hidden');
@@ -1477,6 +1484,7 @@
                     document.getElementById('cfg-wel-msg').value = d.welcome?.msg || '# <a:dindon:1468425730240286774> Boas-vindas, {user}!\n> Você acaba de entrar no **{guild}**! Sinta-se em casa.\n\n<a:seta1Img_adm:1468419286631710821> **Passos Iniciais:**\n* 📖 Leia as <#1458092487171379270> para evitar qualquer <a:warning:1468425732668784834> `Aviso`.\n* 🧭 Entenda o nosso ecossistema no <#1487555523888021777>.\n* 💸 Pegue as <#1489786478434324621> e acumule <:cash:1493784655319666789> `coins`.\n* 🛠️ Dúvidas? Abra um ticket no <#1482187262862037155> para a <:staff:1493289738981998652> **Equipe**.\n\n<:student:1493290481264754729> *Você é o membro número **#{total}**!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
                     document.getElementById('cfg-wel-inv-msg').value = d.welcome?.inviteMsg || '🛰️ **[LOG DE INVITE]**\nO membro {user} acabou de entrar.\nConvidado por: {inviter}\nTotal de convites: **{invites}**';
                     document.getElementById('cfg-wel-img').value = d.welcome?.image || '';
+                    document.getElementById('cfg-wel-color').value = d.welcome?.color || '#7000FF';
 
                     document.getElementById('cfg-tk-msg').value = d.ticket?.text || '# <a:dindon:1468425730240286774> Central de Atendimento\n> Precisa de ajuda, tem uma dúvida ou quer fazer uma denúncia? Você está no lugar certo!\n\n<a:seta1Img_adm:1468419286631710821> **Como abrir seu ticket:**\n* Selecione o motivo do seu contato no menu logo abaixo.\n* Evite abrir tickets sem necessidade para não levar um <a:warning:1468425732668784834> `Aviso`.\n* Aguarde pacientemente. Nossa <:staff:1493289738981998652> **Equipe** vai te atender o mais rápido possível.\n\n<:student:1493290481264754729> *Dica: Muitas dúvidas já estão respondidas no <#1487555523888021777>!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
                     document.getElementById('cfg-tk-img').value = d.ticket?.image || '';
@@ -1538,7 +1546,7 @@
                 logs: document.getElementById('cfg-logs').value,
                 vip: { active: document.getElementById('cfg-vip-active').checked, background: document.querySelector('input[name="vip-bg"]:checked')?.value || 'default' },
                 boost: { active: document.getElementById('cfg-boost-active').checked, channel: document.getElementById('cfg-boost-channel').value, msg: document.getElementById('cfg-boost-msg').value, image: document.getElementById('cfg-boost-img').value, color: document.getElementById('cfg-boost-color').value },
-                welcome: { channel: document.getElementById('cfg-wel-channel').value, inviteChannel: document.getElementById('cfg-wel-inv-channel').value, msg: document.getElementById('cfg-wel-msg').value, inviteMsg: document.getElementById('cfg-wel-inv-msg').value, image: document.getElementById('cfg-wel-img').value },
+                welcome: { channel: document.getElementById('cfg-wel-channel').value, inviteChannel: document.getElementById('cfg-wel-inv-channel').value, msg: document.getElementById('cfg-wel-msg').value, inviteMsg: document.getElementById('cfg-wel-inv-msg').value, image: document.getElementById('cfg-wel-img').value, color: document.getElementById('cfg-wel-color').value },
                 ticket: { canalPainel: document.getElementById('cfg-tk-painel').value, canalLogs: document.getElementById('cfg-tk-logs').value, categoriaId: document.getElementById('cfg-tk-cat').value, text: document.getElementById('cfg-tk-msg').value, image: document.getElementById('cfg-tk-img').value },
                 parceria: { painel: document.getElementById('cfg-parc-painel').value, postagem: document.getElementById('cfg-parc-post').value, categoria: document.getElementById('cfg-parc-cat').value, text: document.getElementById('cfg-parc-msg').value, color: document.getElementById('cfg-parc-color').value, image: document.getElementById('cfg-parc-img').value },
                 staff: { channel: document.getElementById('cfg-st-painel').value, logs: document.getElementById('cfg-st-logs').value, text: document.getElementById('cfg-st-msg').value, image: document.getElementById('cfg-st-img').value },
