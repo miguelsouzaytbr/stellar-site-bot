@@ -1077,8 +1077,16 @@
         function populateSelect(elementId, items, selectedValue, defaultText = "Selecione uma opção...") {
             const el = document.getElementById(elementId);
             if (!el) return;
-            el.innerHTML = `<option value="">${defaultText}</option>` + 
-                items.map(i => `<option value="${i.id}" ${i.id === selectedValue ? 'selected' : ''}>${i.name.startsWith('@') ? i.name : '# ' + i.name}</option>`).join('');
+            
+            let html = `<option value="">${defaultText}</option>`;
+            
+            // 🔥 PROTEÇÃO ANTI-WIPE (Evita perder os canais se o cache do Discord demorar) 🔥
+            if (selectedValue && !items.some(i => i.id === selectedValue)) {
+                html += `<option value="${selectedValue}" selected># [Canal Mantido - ID: ${selectedValue}]</option>`;
+            }
+            
+            html += items.map(i => `<option value="${i.id}" ${i.id === selectedValue ? 'selected' : ''}>${i.name.startsWith('@') ? i.name : '# ' + i.name}</option>`).join('');
+            el.innerHTML = html;
         }
 
         window.triggerTest = async function(actionType) {
