@@ -2026,3 +2026,570 @@
     </script>
 </body>
 </html>
+
+Index.js:
+
+process.env.LANG = 'en_US.UTF-8';
+process.env.LC_ALL = 'en_US.UTF-8';
+
+const { 
+    Client, GatewayIntentBits, Partials, Collection, ActivityType, 
+    PermissionFlagsBits, EmbedBuilder, ChannelType, ButtonBuilder, 
+    ButtonStyle, ActionRowBuilder, ModalBuilder, TextInputBuilder, 
+    TextInputStyle, StringSelectMenuBuilder, ChannelSelectMenuBuilder,
+    RoleSelectMenuBuilder, MessageType, UserFlags, AttachmentBuilder,
+    AuditLogEvent, MessageFlags 
+} = require('discord.js');
+const fs = require('fs');
+const path = require('path');
+const { QuickDB } = require("quick.db");
+
+// ==========================================
+// 🎨 DICIONÁRIO GLOBAL DE EMOJIS (ATUALIZADO)
+// ==========================================
+const e = {
+    check: '<a:Checkmark:1501641091596816495>',
+    del: '❌',
+    trash: '<:trash:1502872440634740837>',
+    aviso: '<a:warning:1468425732668784834>',
+    staff: '<:staff:1502099467074273340>',
+    cash: '<:cash:1501804528842833991>',
+    edit: '<:edit:1504245836966526996>',
+    typing: '<a:typing:1501804339382063154>',
+    student: '<:student:1493290481264754729>',
+    seta: '<a:seta1Img_adm:1468419286631710821>',
+    mail: '<:mail:1502102380932632756>',
+    gift: '<:gift:1501824714471903382>',
+    house: '<:house:1504246315519967282>',
+    search: '<:search:1504245814183329812>',
+    food: '<:neonfood:1504245858479116449>',
+    neonmail: '<:neonmail:1504245767651590386>',
+    bell: '<:bell:1502102361299226725>',
+    bitcoin: '<:bitcoin:1501804800071827466>',
+    rules: '<:rules:1504307483605209108>',
+    link: '<:link:1504307499984228444>',
+    box: '<:box:1504616066251489330>',
+    refresh: '<:refresh:1504916333240778865>',
+    insta: '<:insta:1505403708995932251>'
+};
+
+// ==========================================
+// 🔴 INTEGRAÇÃO FIREBASE (SITE <-> BOT)
+// ==========================================
+const admin = require('firebase-admin');
+const keyPath = path.join(__dirname, 'firebase-key.json');
+
+if (fs.existsSync(keyPath)) {
+    const serviceAccount = require(keyPath);
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+    });
+    console.log("🔥 [FIREBASE] Chave encontrada! Bot conectado à nuvem do site com sucesso.");
+} else {
+    console.log("⚠️ [ALERTA FIREBASE] O arquivo 'firebase-key.json' não foi encontrado na pasta do bot!");
+    console.log("⚠️ [ALERTA FIREBASE] As configurações do painel web serão ignoradas. Usando apenas banco local.");
+}
+
+const firestore = admin.apps.length ? admin.firestore() : null;
+const STELLAR_APP_ID = "1:1032087489431:web:b61ee3a3237e28c9d5d2d2"; 
+
+// ==========================================
+// 🔥 CACHE DE MEMÓRIA EM TEMPO REAL
+// ==========================================
+const guildSettingsCache = new Map();
+
+const logPath = path.resolve(__dirname, 'stellar_debug.log');
+const logError = (type, err) => {
+    const msg = `[${new Date().toLocaleString()}] [${type}]: ${err.stack || err}\n`;
+    fs.appendFileSync(logPath, msg);
+    console.error(msg);
+};
+process.on('uncaughtException', (err) => logError('CRASH_PREVENT', err));
+process.on('unhandledRejection', (reason) => logError('PROMISE_REJECT', reason));
+
+const db = new QuickDB();
+
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildInvites,
+        GatewayIntentBits.GuildModeration,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildPresences 
+    ],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction]
+});
+
+client.commands = new Collection();
+client.invites = new Map();
+const antispamMapGlobal = new Map();
+
+client.db = { 
+    coins: db.table("coins"), 
+    contas: db.table("contas"),
+    props: db.table("props"),
+    config: db.table("config"),
+    xp: db.table("xp")
+};
+
+if (firestore) {
+    const syncConfig = (snapshot) => {
+        snapshot.docChanges().forEach(async change => {
+            if (change.type === 'removed') {
+                guildSettingsCache.delete(change.doc.id);
+            } else {
+                const data = change.doc.data();
+                const guildId = change.doc.id;
+                
+                // 🔥 PROTEÇÃO DEEP MERGE PARA NÃO PERDER CANAIS
+                const existing = guildSettingsCache.get(guildId) || {};
+                const merged = {
+                    ...existing,
+                    ...data,
+                    welcome: { ...(existing.welcome || {}), ...(data.welcome || {}) },
+                    security: { ...(existing.security || {}), ...(data.security || {}) },
+                    boost: { ...(existing.boost || {}), ...(data.boost || {}) },
+                    ticket: { ...(existing.ticket || {}), ...(data.ticket || {}) },
+                    parceria: { ...(existing.parceria || {}), ...(data.parceria || {}) },
+                    staff: { ...(existing.staff || {}), ...(data.staff || {}) },
+                    economy: { ...(existing.economy || {}), ...(data.economy || {}) },
+                    xp: { ...(existing.xp || {}), ...(data.xp || {}) },
+                    commands: { ...(existing.commands || {}), ...(data.commands || {}) }
+                };
+
+                guildSettingsCache.set(guildId, merged);
+                
+                const dbProps = client.db?.props;
+                if (!dbProps) return;
+
+                // Salvar configs gerais
+                if (merged.prefix) await dbProps.set(`prefix_${guildId}`, merged.prefix);
+                if (merged.logs) await dbProps.set(`security_logs_${guildId}`, merged.logs);
+                
+                // Salvar Configs de Segurança
+                if (merged.security) {
+                    if (merged.security.antispam !== undefined) await dbProps.set(`antispam_status_${guildId}`, merged.security.antispam);
+                    if (merged.security.antilink !== undefined) await dbProps.set(`antilink_status_${guildId}`, merged.security.antilink);
+                    if (merged.security.antiwords !== undefined) await dbProps.set(`antiwords_status_${guildId}`, merged.security.antiwords);
+                    if (merged.security.limitBan !== undefined) await dbProps.set(`security_ban_limit_${guildId}`, merged.security.limitBan);
+                    
+                    if (merged.security.forbiddenWords !== undefined) {
+                        const fwArray = merged.security.forbiddenWords.split(',').map(s => s.trim()).filter(Boolean);
+                        await dbProps.set(`forbidden_words_${guildId}`, fwArray);
+                    }
+                }
+                
+                // 🔥 Salvar Canais de Entrada Localmente 🔥
+                if (merged.welcome) {
+                    if (merged.welcome.msg) await dbProps.set(`welcome_msg_${guildId}`, merged.welcome.msg);
+                    if (merged.welcome.inviteMsg) await dbProps.set(`invite_msg_${guildId}`, merged.welcome.inviteMsg);
+                    if (merged.welcome.color) await dbProps.set(`welcome_color_${guildId}`, merged.welcome.color);
+                    
+                    if (merged.welcome.channel) await dbProps.set(`welcome_channel_${guildId}`, merged.welcome.channel);
+                    if (merged.welcome.inviteChannel) await dbProps.set(`invite_channel_${guildId}`, merged.welcome.inviteChannel);
+                    if (merged.welcome.role) await dbProps.set(`welcome_role_${guildId}`, merged.welcome.role);
+
+                    if (merged.welcome.image && merged.welcome.image !== 'Nenhuma') {
+                        await dbProps.set(`welcome_img_${guildId}`, merged.welcome.image);
+                    } else if (!merged.welcome.image || merged.welcome.image === '') {
+                        await dbProps.delete(`welcome_img_${guildId}`);
+                    }
+                }
+            }
+        });
+    };
+    // AGORA ELE SÓ ESCUTA A COLEÇÃO CERTA (ARTIFACTS) E NÃO A RAIZ BUGADA!
+    firestore.collection('artifacts').doc(STELLAR_APP_ID).collection('public').doc('data').collection('guildConfigs').onSnapshot(syncConfig);
+}
+
+async function getGuildSettings(guildId) {
+    if (!firestore) return null;
+    if (guildSettingsCache.has(guildId)) return guildSettingsCache.get(guildId);
+
+    try {
+        const canvasRef = firestore.collection('artifacts').doc(STELLAR_APP_ID).collection('public').doc('data').collection('guildConfigs').doc(guildId);
+        const canvasSnap = await canvasRef.get();
+        if (canvasSnap.exists) {
+            const data = canvasSnap.data();
+            guildSettingsCache.set(guildId, data);
+            return data;
+        }
+        return null;
+    } catch (e) { return null; }
+}
+
+async function sendSafeMessage(channel, content) {
+    if (!content) return;
+    if (content.length <= 2000) return await channel.send(content).catch(() => {});
+    const lines = content.split('\n');
+    let currentChunk = '';
+    for (const line of lines) {
+        if ((currentChunk + line).length > 1900) {
+            await channel.send(currentChunk).catch(() => {});
+            currentChunk = line + '\n';
+        } else {
+            currentChunk += line + '\n';
+        }
+    }
+    if (currentChunk) await channel.send(currentChunk).catch(() => {});
+}
+
+client.sendSafeMessage = sendSafeMessage;
+
+client.syncSecurityToWeb = async (guildId) => {
+    if (!firestore) return;
+    try {
+        const dbProps = client.db.props;
+        const updateObj = {
+            security: {
+                antispam: await dbProps.get(`antispam_status_${guildId}`) || false,
+                antilink: await dbProps.get(`antilink_status_${guildId}`) || false,
+                antiwords: await dbProps.get(`antiwords_status_${guildId}`) || false,
+                globalMode: await dbProps.get(`scope_spam_${guildId}`) ?? true,
+                limitBan: await dbProps.get(`security_ban_limit_${guildId}`) || 4,
+                forbiddenWords: (await dbProps.get(`forbidden_words_${guildId}`) || []).join(', ')
+            }
+        };
+        await firestore.collection('artifacts').doc(STELLAR_APP_ID).collection('public').doc('data').collection('guildConfigs').doc(guildId).set(updateObj, { merge: true });
+    } catch (e) { console.error("Erro Sync Firebase:", e); }
+};
+
+client.logMod = async (guild, tipo, staff, alvo, motivo) => {
+    const dbProps = client.db.props;
+    const siteSettings = await getGuildSettings(guild.id);
+    const canalLogsId = siteSettings?.logs || await dbProps.get(`security_logs_${guild.id}`);
+    
+    if (!canalLogsId) return;
+
+    const logChannel = guild.channels.cache.get(canalLogsId);
+    if (!logChannel) return;
+
+    const status = {
+        'BAN': { cor: '#FF0000', emoji: '🔨', acao: 'Banimento Aplicado' },
+        'UNBAN': { cor: '#00FFAD', emoji: '🔓', acao: 'Banimento Removido' },
+        'MUTE': { cor: '#FFA500', emoji: '🔇', acao: 'Castigo Aplicado' },
+        'UNMUTE': { cor: '#00D1FF', emoji: '🔊', acao: 'Castigo Removido' },
+        'WARN': { cor: '#FFFF00', emoji: e.aviso, acao: 'Advertência Manual' },
+        'KICK': { cor: '#FF4500', emoji: '👢', acao: 'Expulsão Aplicada' },
+        'CLEAR': { cor: '#00CCFF', emoji: '🧹', acao: 'Limpeza de Setor' },
+        'LOCK': { cor: '#2F3136', emoji: '🔒', acao: 'Canal Trancado' },
+        'UNLOCK': { cor: '#00FF7F', emoji: '🔓', acao: 'Canal Aberto' }
+    };
+
+    const config = status[tipo] || { cor: '#7000FF', emoji: e.staff, acao: 'Ação de Staff' };
+
+    const embed = new EmbedBuilder()
+        .setAuthor({ name: `Stellar Security | ${config.acao}`, iconURL: client.user.displayAvatarURL() })
+        .setColor(config.cor)
+        .addFields(
+            { name: `${config.emoji} Alvo`, value: `${alvo} (\`${alvo.id || alvo}\`)`, inline: true },
+            { name: `👮 Staff`, value: `${staff} (\`${staff.id}\`)`, inline: true },
+            { name: `📂 Motivo`, value: `\`\`\`${motivo || 'Nenhum motivo informado'}\`\`\`` }
+        )
+        .setTimestamp()
+        .setFooter({ text: `Protocolo de Segurança • Stellar Society` });
+
+    logChannel.send({ embeds: [embed] }).catch(() => {});
+};
+
+const loadCommands = (dir) => {
+    const fullPath = path.join(__dirname, dir);
+    if (!fs.existsSync(fullPath)) return;
+    const files = fs.readdirSync(fullPath);
+
+    for (const file of files) {
+        const filePath = path.join(fullPath, file);
+        const stat = fs.lstatSync(filePath);
+        if (stat.isDirectory()) {
+            loadCommands(path.join(dir, file));
+        } else if (file.endsWith('.js') && !['interaction-handler.js', 'processa-vendas.js'].includes(file)) {
+            const command = require(filePath);
+            if (command.name && command.execute) {
+                client.commands.set(command.name, command);
+            }
+        }
+    }
+};
+
+loadCommands('commands');
+console.log(`Comandos carregados: ${client.commands.size}`);
+
+const syncGuildCache = async (guild = null) => {
+    if (!firestore) return;
+    const updateOne = async (g) => {
+        try {
+            const textChannels = g.channels.cache.filter(c => c.type === 0 || c.type === 5).map(c => ({ id: c.id, name: c.name }));
+            const categories = g.channels.cache.filter(c => c.type === 4).map(c => ({ id: c.id, name: c.name }));
+            const roles = g.roles.cache.filter(r => !r.managed && r.name !== '@everyone').sort((a, b) => b.position - a.position).map(r => ({ id: r.id, name: r.name }));
+
+            const cacheData = { channels: textChannels, categories: categories, roles: roles, timestamp: Date.now() };
+
+            await firestore.collection('artifacts').doc(STELLAR_APP_ID).collection('public').doc('data').collection('guildCache').doc(g.id).set(cacheData, { merge: true });
+        } catch (e) {}
+    };
+
+    if (guild) {
+        await updateOne(guild);
+    } else {
+        console.log("🔄 Sincronizando Canais, Cargos e Categorias com o Site...");
+        for (const g of client.guilds.cache.values()) await updateOne(g);
+    }
+};
+
+client.on('channelCreate', channel => syncGuildCache(channel.guild));
+client.on('channelDelete', channel => syncGuildCache(channel.guild));
+client.on('channelUpdate', (oldC, newC) => syncGuildCache(newC.guild));
+client.on('roleCreate', role => syncGuildCache(role.guild));
+client.on('roleDelete', role => syncGuildCache(role.guild));
+client.on('roleUpdate', (oldR, newR) => syncGuildCache(newR.guild));
+
+// ==========================================
+// 🚀 EVENTO READY
+// ==========================================
+client.once('clientReady', async (c) => {
+    console.log("📈 Sistema de Mercado Global Ativado | Intervalo: 15min");
+
+    syncGuildCache();
+    setInterval(() => syncGuildCache(), 600000); 
+
+    // Guardar invites na inicialização (Prevenção de Crash Refinada)
+    client.guilds.cache.forEach(async g => {
+        try {
+            const invs = await g.invites.fetch().catch(() => new Collection());
+            const invMap = new Map();
+            invs.forEach(i => invMap.set(i.code, i.uses)); 
+            const vanity = await g.fetchVanityData().catch(() => null);
+            if (vanity) invMap.set('VANITY', vanity.uses);
+            client.invites.set(g.id, invMap);
+        } catch (e) {}
+    });
+
+    if (firestore) {
+        console.log("📡 [FIREBASE] Escutando comandos de Teste remotos do Painel Web...");
+        const startTime = Date.now();
+        
+        const processTriggers = snapshot => {
+            snapshot.docChanges().forEach(async change => {
+                if (change.type === 'added') {
+                    const data = change.doc.data();
+                    const guild = client.guilds.cache.get(data.guildId);
+                    if (!guild) return change.doc.ref.delete().catch(()=>{});
+                    
+                    const dbProps = client.db.props;
+                    const siteSettings = await getGuildSettings(guild.id);
+                    
+                    try {
+                        const obterCanalFallback = (canalPreConfigurado) => {
+                            let c = guild.channels.cache.get(canalPreConfigurado);
+                            if (!c) c = guild.systemChannel;
+                            if (!c) c = guild.channels.cache.find(ch => ch.type === 0 && ch.permissionsFor(client.user).has('SendMessages'));
+                            return c;
+                        };
+
+                        if (data.action === 'test_welcome') {
+                            const canalId = siteSettings?.welcome?.channel || await dbProps.get(`welcome_channel_${guild.id}`);
+                            const canal = obterCanalFallback(canalId);
+                            if (!canal) return;
+
+                            const defaultWelcomeMsg = `# ${e.bell} Boas-vindas, {user}!\n> Você acaba de entrar no **{guild}**! Sinta-se em casa.\n\n${e.seta} **Passos Iniciais:**\n* ${e.rules} Leia as regras para evitar qualquer ${e.aviso} \`Aviso\`.\n* ${e.house} Entenda o nosso ecossistema no servidor.\n* ${e.cash} Pegue as recompensas e acumule ${e.bitcoin} \`coins\`.\n* 🛠️ Dúvidas? Abra um ticket para a ${e.staff} **Equipe**.\n\n${e.student} *Você é o membro número **#{total}**!*\n${e.link} **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)`;
+                            const msgW = siteSettings?.welcome?.msg || await dbProps.get(`welcome_msg_${guild.id}`) || defaultWelcomeMsg;
+                            const img = siteSettings?.welcome?.image || await dbProps.get(`welcome_img_${guild.id}`);
+                            const tipoE = await dbProps.get(`welcome_tipo_${guild.id}`) || 'texto';
+                            const cargoPing = siteSettings?.welcome?.role || await dbProps.get(`welcome_role_${guild.id}`);
+                            let corConfig = siteSettings?.welcome?.color || await dbProps.get(`welcome_color_${guild.id}`) || '#7000FF';
+
+                            if (!/^#[0-9A-F]{6}$/i.test(corConfig)) corConfig = '#7000FF';
+
+                            const parse = (t) => t.replace(/{user}/g, `<@${client.user.id}>`).replace(/{inviter}/g, `**Stellar Staff**`).replace(/{invites}/g, `15`).replace(/{guild}/g, guild.name).replace(/{total}/g, guild.memberCount);
+                            const content = cargoPing ? `<@&${cargoPing}> <@${client.user.id}>` : `<@${client.user.id}>`;
+                            
+                            if (tipoE === 'embed' || img) {
+                                const embed = new EmbedBuilder().setAuthor({ name: `Boas-vindas (Teste Web)`, iconURL: client.user.displayAvatarURL() }).setDescription(parse(msgW)).setColor(corConfig).setThumbnail(client.user.displayAvatarURL()).setFooter({ text: `Membro #${guild.memberCount}` }).setTimestamp();
+                                if (img && img !== 'Nenhuma' && img.startsWith('http')) embed.setImage(img);
+                                await canal.send({ content: "🚀 **TESTE VIA SITE:** " + content, embeds: [embed] }).catch(()=>{});
+                            } else {
+                                await canal.send(`🚀 **TESTE VIA SITE:**\n${content}\n${parse(msgW)}`).catch(()=>{});
+                            }
+                        }
+
+                        if (data.action === 'test_invite') {
+                            const canalId = siteSettings?.welcome?.inviteChannel || siteSettings?.welcome?.channel || await dbProps.get(`invite_channel_${guild.id}`);
+                            const canal = obterCanalFallback(canalId);
+                            if (!canal) return;
+
+                            const defaultInviteMsg = `${e.seta} **[LOG DE INVITE]**\nO membro {user} acabou de entrar.\nConvidado por: {inviter}\nTotal de convites: **{invites}**`;
+                            const msgI = siteSettings?.welcome?.inviteMsg || await dbProps.get(`invite_msg_${guild.id}`) || defaultInviteMsg;
+                            const parse = (t) => t.replace(/{user}/g, `<@${client.user.id}>`).replace(/{inviter}/g, `**Stellar Staff**`).replace(/{invites}/g, `15`).replace(/{guild}/g, guild.name).replace(/{total}/g, guild.memberCount);
+                            await canal.send(`🚀 **TESTE VIA SITE:**\n${parse(msgI)}`).catch(()=>{});
+                        }
+
+                        if (data.action === 'test_boost') {
+                            const canalId = siteSettings?.boost?.channel || await dbProps.get(`boost_channel_${guild.id}`);
+                            const canal = obterCanalFallback(canalId);
+                            if (!canal) return;
+
+                            const defaultMsg = '🎉 Muito obrigado por impulsionar o servidor, {user}! Você acabou de receber as vantagens exclusivas de Booster!';
+                            const rawMsg = siteSettings?.boost?.msg || await dbProps.get(`boost_msg_${guild.id}`) || defaultMsg;
+                            const img = siteSettings?.boost?.image || await dbProps.get(`boost_img_${guild.id}`);
+                            let color = siteSettings?.boost?.color || await dbProps.get(`boost_color_${guild.id}`) || '#ff73fa';
+                            if (!/^#[0-9A-F]{6}$/i.test(color)) color = '#ff73fa';
+
+                            const parse = (t) => t.replace(/{user}/g, `<@${client.user.id}>`).replace(/{guild}/g, guild.name).replace(/{level}/g, '3').replace(/{boosts}/g, '14');
+
+                            const embed = new EmbedBuilder()
+                                .setAuthor({ name: `Novo Impulso! 🚀 (Teste Web)`, iconURL: client.user.displayAvatarURL() })
+                                .setColor(color)
+                                .setDescription(parse(rawMsg))
+                                .setThumbnail(client.user.displayAvatarURL())
+                                .setFooter({ text: `${guild.name} • Total de Impulsos: 14` })
+                                .setTimestamp();
+
+                            if (img && img !== 'Nenhuma' && img.startsWith('http')) embed.setImage(img);
+                            await canal.send({ content: `🚀 **TESTE VIA SITE:** <@${client.user.id}>`, embeds: [embed] }).catch(()=>{});
+                        }
+
+                        if (data.action === 'test_ticket') {
+                            const canalId = siteSettings?.ticket?.canalPainel || await dbProps.get(`ticket_config_${guild.id}`)?.canalPainel;
+                            const canal = obterCanalFallback(canalId);
+                            if (!canal) return;
+
+                            const defaultTicketMsg = `# ${e.bell} Central de Atendimento\n> Precisa de ajuda, tem uma dúvida ou quer fazer uma denúncia? Você está no lugar certo!\n\n${e.seta} **Como abrir seu ticket:**\n* Selecione o motivo do seu contato no menu logo abaixo.\n* Evite abrir tickets sem necessidade para não levar um ${e.aviso} \`Aviso\`.\n* Aguarde pacientemente. Nossa ${e.staff} **Equipe** vai te atender o mais rápido possível.\n\n${e.student} *Dica: Muitas dúvidas já estão respondidas em nossa comunidade!*\n${e.link} **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)`;
+                            const embedTicket = new EmbedBuilder()
+                                .setTitle('🎫 Central de Atendimento (Teste)')
+                                .setDescription(siteSettings?.ticket?.text || defaultTicketMsg)
+                                .setColor('#5865F2')
+                                .setImage(siteSettings?.ticket?.image || 'https://i.imgur.com/y8abqUW.png')
+                                .setFooter({ text: guild.name, iconURL: guild.iconURL() });
+
+                            const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('abrir_ticket').setLabel('Abrir Ticket').setEmoji(e.neonmail).setStyle(ButtonStyle.Secondary));
+                            await canal.send({ content: "🚀 **TESTE DE PAINEL (ENVIADO PELO SITE):**", embeds: [embedTicket], components: [row] }).catch(()=>{});
+                        }
+
+                        if (data.action === 'test_staff') {
+                            const canalId = siteSettings?.staff?.channel || await dbProps.get(`staff_config_${guild.id}`)?.channel;
+                            const canal = obterCanalFallback(canalId);
+                            if (!canal) return;
+
+                            const embedStaff = new EmbedBuilder()
+                                .setTitle(`${e.staff} Recrutamento Equipe (Teste)`)
+                                .setDescription(siteSettings?.staff?.text || 'Deseja fazer parte da equipe? Clique abaixo!')
+                                .setColor('#ED1C24')
+                                .setImage(siteSettings?.staff?.image || null);
+
+                            const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('staff_apply_start').setLabel('Candidatar-se').setEmoji(e.edit).setStyle(ButtonStyle.Secondary));
+                            await canal.send({ content: "🚀 **TESTE DE RECRUTAMENTO (ENVIADO PELO SITE):**", embeds: [embedStaff], components: [row] }).catch(()=>{});
+                        }
+
+                        if (data.action === 'test_parceria') {
+                            const canalId = siteSettings?.parceria?.painel || await dbProps.get(`parceria_config_${guild.id}`)?.painel;
+                            const canal = obterCanalFallback(canalId);
+                            if (!canal) return;
+
+                            const embedParc = new EmbedBuilder()
+                                .setTitle('🤝 Sistema de Parcerias (Teste)')
+                                .setDescription(siteSettings?.parceria?.text || 'Clique no botão abaixo para abrir uma parceria.')
+                                .setColor(siteSettings?.parceria?.color || '#ED1C24')
+                                .setImage(siteSettings?.parceria?.image || 'https://i.imgur.com/y8abqUW.png')
+                                .setFooter({ text: guild.name, iconURL: guild.iconURL() });
+
+                            const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('abrir_parceria').setLabel('Solicitar Parceria').setEmoji('🤝').setStyle(ButtonStyle.Secondary));
+                            await canal.send({ content: "🚀 **TESTE DE PARCERIA (ENVIADO PELO SITE):**", embeds: [embedParc], components: [row] }).catch(()=>{});
+                        }
+
+                        if (data.action === 'test_economy') {
+                            const canalId = siteSettings?.economy?.channel || await dbProps.get(`econ_canal_${guild.id}`);
+                            const canal = obterCanalFallback(canalId);
+                            if (!canal) return;
+
+                            const embedEcon = new EmbedBuilder()
+                                .setTitle('🚀 SIMULAÇÃO DE MERCADO!')
+                                .setColor('#2ECC71')
+                                .setDescription(`Isso é um teste do Painel Web!\n\n💰 **Valor Atual:** \`R$ 9.50\`\n📊 **Variação:** \`+15%\``)
+                                .setFooter({ text: 'Economia Global Unificada • Teste' })
+                                .setTimestamp();
+
+                            await canal.send({ embeds: [embedEcon] }).catch(()=>{});
+                        }
+
+                    } catch (e) { console.log("Erro ao processar trigger do site:", e); } 
+                    finally { change.doc.ref.delete().catch(() => {}); }
+                }
+            });
+        };
+
+        firestore.collection('web_triggers').where('timestamp', '>', startTime).onSnapshot(processTriggers);
+        firestore.collection('artifacts').doc(STELLAR_APP_ID).collection('public').doc('data').collection('web_triggers').where('timestamp', '>', startTime).onSnapshot(processTriggers);
+    }
+
+    // ==========================================
+    // 📈 LÓGICA DE ECONOMIA BALANCEADA 
+    // ==========================================
+    const atualizarMercadoGlobal = async () => {
+        const dbGlobal = client.db?.props || db; 
+        const dbLocal = db; 
+
+        let valorAntigo = await dbGlobal.get("STELLAR_CORE_VALOR_UNIFICADO");
+        if (valorAntigo === null || valorAntigo === undefined) valorAntigo = 5.0;
+        
+        let variacaoAleatoria = (Math.random() * 0.12) - 0.06;
+
+        if (Math.random() < 0.10) {
+            variacaoAleatoria = (Math.random() * 0.40) - 0.20; 
+        }
+
+        let forcaRetorno = 0;
+        if (valorAntigo > 25.0) forcaRetorno = -0.05; 
+        if (valorAntigo < 3.0) forcaRetorno = 0.05;  
+
+        const variacaoTotal = variacaoAleatoria + forcaRetorno;
+        let novoValor = valorAntigo * (1 + variacaoTotal);
+
+        if (novoValor < 1.50) novoValor = 1.50 + Math.random(); 
+        if (novoValor > 40.00) novoValor = 40.00 - (Math.random() * 3); 
+
+        const porcentagemReal = (((novoValor / valorAntigo) - 1) * 100).toFixed(2);
+
+        await dbGlobal.set("STELLAR_CORE_VALOR_UNIFICADO", novoValor);
+        await dbGlobal.set("STELLAR_CORE_VARIACAO_UNIFICADA", porcentagemReal);
+        
+        console.log(`[MERCADO] Novo Valor: R$ ${novoValor.toFixed(2)} (${porcentagemReal}%)`);
+
+        const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+
+        client.guilds.cache.forEach(async (guild) => {
+            try {
+                const siteSettings = await getGuildSettings(guild.id);
+                const ativa = siteSettings?.economy?.active ?? await dbLocal.get(`econ_ativa_${guild.id}`);
+                const canalId = siteSettings?.economy?.channel || await dbLocal.get(`econ_canal_${guild.id}`);
+
+                if (ativa && canalId) {
+                    const canal = guild.channels.cache.get(canalId);
+                    if (canal) {
+                        const subiu = novoValor >= valorAntigo;
+                        
+                        const embed = new EmbedBuilder()
+                            .setTitle(`${subiu ? '📈' : '📉'} Moeda Stellar teve um novo valor!`)
+                            .setColor(subiu ? '#00FFAD' : '#FF4B4B')
+                            .setThumbnail('https://cdn-icons-png.flaticon.com/512/2622/2622112.png')
+                            .setDescription(
+                                `A cotação do **Stellar Core** foi atualizada pela rede global.\n\n` +
+                                `💰 **Valor Atual:** \`${formatarMoeda(novoValor)}\`\n` +
+                                `📊 **Variação:** \`${subiu ? '+' : ''}${porcentagemReal}%\` desde o último ciclo.`
+                            )
+                            .setFooter({ text: 'Economia Global Unificada • Atualizações a cada 15min' })
+                            .setTimestamp();
+
+                        await canal.send({ embeds: [embed] }).catch(() => {});
+                    }
+                }
+            } catch (err) { console.error(`Erro no broadcast para ${guild.id}:`, err); }
+        });
+    };
+
+    setInterval(atualizarMercadoGlobal, 900000); // 15 minutos
+    atualizarMercadoGlobal();
+
+    // =
