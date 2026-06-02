@@ -729,6 +729,29 @@
                                 <div class="flex items-center justify-between mb-6">
                                     <h4 class="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
                                         <span class="w-1 h-6 bg-red-600 rounded-full"></span> Módulo de Entrada
+                                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
+        <div>
+            <h5 class="text-xs font-black uppercase">Boas-Vindas Ativo</h5>
+            <p class="text-[10px] text-gray-400 font-medium mt-1">Envia mensagem quando alguém entra.</p>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="cfg-wel-active">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="flex items-center justify-between p-6 bg-black/20 rounded-3xl border border-white/5">
+        <div>
+            <h5 class="text-xs font-black uppercase">Log de Invites Ativo</h5>
+            <p class="text-[10px] text-gray-400 font-medium mt-1">Mostra quem convidou o membro.</p>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="cfg-wel-inv-active">
+            <span class="slider"></span>
+        </label>
+    </div>
+</div>
                                     </h4>
                                     <div class="flex gap-2">
                                         <button onclick="previewWelcome()" class="bg-[#5865F2] hover:bg-[#4752C4] text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
@@ -1489,6 +1512,8 @@
                     document.getElementById('cfg-sec-forbid').value = d.security?.forbiddenWords || '';
 
                     // Boas Vindas
+                    document.getElementById('cfg-wel-active').checked = d.welcome?.active || false;
+                    document.getElementById('cfg-wel-inv-active').checked = d.welcome?.inviteActive || false;
                     document.getElementById('cfg-wel-msg').value = d.welcome?.msg || '# <a:dindon:1468425730240286774> Boas-vindas, {user}!\n> Você acaba de entrar no **{guild}**! Sinta-se em casa.\n\n<a:seta1Img_adm:1468419286631710821> **Passos Iniciais:**\n* 📖 Leia as <#1458092487171379270> para evitar qualquer <a:warning:1468425732668784834> `Aviso`.\n* 🧭 Entenda o nosso ecossistema no <#1487555523888021777>.\n* 💸 Pegue as <#1489786478434324621> e acumule <:cash:1493784655319666789> `coins`.\n* 🛠️ Dúvidas? Abra um ticket no <#1482187262862037155> para a <:staff:1493289738981998652> **Equipe**.\n\n<:student:1493290481264754729> *Você é o membro número **#{total}**!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
                     document.getElementById('cfg-wel-inv-msg').value = d.welcome?.inviteMsg || '🛰️ **[LOG DE INVITE]**\nO membro {user} acabou de entrar.\nConvidado por: {inviter}\nTotal de convites: **{invites}**';
                     document.getElementById('cfg-wel-img').value = d.welcome?.image || '';
@@ -1554,7 +1579,16 @@
                 logs: document.getElementById('cfg-logs').value,
                 vip: { active: document.getElementById('cfg-vip-active').checked, background: document.querySelector('input[name="vip-bg"]:checked')?.value || 'default' },
                 boost: { active: document.getElementById('cfg-boost-active').checked, channel: document.getElementById('cfg-boost-channel').value, msg: document.getElementById('cfg-boost-msg').value, image: document.getElementById('cfg-boost-img').value, color: document.getElementById('cfg-boost-color').value },
-                welcome: { channel: document.getElementById('cfg-wel-channel').value, inviteChannel: document.getElementById('cfg-wel-inv-channel').value, msg: document.getElementById('cfg-wel-msg').value, inviteMsg: document.getElementById('cfg-wel-inv-msg').value, image: document.getElementById('cfg-wel-img').value, color: document.getElementById('cfg-wel-color').value },
+                welcome: {
+                active: document.getElementById('cfg-wel-active').checked,
+                inviteActive: document.getElementById('cfg-wel-inv-active').checked,
+                channel: document.getElementById('cfg-wel-channel').value,
+                inviteChannel: document.getElementById('cfg-wel-inv-channel').value,
+                msg: document.getElementById('cfg-wel-msg').value,
+                inviteMsg: document.getElementById('cfg-wel-inv-msg').value,
+                image: document.getElementById('cfg-wel-img').value,
+                color: document.getElementById('cfg-wel-color').value
+                },
                 ticket: { canalPainel: document.getElementById('cfg-tk-painel').value, canalLogs: document.getElementById('cfg-tk-logs').value, categoriaId: document.getElementById('cfg-tk-cat').value, text: document.getElementById('cfg-tk-msg').value, image: document.getElementById('cfg-tk-img').value },
                 parceria: { painel: document.getElementById('cfg-parc-painel').value, postagem: document.getElementById('cfg-parc-post').value, categoria: document.getElementById('cfg-parc-cat').value, text: document.getElementById('cfg-parc-msg').value, color: document.getElementById('cfg-parc-color').value, image: document.getElementById('cfg-parc-img').value },
                 staff: { channel: document.getElementById('cfg-st-painel').value, logs: document.getElementById('cfg-st-logs').value, text: document.getElementById('cfg-st-msg').value, image: document.getElementById('cfg-st-img').value },
