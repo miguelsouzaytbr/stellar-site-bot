@@ -233,6 +233,25 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .post-enter { animation: slideDown 0.4s ease-out forwards; }
+
+
+        /* POLIMENTO STELLAR 2026 - mantém o estilo vermelho/escuro */
+        html { scroll-behavior: smooth; }
+        .glass:hover { border-color: rgba(237, 28, 36, 0.16); }
+        .tab-content { animation: tabFade .22s ease-out; }
+        @keyframes tabFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        input, textarea, select { transition: border-color .2s ease, box-shadow .2s ease, background .2s ease; }
+        input:focus, textarea:focus, select:focus { box-shadow: 0 0 0 3px rgba(237, 28, 36, .08); }
+        button:disabled { opacity: .55; cursor: not-allowed !important; transform: none !important; }
+        .stellar-pill { border: 1px solid rgba(237,28,36,.18); background: rgba(237,28,36,.08); color: #ffb4b8; }
+        .dirty-dot::after { content: ''; width: 7px; height: 7px; border-radius: 999px; background: #ED1C24; box-shadow: 0 0 12px rgba(237,28,36,.8); display: inline-block; margin-left: 8px; vertical-align: middle; }
+        #error-banner { border: 1px solid transparent; backdrop-filter: blur(14px); }
+        .feed-post-card mark { background: rgba(237,28,36,.25); color: #fff; padding: 0 2px; border-radius: 4px; }
+        @media (max-width: 768px) {
+            .glass { border-radius: 1.5rem !important; }
+            h1 { font-size: clamp(3.2rem, 16vw, 5.6rem) !important; }
+            #btn-save { position: sticky; bottom: 92px; z-index: 80; }
+        }
     </style>
 </head>
 <body class="selection:bg-red-600 selection:text-white">
@@ -765,16 +784,6 @@
             </label>
         </div>
     </div>
-                                    </h4>
-                                    <div class="flex gap-2">
-                                        <button onclick="previewWelcome()" class="bg-[#5865F2] hover:bg-[#4752C4] text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
-                                            <i data-lucide="eye" class="w-3 h-3"></i>
-                                        </button>
-                                        <button onclick="triggerTest('test_welcome')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition">
-                                            <i data-lucide="send" class="w-3 h-3"></i> Testar no Chat
-                                        </button>
-                                    </div>
-                                </div>
                                 <div class="grid md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4">Canal Boas-Vindas</label>
@@ -1052,6 +1061,18 @@
                             <button id="btn-save" onclick="saveGuildSettings()" class="w-full mt-10 bg-red-600 hover:bg-red-700 py-6 rounded-[2rem] font-black uppercase tracking-[0.4em] text-white transition shadow-xl shadow-red-600/20 active:scale-95 flex items-center justify-center gap-3">
                                 <i data-lucide="save" class="w-5 h-5"></i> Salvar e Sincronizar
                             </button>
+                            <div class="grid md:grid-cols-3 gap-3 mt-4">
+                                <button onclick="exportGuildSettings()" class="bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-300 transition flex items-center justify-center gap-2">
+                                    <i data-lucide="download" class="w-4 h-4"></i> Exportar JSON
+                                </button>
+                                <button onclick="document.getElementById('import-config-file').click()" class="bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-300 transition flex items-center justify-center gap-2">
+                                    <i data-lucide="upload" class="w-4 h-4"></i> Importar JSON
+                                </button>
+                                <button onclick="copyConfigSummary()" class="bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-300 transition flex items-center justify-center gap-2">
+                                    <i data-lucide="clipboard" class="w-4 h-4"></i> Copiar Resumo
+                                </button>
+                                <input id="import-config-file" type="file" accept="application/json,.json" class="hidden" onchange="importGuildSettingsFile(this)">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1110,6 +1131,77 @@
             setTimeout(() => banner.classList.add('hidden'), 5000);
         }
 
+
+        function escapeHtml(value = '') {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function clampNumber(value, min, max, fallback) {
+            const n = Number(value);
+            if (!Number.isFinite(n)) return fallback;
+            return Math.min(max, Math.max(min, n));
+        }
+
+        function getGuildConfigRef(guildId) {
+            if (!window.stellarDb) throw new Error('Firebase não conectado.');
+            return window.isCanvasEnv
+                ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', guildId)
+                : window.fbDoc(window.stellarDb, 'guildConfigs', guildId);
+        }
+
+        function getGuildCacheRef(guildId) {
+            if (!window.stellarDb) throw new Error('Firebase não conectado.');
+            return window.isCanvasEnv
+                ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildCache', guildId)
+                : window.fbDoc(window.stellarDb, 'guildCache', guildId);
+        }
+
+        function getSocialPostsCollection() {
+            return window.fbCollection(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts');
+        }
+
+        function getSocialPostDoc(postId) {
+            return window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+        }
+
+        function markDirty() {
+            const btn = document.getElementById('btn-save');
+            if (!btn || !selectedGuild) return;
+            btn.classList.add('dirty-dot');
+            btn.title = 'Existem alterações não salvas';
+        }
+
+        function markSaved() {
+            const btn = document.getElementById('btn-save');
+            if (!btn) return;
+            btn.classList.remove('dirty-dot');
+            btn.title = '';
+        }
+
+        function initChangeWatcher() {
+            document.addEventListener('input', (event) => {
+                if (event.target.closest('#dash-manage-guild')) markDirty();
+            });
+            document.addEventListener('change', (event) => {
+                if (event.target.closest('#dash-manage-guild')) markDirty();
+            });
+        }
+
+        function validateDashboardBeforeSave() {
+            const minXp = clampNumber(document.getElementById('cfg-xp-min')?.value, 1, 10000, 15);
+            const maxXp = clampNumber(document.getElementById('cfg-xp-max')?.value, 1, 10000, 25);
+            if (minXp > maxXp) {
+                document.getElementById('cfg-xp-min').value = maxXp;
+                document.getElementById('cfg-xp-max').value = minXp;
+                showToast('Corrigi o XP mínimo/máximo porque estavam invertidos.', true);
+            }
+        }
+
         function populateSelect(elementId, items, selectedValue, defaultText = "Selecione uma opção...") {
             const el = document.getElementById(elementId);
             if (!el) return;
@@ -1117,11 +1209,11 @@
             let html = `<option value="">${defaultText}</option>`;
             
             // 🔥 PROTEÇÃO ANTI-WIPE (Evita perder os canais se o cache do Discord demorar) 🔥
-            if (selectedValue && !items.some(i => i.id === selectedValue)) {
-                html += `<option value="${selectedValue}" selected># [Canal Mantido - ID: ${selectedValue}]</option>`;
+            if (selectedValue && !(Array.isArray(items) ? items : []).some(i => i.id === selectedValue)) {
+                html += `<option value="${escapeHtml(selectedValue)}" selected># [Canal Mantido - ID: ${escapeHtml(selectedValue)}]</option>`;
             }
             
-            html += items.map(i => `<option value="${i.id}" ${i.id === selectedValue ? 'selected' : ''}>${i.name.startsWith('@') ? i.name : '# ' + i.name}</option>`).join('');
+            html += (Array.isArray(items) ? items : []).map(i => `<option value="${escapeHtml(i.id)}" ${i.id === selectedValue ? 'selected' : ''}>${escapeHtml(String(i.name || '').startsWith('@') ? i.name : '# ' + i.name)}</option>`).join('');
             el.innerHTML = html;
         }
 
@@ -1442,7 +1534,7 @@
                 await window.authReady;
                 if (!window.firebaseUser) throw new Error("Acesso bloqueado: Domínio do seu site não está autorizado no Firebase Authentication.");
 
-                let cacheRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildCache', id) : window.fbDoc(window.stellarDb, 'guildCache', id);
+                let cacheRef = getGuildCacheRef(id);
                 const cacheSnap = await window.fbGetDoc(cacheRef);
                 
                 if (cacheSnap.exists()) {
@@ -1457,7 +1549,7 @@
                     showToast("Aviso: O Bot não enviou o Cache de Canais. Ele está online?", true);
                 }
 
-                let docRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', id) : window.fbDoc(window.stellarDb, 'guildConfigs', id);
+                let docRef = getGuildConfigRef(id);
                 const snap = await window.fbGetDoc(docRef);
                 
                 if (snap.exists()) {
@@ -1583,6 +1675,7 @@
 
         async function saveGuildSettings() {
             if (!selectedGuild) return;
+            validateDashboardBeforeSave();
             const btn = document.getElementById('btn-save');
             btn.innerHTML = '<i class="animate-spin" data-lucide="refresh-cw"></i> Sincronizando...'; lucide.createIcons();
             const data = {
@@ -1616,8 +1709,8 @@
                 },
                 xp: { 
                     active: document.getElementById('cfg-xp-active').checked, 
-                    minXp: parseInt(document.getElementById('cfg-xp-min').value) || 15,
-                    maxXp: parseInt(document.getElementById('cfg-xp-max').value) || 25,
+                    minXp: clampNumber(document.getElementById('cfg-xp-min').value, 1, 10000, 15),
+                    maxXp: clampNumber(document.getElementById('cfg-xp-max').value, 1, 10000, 25),
                     channel: document.getElementById('cfg-xp-channel').value,
                     message: document.getElementById('cfg-xp-msg').value,
                     blockedChannels: window.xpBlockedChannelsList,
@@ -1633,9 +1726,10 @@
                 await window.authReady;
                 if (!window.firebaseUser) throw new Error("Acesso bloqueado: Domínio do seu site não está autorizado.");
 
-                let docRef = window.isCanvasEnv ? window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'guildConfigs', selectedGuild.id) : window.fbDoc(window.stellarDb, 'guildConfigs', selectedGuild.id);
+                let docRef = getGuildConfigRef(selectedGuild.id);
                 await window.fbSetDoc(docRef, data, { merge: true });
                 showToast("✅ Protocolo Sincronizado!");
+                markSaved();
                 setTimeout(() => document.getElementById('error-banner').classList.add('hidden'), 3000);
                 btn.classList.replace('bg-red-600', 'bg-green-600'); btn.innerHTML = '<i data-lucide="check"></i> Protocolo Sincronizado!'; lucide.createIcons(); document.getElementById('current-prefix').innerText = data.prefix;
                 setTimeout(() => { btn.classList.replace('bg-green-600', 'bg-red-600'); btn.innerHTML = '<i data-lucide="save"></i> Salvar e Sincronizar'; lucide.createIcons(); }, 2000);
@@ -1646,6 +1740,155 @@
             }
         }
 
+
+        function collectCurrentSettingsForExport() {
+            if (!selectedGuild) throw new Error('Nenhum servidor selecionado.');
+            validateDashboardBeforeSave();
+            return {
+                exportedAt: new Date().toISOString(),
+                guildId: selectedGuild.id,
+                guildName: selectedGuild.name,
+                prefix: document.getElementById('cfg-prefix').value || '!',
+                logs: document.getElementById('cfg-logs').value,
+                vip: { active: document.getElementById('cfg-vip-active').checked, background: document.querySelector('input[name="vip-bg"]:checked')?.value || 'default' },
+                boost: { active: document.getElementById('cfg-boost-active').checked, channel: document.getElementById('cfg-boost-channel').value, msg: document.getElementById('cfg-boost-msg').value, image: document.getElementById('cfg-boost-img').value, color: document.getElementById('cfg-boost-color').value },
+                welcome: { active: document.getElementById('cfg-wel-active').checked, inviteActive: document.getElementById('cfg-wel-inv-active').checked, channel: document.getElementById('cfg-wel-channel').value, inviteChannel: document.getElementById('cfg-wel-inv-channel').value, msg: document.getElementById('cfg-wel-msg').value, inviteMsg: document.getElementById('cfg-wel-inv-msg').value, image: document.getElementById('cfg-wel-img').value, color: document.getElementById('cfg-wel-color').value },
+                ticket: { canalPainel: document.getElementById('cfg-tk-painel').value, canalLogs: document.getElementById('cfg-tk-logs').value, categoriaId: document.getElementById('cfg-tk-cat').value, text: document.getElementById('cfg-tk-msg').value, image: document.getElementById('cfg-tk-img').value },
+                parceria: { painel: document.getElementById('cfg-parc-painel').value, postagem: document.getElementById('cfg-parc-post').value, categoria: document.getElementById('cfg-parc-cat').value, text: document.getElementById('cfg-parc-msg').value, color: document.getElementById('cfg-parc-color').value, image: document.getElementById('cfg-parc-img').value },
+                staff: { channel: document.getElementById('cfg-st-painel').value, logs: document.getElementById('cfg-st-logs').value, text: document.getElementById('cfg-st-msg').value, image: document.getElementById('cfg-st-img').value },
+                economy: { active: document.getElementById('cfg-eco-active').checked, channel: document.getElementById('cfg-eco-channel').value },
+                security: { antispam: document.getElementById('cfg-sec-spam').checked, antilink: document.getElementById('cfg-sec-link').checked, antiwords: document.getElementById('cfg-sec-words').checked, globalMode: document.getElementById('cfg-sec-global').checked, limitBan: parseInt(document.getElementById('cfg-sec-limit').value) || 3, forbiddenWords: document.getElementById('cfg-sec-forbid').value },
+                xp: { active: document.getElementById('cfg-xp-active').checked, minXp: clampNumber(document.getElementById('cfg-xp-min').value, 1, 10000, 15), maxXp: clampNumber(document.getElementById('cfg-xp-max').value, 1, 10000, 25), channel: document.getElementById('cfg-xp-channel').value, message: document.getElementById('cfg-xp-msg').value, blockedChannels: window.xpBlockedChannelsList, roleRewards: window.xpRoleRewardsList, multipliers: window.xpMultipliersList },
+                commands: { blockedChannels: window.blockedChannelsList }
+            };
+        }
+
+        window.exportGuildSettings = function() {
+            try {
+                const data = collectCurrentSettingsForExport();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `stellar-config-${selectedGuild.id}.json`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+                showToast('Backup JSON exportado.');
+            } catch (e) {
+                showToast('Falha ao exportar: ' + e.message, true);
+            }
+        };
+
+        window.importGuildSettingsFile = async function(input) {
+            const file = input.files?.[0];
+            if (!file) return;
+            try {
+                const raw = await file.text();
+                const data = JSON.parse(raw);
+                if (!data || typeof data !== 'object') throw new Error('JSON inválido.');
+                if (data.prefix !== undefined) document.getElementById('cfg-prefix').value = String(data.prefix || '!').slice(0, 3);
+                if (data.logs !== undefined) document.getElementById('cfg-logs').value = data.logs || '';
+                if (data.vip) {
+                    document.getElementById('cfg-vip-active').checked = !!data.vip.active;
+                    const bg = document.querySelector(`input[name="vip-bg"][value="${data.vip.background || 'default'}"]`);
+                    if (bg) { bg.checked = true; window.applySiteBackground(bg.value); }
+                }
+                if (data.boost) {
+                    document.getElementById('cfg-boost-active').checked = !!data.boost.active;
+                    document.getElementById('cfg-boost-channel').value = data.boost.channel || '';
+                    document.getElementById('cfg-boost-msg').value = data.boost.msg || '';
+                    document.getElementById('cfg-boost-img').value = data.boost.image || '';
+                    document.getElementById('cfg-boost-color').value = data.boost.color || '#ff73fa';
+                }
+                if (data.welcome) {
+                    document.getElementById('cfg-wel-active').checked = !!data.welcome.active;
+                    document.getElementById('cfg-wel-inv-active').checked = !!data.welcome.inviteActive;
+                    document.getElementById('cfg-wel-channel').value = data.welcome.channel || '';
+                    document.getElementById('cfg-wel-inv-channel').value = data.welcome.inviteChannel || '';
+                    document.getElementById('cfg-wel-msg').value = data.welcome.msg || '';
+                    document.getElementById('cfg-wel-inv-msg').value = data.welcome.inviteMsg || '';
+                    document.getElementById('cfg-wel-img').value = data.welcome.image || '';
+                    document.getElementById('cfg-wel-color').value = data.welcome.color || '#7000FF';
+                }
+                if (data.ticket) {
+                    document.getElementById('cfg-tk-painel').value = data.ticket.canalPainel || '';
+                    document.getElementById('cfg-tk-logs').value = data.ticket.canalLogs || '';
+                    document.getElementById('cfg-tk-cat').value = data.ticket.categoriaId || '';
+                    document.getElementById('cfg-tk-msg').value = data.ticket.text || '';
+                    document.getElementById('cfg-tk-img').value = data.ticket.image || '';
+                }
+                if (data.parceria) {
+                    document.getElementById('cfg-parc-painel').value = data.parceria.painel || '';
+                    document.getElementById('cfg-parc-post').value = data.parceria.postagem || '';
+                    document.getElementById('cfg-parc-cat').value = data.parceria.categoria || '';
+                    document.getElementById('cfg-parc-msg').value = data.parceria.text || '';
+                    document.getElementById('cfg-parc-color').value = data.parceria.color || '';
+                    document.getElementById('cfg-parc-img').value = data.parceria.image || '';
+                }
+                if (data.staff) {
+                    document.getElementById('cfg-st-painel').value = data.staff.channel || '';
+                    document.getElementById('cfg-st-logs').value = data.staff.logs || '';
+                    document.getElementById('cfg-st-msg').value = data.staff.text || '';
+                    document.getElementById('cfg-st-img').value = data.staff.image || '';
+                }
+                if (data.economy) {
+                    document.getElementById('cfg-eco-active').checked = !!data.economy.active;
+                    document.getElementById('cfg-eco-channel').value = data.economy.channel || '';
+                }
+                if (data.security) {
+                    document.getElementById('cfg-sec-spam').checked = !!data.security.antispam;
+                    document.getElementById('cfg-sec-link').checked = !!data.security.antilink;
+                    document.getElementById('cfg-sec-words').checked = !!data.security.antiwords;
+                    document.getElementById('cfg-sec-global').checked = data.security.globalMode !== false;
+                    document.getElementById('cfg-sec-limit').value = data.security.limitBan || 3;
+                    document.getElementById('cfg-sec-forbid').value = data.security.forbiddenWords || '';
+                }
+                if (data.xp) {
+                    document.getElementById('cfg-xp-active').checked = data.xp.active !== false;
+                    document.getElementById('cfg-xp-min').value = data.xp.minXp || 15;
+                    document.getElementById('cfg-xp-max').value = data.xp.maxXp || 25;
+                    document.getElementById('cfg-xp-channel').value = data.xp.channel || 'current';
+                    document.getElementById('cfg-xp-msg').value = data.xp.message || '🎉 Parabéns {user}, você alcançou o nível **{level}**!';
+                    window.xpBlockedChannelsList = Array.isArray(data.xp.blockedChannels) ? data.xp.blockedChannels : [];
+                    window.xpRoleRewardsList = Array.isArray(data.xp.roleRewards) ? data.xp.roleRewards : [];
+                    window.xpMultipliersList = Array.isArray(data.xp.multipliers) ? data.xp.multipliers : [];
+                    window.renderXpBlockedChannels(); window.renderXpRewards(); window.renderXpMultipliers();
+                }
+                if (data.commands) {
+                    window.blockedChannelsList = Array.isArray(data.commands.blockedChannels) ? data.commands.blockedChannels : [];
+                    window.renderBlockedChannels();
+                }
+                markDirty();
+                showToast('Configuração importada. Clique em Salvar para sincronizar.');
+            } catch (e) {
+                showToast('Falha ao importar: ' + e.message, true);
+            } finally {
+                input.value = '';
+            }
+        };
+
+        window.copyConfigSummary = async function() {
+            try {
+                const data = collectCurrentSettingsForExport();
+                const summary = [
+                    `STELLAR HUB - ${data.guildName}`,
+                    `Prefixo: ${data.prefix}`,
+                    `Logs: ${data.logs || 'Não configurado'}`,
+                    `Boas-vindas: ${data.welcome.active ? 'Ativo' : 'Off'} | Invites: ${data.welcome.inviteActive ? 'Ativo' : 'Off'}`,
+                    `Boost: ${data.boost.active ? 'Ativo' : 'Off'} | Economia: ${data.economy.active ? 'Ativa' : 'Off'}`,
+                    `Segurança: spam=${data.security.antispam}, links=${data.security.antilink}, palavras=${data.security.antiwords}`,
+                    `XP: ${data.xp.active ? 'Ativo' : 'Off'} (${data.xp.minXp}-${data.xp.maxXp})`,
+                    `Canais de comandos bloqueados: ${data.commands.blockedChannels.length}`
+                ].join('\n');
+                await navigator.clipboard.writeText(summary);
+                showToast('Resumo copiado para a área de transferência.');
+            } catch (e) {
+                showToast('Não consegui copiar o resumo: ' + e.message, true);
+            }
+        };
+
         // =====================================================================
         // 🔥 SISTEMA DO FEED COMUNITÁRIO (FIREBASE REAL-TIME BLINDADO) 🔥
         // =====================================================================
@@ -1653,6 +1896,13 @@
         let unsubscribeFeed = null;
 
         function buildPostHtml(id, data) {
+            data = data || {};
+            data.authorName = escapeHtml(data.authorName || 'Usuário');
+            data.authorHandle = escapeHtml(data.authorHandle || '@user');
+            data.title = escapeHtml(data.title || '');
+            data.content = escapeHtml(data.content || '');
+            data.imageUrl = String(data.imageUrl || '');
+            data.tags = Array.isArray(data.tags) ? data.tags.map(t => escapeHtml(t)) : [];
             const uid = window.firebaseUserId || 'visitante';
             const isLiked = data.likes && data.likes.includes(uid);
             const isReposted = data.reposts && data.reposts.includes(uid);
@@ -1758,10 +2008,10 @@
                 return;
             }
 
-            const postsRef = window.fbCollection(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts');
+            const postsRef = getSocialPostsCollection();
             
             // 1. GARANTE QUE O POST DO BOT EXISTA NO FIREBASE PARA PODER RECEBER LIKES/COMENTÁRIOS REAIS
-            const botPostRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', 'post_bot_init');
+            const botPostRef = getSocialPostDoc('post_bot_init');
             const botPostSnap = await window.fbGetDoc(botPostRef);
             
             if (!botPostSnap.exists()) {
@@ -1839,7 +2089,7 @@
 
         // Pesquisa no Feed
         window.filterFeed = function() {
-            const q = document.getElementById('feed-search').value.toLowerCase();
+            const q = document.getElementById('feed-search').value.trim().toLowerCase();
             const posts = document.querySelectorAll('.feed-post-card');
             posts.forEach(post => {
                 if (post.id === 'post-post_bot_init') return; // Nunca esconde o post fixado
@@ -1919,7 +2169,7 @@
                 if (!avatar || avatar.includes('undefined')) avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
                 const handle = '@' + username.toLowerCase().replace(/\s/g, '_');
 
-                const postsRef = window.fbCollection(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts');
+                const postsRef = getSocialPostsCollection();
                 
                 await window.fbAddDoc(postsRef, {
                     authorId: window.firebaseUserId,
@@ -1960,7 +2210,7 @@
             if (!window.firebaseUser) return showToast("Faça login para interagir.", true);
 
             try {
-                const postRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+                const postRef = getSocialPostDoc(postId);
                 if (isLiked) {
                     await window.fbUpdateDoc(postRef, { likes: window.fbArrayRemove(window.firebaseUserId) });
                 } else {
@@ -1975,7 +2225,7 @@
             if (!window.firebaseUser) return showToast("Faça login para interagir.", true);
 
             try {
-                const postRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+                const postRef = getSocialPostDoc(postId);
                 if (isReposted) {
                     await window.fbUpdateDoc(postRef, { reposts: window.fbArrayRemove(window.firebaseUserId) });
                 } else {
@@ -2007,7 +2257,7 @@
             if (!avatar || avatar.includes('undefined')) avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
 
             try {
-                const postRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+                const postRef = getSocialPostDoc(postId);
                 const commentData = {
                     authorId: window.firebaseUserId,
                     authorName: username,
@@ -2031,7 +2281,7 @@
 
             if (!confirm("Tem certeza que deseja apagar permanentemente esta publicação?")) return;
             try {
-                const postRef = window.fbDoc(window.stellarDb, 'artifacts', window.stellarAppId, 'public', 'data', 'social_posts', postId);
+                const postRef = getSocialPostDoc(postId);
                 await window.fbDeleteDoc(postRef);
                 showToast("🗑️ Publicação deletada do sistema.");
             } catch (e) {
@@ -2060,6 +2310,7 @@
             initFeed(); // Inicia o carregamento do feed via Firebase
             setTimeout(() => { document.getElementById('loader').classList.add('opacity-0'); setTimeout(() => document.getElementById('loader').remove(), 700); }, 1000); 
             lucide.createIcons(); 
+            initChangeWatcher();
 
             // Navegação Inteligente via Hash
             if(window.location.hash) {
