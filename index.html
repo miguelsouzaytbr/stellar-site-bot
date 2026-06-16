@@ -11422,5 +11422,139 @@ window.addEventListener('load', () => { setTimeout(() => { renderAll(); }, 900);
 })();
 </script>
 
+
+<!-- =====================================================================
+     STELLAR OS 1.1 — SERVER CONFIG / CATEGORIES / CALLS / PROFILE LIVE FIX
+     Correção grande por cima do Stellar OS 1.0, sem remover nada.
+     ===================================================================== -->
+<style>
+/* Stellar OS 1.1: aparência mais próxima de app real */
+.os-super-config-bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 14px 12px}.os-super-config-bar button{border:1px solid var(--os-border);background:rgba(255,255,255,.045);color:var(--os-muted);border-radius:14px;padding:10px 8px;font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;justify-content:center;gap:6px;transition:.18s ease}.os-super-config-bar button:hover{background:var(--os-red-soft);color:var(--os-text);border-color:rgba(237,28,36,.35)}
+.os-avatar{padding:2px;background:rgba(255,255,255,.08);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.25)}.os-avatar.none{padding:0;background:transparent;box-shadow:none}.os-avatar.red,.os-avatar.crimson{background:linear-gradient(135deg,#ED1C24,#ff6b6b,#6d060b)}.os-avatar.gold{background:linear-gradient(135deg,#f5c542,#ff8a1c,#fff2a8)}.os-avatar.gradient,.os-avatar.neon{background:linear-gradient(135deg,#ED1C24,#ff7a1a,#f5c542,#8b5cf6)}.os-avatar.amethyst{background:linear-gradient(135deg,#7c3aed,#c084fc,#f0abfc)}.os-avatar.ice{background:linear-gradient(135deg,#67e8f9,#e0f2fe,#38bdf8)}.os-avatar.shadow{background:linear-gradient(135deg,#0f0f12,#52525b,#030303)}.os-avatar.vip-rose{background:linear-gradient(135deg,#fb7185,#f43f5e,#fecdd3)}
+.os-profile-banner{box-shadow:inset 0 -70px 100px rgba(0,0,0,.58),0 20px 55px rgba(0,0,0,.30)}.os-profile-preview{align-items:flex-end}.os-profile-preview .os-avatar{width:94px!important;height:94px!important;border-radius:30px!important;margin-top:-44px;border:4px solid var(--os-bg)}
+.os-live-hint{border:1px solid rgba(34,197,94,.24);background:rgba(34,197,94,.08);color:#bbf7d0;border-radius:14px;padding:10px 12px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.10em;margin-bottom:12px}.os-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.os-upload-row label,.os-upload-row button{display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--os-border);background:rgba(255,255,255,.045);border-radius:14px;padding:11px 12px;color:var(--os-text);font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}.os-upload-row label:hover,.os-upload-row button:hover{border-color:rgba(237,28,36,.42);background:var(--os-red-soft)}
+.os-voice-room{display:grid;gap:18px;max-width:940px;margin:0 auto;padding:18px}.os-voice-hero{border:1px solid var(--os-border);background:radial-gradient(circle at top left,rgba(237,28,36,.18),transparent 40%),linear-gradient(145deg,rgba(20,20,24,.95),rgba(0,0,0,.72));border-radius:28px;padding:24px;box-shadow:var(--os-shadow)}.os-voice-hero h2{font-size:26px;font-weight:1000;text-transform:uppercase;letter-spacing:-.04em}.os-voice-hero p{color:var(--os-muted);font-size:13px;font-weight:750;margin-top:6px}.os-voice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.os-voice-user{border:1px solid var(--os-border);background:rgba(255,255,255,.04);border-radius:22px;padding:14px;text-align:center;min-height:150px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px}.os-voice-user img{width:58px;height:58px;border-radius:22px;object-fit:cover}.os-voice-user strong{font-size:12px;font-weight:1000}.os-voice-user small{color:var(--os-muted);font-size:10px;font-weight:900;text-transform:uppercase}.os-call-controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.os-call-controls button{border:1px solid var(--os-border);background:rgba(255,255,255,.06);color:var(--os-text);border-radius:16px;padding:12px 14px;font-size:11px;font-weight:1000;text-transform:uppercase;letter-spacing:.08em}.os-call-controls button.danger{background:rgba(237,28,36,.16);border-color:rgba(237,28,36,.34);color:#ffb4b8}.os-call-controls button.on{background:rgba(34,197,94,.13);border-color:rgba(34,197,94,.30);color:#bbf7d0}
+.os-category-tools{display:flex;gap:6px}.os-category-tools button{width:24px;height:24px;border-radius:8px;border:1px solid var(--os-border);background:rgba(255,255,255,.04);display:grid;place-items:center}.os-modal-wide{width:min(980px,96vw)}.os-server-preview-banner{height:120px;border-radius:22px;border:1px solid var(--os-border);background:radial-gradient(circle at left,rgba(237,28,36,.28),transparent 45%),rgba(255,255,255,.035);background-size:cover;background-position:center}.os-config-section{border:1px solid var(--os-border);background:rgba(255,255,255,.025);border-radius:22px;padding:16px}.os-config-section h4{font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:.12em;color:var(--os-text);margin-bottom:12px}.os-tag-list{display:flex;flex-wrap:wrap;gap:8px}.os-tag-list span{border:1px solid var(--os-border);background:rgba(255,255,255,.04);border-radius:999px;padding:8px 10px;color:var(--os-muted);font-size:10px;font-weight:900;text-transform:uppercase}.os-sync-badge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(34,197,94,.26);background:rgba(34,197,94,.08);color:#bbf7d0;border-radius:999px;padding:6px 10px;font-size:10px;font-weight:1000;text-transform:uppercase;letter-spacing:.08em}.os-sync-badge::before{content:'';width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 16px rgba(34,197,94,.8)}
+@media(max-width:700px){.os-super-config-bar{grid-template-columns:1fr}.os-upload-row{grid-template-columns:1fr}.os-voice-room{padding:10px}.os-voice-hero{border-radius:22px;padding:18px}}
+</style>
+<script>
+(function(){
+  const KEY = 'stellar_os_1_state_v1';
+  const $ = (s, root=document) => root.querySelector(s);
+  const esc = (v='') => String(v).replace(/[&<>'"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
+  const uid = (p='id') => `${p}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`;
+  const cleanName = (v='canal') => String(v||'canal').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9-_ ]/g,'').trim().replace(/\s+/g,'-').slice(0,48) || 'canal';
+  const state = () => window.StellarOS?.state;
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state())); } catch(e) { console.warn('[OS 1.1] storage cheio', e); } };
+  const toast = (msg) => { const z=$('#os-toast-zone'); if(!z) return; const d=document.createElement('div'); d.className='os-toast'; d.textContent=msg; z.appendChild(d); setTimeout(()=>d.remove(),3200); };
+  const render = () => { window.StellarOS?.renderAll?.(); setTimeout(enhance, 35); };
+  const activeServer = () => { const st=state(); return st?.servers?.find(s=>s.id===st.activeServerId) || st?.servers?.[0]; };
+  const activeChannel = () => { const st=state(); return st?.channels?.[st.activeChannelId]; };
+  function currentUser(){ const st=state(); if(!st) return null; st.users ||= {}; st.profile ||= {}; st.users.local_user = {...(st.users.local_user||{}), ...st.profile, id:'local_user', avatar:st.profile.avatar, banner:st.profile.banner, handle:String(st.profile.handle||'stellar.user').replace(/^@/,'')}; return st.users.local_user; }
+  function modal(html){ const root=$('#os-modal-root'); if(!root) return; root.innerHTML=html; root.classList.add('active'); setTimeout(()=>window.lucide?.createIcons?.(),20); }
+  function close(){ window.StellarOS?.closeModal?.(); }
+  function fileToDataURL(file, maxMB, cb){ if(!file) return; if(file.size > maxMB*1024*1024) return toast(`Imagem muito pesada. Máx ${maxMB}MB.`); const r=new FileReader(); r.onload=()=>cb(String(r.result)); r.readAsDataURL(file); }
+
+  function injectQuickBar(){
+    const search = $('.os-search-box');
+    if(!search || $('.os-super-config-bar')) return;
+    search.insertAdjacentHTML('afterend', `<div class="os-super-config-bar">
+      <button onclick="StellarOS.openModal('createCategory')"><i data-lucide="folder-plus" class="w-3 h-3"></i> Categoria</button>
+      <button onclick="StellarOS.openModal('createCall')"><i data-lucide="phone-call" class="w-3 h-3"></i> Call</button>
+      <button onclick="StellarOS.openModal('serverSettings')"><i data-lucide="sliders-horizontal" class="w-3 h-3"></i> Servidor</button>
+      <button onclick="StellarOS.openSystemView('settings')"><i data-lucide="palette" class="w-3 h-3"></i> Visual</button>
+    </div>`);
+  }
+
+  function enhanceProfileView(){
+    if(!$('#os-profile-name') || $('#os-profile-live-hint')) return;
+    const form = $('#os-profile-name')?.closest('.os-form-grid');
+    if(form) form.insertAdjacentHTML('beforebegin', `<div id="os-profile-live-hint" class="os-live-hint">Sincronização instantânea ativa: nome, avatar, banner e bio atualizam na hora.</div><div class="os-upload-row"><label>Upload Avatar<input class="hidden" type="file" accept="image/*" onchange="StellarOS11.setProfileImage(this,'avatar')"></label><label>Upload Banner<input class="hidden" type="file" accept="image/*" onchange="StellarOS11.setProfileImage(this,'banner')"></label></div>`);
+    const sel = $('#os-profile-border');
+    if(sel && !sel.dataset.os11){
+      const opts = [['none','Sem borda'],['red','Vermelha limpa'],['gold','Dourada premium'],['gradient','Degradê Stellar'],['neon','Neon RGB'],['amethyst','Ametista'],['ice','Gelo'],['shadow','Shadow'],['vip-rose','VIP Rose']];
+      sel.innerHTML = opts.map(([v,l])=>`<option value="${v}" ${state().profile.border===v?'selected':''}>${l}</option>`).join('');
+      sel.dataset.os11='1';
+    }
+  }
+
+  let profileSyncTimer=null;
+  function liveProfileUpdate(){
+    const st=state(); if(!st?.profile) return;
+    const p=st.profile;
+    const val=id=>$(id)?.value;
+    if($('#os-profile-name')) p.name = val('#os-profile-name')?.trim() || p.name;
+    if($('#os-profile-handle')) p.handle = (val('#os-profile-handle')?.trim() || p.handle || 'stellar.user').replace(/^@/,'');
+    if($('#os-profile-status')) p.status = val('#os-profile-status') || 'online';
+    if($('#os-profile-border')) p.border = val('#os-profile-border') || 'red';
+    if($('#os-profile-avatar')) p.avatar = val('#os-profile-avatar')?.trim() || p.avatar;
+    if($('#os-profile-banner')) p.banner = val('#os-profile-banner')?.trim() || '';
+    if($('#os-profile-bio')) p.bio = val('#os-profile-bio')?.trim() || '';
+    currentUser(); save();
+    const name=$('#os-userbar-name'); if(name) name.textContent=p.name || 'Membro Stellar';
+    const handle=$('#os-userbar-handle'); if(handle) handle.textContent='@'+(p.handle||'stellar.user').replace(/^@/,'');
+    const av=$('#os-userbar-avatar'); if(av){ av.src=p.avatar||av.src; av.className=`os-avatar ${p.border||'red'}`; }
+    clearTimeout(profileSyncTimer);
+    profileSyncTimer=setTimeout(()=>{ try{ window.StellarOS.renderAll(); }catch(e){} }, 380);
+  }
+
+  function renderVoiceIfNeeded(){
+    const st=state(), ch=activeChannel();
+    if(!st || !ch || !['voice','stage','call'].includes(ch.type)) return;
+    st.calls ||= {};
+    const call = st.calls[ch.id] ||= { id: ch.id, participants: [], muted:{}, deafened:{}, camera:{}, screen:{}, startedAt: Date.now() };
+    const joined = call.participants.includes('local_user');
+    const participants = call.participants.length ? call.participants : [];
+    const people = participants.map(id => st.users[id] || (id==='local_user'?currentUser():null)).filter(Boolean);
+    const box=$('#os-messages'); if(!box) return;
+    box.innerHTML = `<div class="os-voice-room"><section class="os-voice-hero"><span class="os-sync-badge">Call visual ativa</span><h2>${esc(ch.name)}</h2><p>${esc(ch.topic || 'Sala de voz visual da Stellar OS. Pronto para no futuro conectar WebRTC/voice real.')}</p><div class="os-call-controls mt-5"><button class="${joined?'on':''}" onclick="StellarOS11.joinCall('${ch.id}')">${joined?'Conectado':'Entrar na call'}</button><button onclick="StellarOS11.toggleCallFlag('${ch.id}','muted')">${call.muted?.local_user?'Ativar mic':'Mutar mic'}</button><button onclick="StellarOS11.toggleCallFlag('${ch.id}','camera')">${call.camera?.local_user?'Desligar câmera':'Câmera'}</button><button onclick="StellarOS11.toggleCallFlag('${ch.id}','screen')">${call.screen?.local_user?'Parar tela':'Compartilhar tela'}</button><button class="danger" onclick="StellarOS11.leaveCall('${ch.id}')">Sair</button></div></section><section class="os-voice-grid">${people.length?people.map(u=>`<div class="os-voice-user"><img class="os-avatar ${u.id==='local_user'?(st.profile.border||'red'):''}" src="${esc(u.avatar||'https://cdn-icons-png.flaticon.com/512/149/149071.png')}"><strong>${esc(u.name||u.handle||u.id)}</strong><small>${call.muted?.[u.id]?'Mic mutado':'Mic aberto'} • ${call.camera?.[u.id]?'Câmera on':'Sem câmera'}</small></div>`).join(''):'<div class="os-empty-state"><strong>Ninguém na call</strong><p>Clique em entrar para aparecer aqui.</p></div>'}</section></div>`;
+    const composer=$('.os-composer'); if(composer) composer.style.display='none';
+  }
+  function restoreComposerIfNeeded(){ const ch=activeChannel(); const composer=$('.os-composer'); if(composer && (!ch || !['voice','stage','call'].includes(ch.type))) composer.style.display=''; }
+
+  function enhance(){ injectQuickBar(); enhanceProfileView(); restoreComposerIfNeeded(); renderVoiceIfNeeded(); window.lucide?.createIcons?.(); }
+
+  const oldRenderAll = window.StellarOS?.renderAll?.bind(window.StellarOS);
+  if(oldRenderAll && !window.StellarOS.__os11Wrapped){
+    window.StellarOS.renderAll = function(){ oldRenderAll(); setTimeout(enhance,25); };
+    window.StellarOS.renderChannels = function(){ window.StellarOS.renderAll(); };
+    window.StellarOS.__os11Wrapped = true;
+  }
+  const oldSelect = window.StellarOS?.selectChannel?.bind(window.StellarOS);
+  if(oldSelect){ window.StellarOS.selectChannel = function(id){ oldSelect(id); setTimeout(enhance,25); }; }
+  const oldOpen = window.StellarOS?.openModal?.bind(window.StellarOS);
+  if(oldOpen){ window.StellarOS.openModal = function(type, payload){
+    if(type==='createCategory') return modalCategory();
+    if(type==='createCall') return modalCall();
+    if(type==='serverSettings') return modalServerSettings();
+    if(type==='roleManager') return modalRoleManager();
+    return oldOpen(type, payload);
+  }; }
+
+  function modalCategory(){ modal(`<div class="os-modal"><div class="os-modal-head"><h3>Criar categoria</h3><button class="os-mini-btn" onclick="StellarOS.closeModal()"><i data-lucide="x" class="w-4 h-4"></i></button></div><div class="os-modal-body"><div class="os-form-grid"><div class="os-field full"><label>Nome da categoria</label><input id="os11-cat-name" class="os-input" placeholder="Social, Calls, Staff..."></div><div class="os-field"><label>Começar recolhida</label><label class="os-switch"><input id="os11-cat-collapsed" type="checkbox"><span></span></label></div></div><button class="os-btn red mt-5" onclick="StellarOS11.createCategory()">Criar categoria</button></div></div>`); }
+  function modalCall(){ const srv=activeServer(); const cats=(srv?.categories||[]).map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join(''); modal(`<div class="os-modal"><div class="os-modal-head"><h3>Criar call / canal de voz</h3><button class="os-mini-btn" onclick="StellarOS.closeModal()"><i data-lucide="x" class="w-4 h-4"></i></button></div><div class="os-modal-body"><div class="os-form-grid"><div class="os-field"><label>Nome da call</label><input id="os11-call-name" class="os-input" placeholder="call-geral"></div><div class="os-field"><label>Categoria</label><select id="os11-call-category" class="os-select">${cats}</select></div><div class="os-field"><label>Limite visual</label><input id="os11-call-limit" type="number" class="os-input" value="10"></div><div class="os-field"><label>Privada</label><label class="os-switch"><input id="os11-call-private" type="checkbox"><span></span></label></div><div class="os-field full"><label>Tópico</label><textarea id="os11-call-topic" class="os-textarea" placeholder="Call para conversar, jogar e organizar eventos."></textarea></div></div><button class="os-btn red mt-5" onclick="StellarOS11.createCall()">Criar call</button></div></div>`); }
+  function modalServerSettings(){ const s=activeServer()||{}; modal(`<div class="os-modal os-modal-wide"><div class="os-modal-head"><h3>Configuração completa do servidor</h3><button class="os-mini-btn" onclick="StellarOS.closeModal()"><i data-lucide="x" class="w-4 h-4"></i></button></div><div class="os-modal-body"><div class="os-server-preview-banner" style="${s.banner?`background-image:url('${esc(s.banner)}')`:''}"></div><div class="os-form-grid mt-4"><div class="os-field"><label>Nome do servidor</label><input id="os11-server-name" class="os-input" value="${esc(s.name||'')}"></div><div class="os-field"><label>Ícone/letra</label><input id="os11-server-icon" class="os-input" value="${esc(s.icon||'S')}"></div><div class="os-field full"><label>Banner URL</label><input id="os11-server-banner" class="os-input" value="${esc(s.banner||'')}"></div><div class="os-field full"><label>Descrição</label><textarea id="os11-server-desc" class="os-textarea">${esc(s.description||'')}</textarea></div></div><div class="os-upload-row"><label>Upload banner servidor<input class="hidden" type="file" accept="image/*" onchange="StellarOS11.setServerBannerFromFile(this)"></label><button onclick="StellarOS.openModal('roleManager')">Gerenciar cargos visuais</button></div><div class="os-config-section mt-4"><h4>Categorias atuais</h4><div class="os-tag-list">${(s.categories||[]).map(c=>`<span>${esc(c.name)} • ${(c.channels||[]).length} canais</span>`).join('') || '<span>Nenhuma</span>'}</div></div><button class="os-btn red mt-5" onclick="StellarOS11.saveServerSettings()">Salvar servidor</button></div></div>`); }
+  function modalRoleManager(){ const s=activeServer()||{}; modal(`<div class="os-modal"><div class="os-modal-head"><h3>Cargos visuais</h3><button class="os-mini-btn" onclick="StellarOS.closeModal()"><i data-lucide="x" class="w-4 h-4"></i></button></div><div class="os-modal-body"><div class="os-config-section"><h4>Cargos existentes</h4><div class="os-tag-list">${(s.roles||[]).map(r=>`<span style="border-color:${esc(r.color||'#fff')}55;color:${esc(r.color||'#fff')}">@${esc(r.name)}</span>`).join('')||'<span>Nenhum</span>'}</div></div><div class="os-form-grid mt-4"><div class="os-field"><label>Novo cargo</label><input id="os11-role-name" class="os-input" placeholder="Streamer"></div><div class="os-field"><label>Cor</label><input id="os11-role-color" class="os-input" value="#ED1C24"></div></div><button class="os-btn red mt-5" onclick="StellarOS11.createRole()">Criar cargo visual</button></div></div>`); }
+
+  window.StellarOS11 = {
+    createCategory(){ const st=state(), s=activeServer(); if(!st||!s) return; const name=$('#os11-cat-name')?.value.trim(); if(!name) return toast('Nome obrigatório.'); const id=uid('cat'); s.categories ||= []; s.categories.push({id,name,collapsed:!!$('#os11-cat-collapsed')?.checked,channels:[]}); close(); save(); render(); toast('Categoria criada.'); },
+    createCall(){ const st=state(), s=activeServer(); if(!st||!s) return; const name=cleanName($('#os11-call-name')?.value||'call'); let catId=$('#os11-call-category')?.value; if(!catId){ const cat={id:uid('cat_call'),name:'Calls',collapsed:false,channels:[]}; s.categories.push(cat); catId=cat.id; } const id=uid('voice'); st.channels[id]={id,serverId:s.id,type:'voice',name,topic:$('#os11-call-topic')?.value.trim()||'Canal de voz visual.',locked:!!$('#os11-call-private')?.checked,limit:Number($('#os11-call-limit')?.value)||10,createdAt:Date.now()}; const cat=s.categories.find(c=>c.id===catId); if(cat) (cat.channels ||= []).push(id); st.messages[id]=[]; st.calls ||= {}; st.calls[id]={id,participants:[],muted:{},camera:{},screen:{},startedAt:Date.now()}; st.activeChannelId=id; close(); save(); render(); toast('Call criada.'); },
+    joinCall(id){ const st=state(); st.calls ||= {}; const c=st.calls[id] ||= {id,participants:[],muted:{},camera:{},screen:{}}; if(!c.participants.includes('local_user')) c.participants.push('local_user'); save(); render(); },
+    leaveCall(id){ const st=state(); const c=st.calls?.[id]; if(c) c.participants=(c.participants||[]).filter(x=>x!=='local_user'); save(); render(); },
+    toggleCallFlag(id, flag){ const st=state(); const c=(st.calls ||= {})[id] ||= {id,participants:['local_user'],muted:{},camera:{},screen:{}}; c[flag] ||= {}; c[flag].local_user=!c[flag].local_user; if(!c.participants.includes('local_user')) c.participants.push('local_user'); save(); render(); },
+    saveServerSettings(){ const s=activeServer(); if(!s) return; s.name=$('#os11-server-name')?.value.trim()||s.name; s.icon=($('#os11-server-icon')?.value.trim()||s.name?.[0]||'S').slice(0,2); s.banner=$('#os11-server-banner')?.value.trim()||''; s.description=$('#os11-server-desc')?.value.trim()||''; close(); save(); render(); toast('Servidor atualizado.'); },
+    setServerBannerFromFile(input){ fileToDataURL(input.files?.[0], 2.2, data=>{ const s=activeServer(); if(!s) return; s.banner=data; save(); modalServerSettings(); toast('Banner do servidor carregado.'); }); },
+    createRole(){ const s=activeServer(); if(!s) return; const name=$('#os11-role-name')?.value.trim(); if(!name) return toast('Nome obrigatório.'); s.roles ||= []; s.roles.push({id:uid('role'), name, color:$('#os11-role-color')?.value.trim()||'#ED1C24', permissions:['read','send','react']}); save(); modalRoleManager(); toast('Cargo criado.'); },
+    setProfileImage(input,target){ fileToDataURL(input.files?.[0], target==='banner'?2.2:1.4, data=>{ const st=state(); if(!st?.profile) return; st.profile[target]=data; currentUser(); save(); render(); toast(target==='banner'?'Banner atualizado.':'Avatar atualizado.'); }); },
+    liveProfileUpdate
+  };
+
+  document.addEventListener('input', (e)=>{ if(['os-profile-name','os-profile-handle','os-profile-avatar','os-profile-banner','os-profile-bio'].includes(e.target?.id)) liveProfileUpdate(); });
+  document.addEventListener('change', (e)=>{ if(['os-profile-status','os-profile-border'].includes(e.target?.id)) liveProfileUpdate(); });
+  window.addEventListener('load', ()=>setTimeout(enhance,800));
+  if(document.readyState !== 'loading') setTimeout(enhance,400); else document.addEventListener('DOMContentLoaded', ()=>setTimeout(enhance,400));
+})();
+</script>
+
 </body>
 </html>
