@@ -543,6 +543,204 @@
             .mega-modal { padding-top: 5rem; }
         }
 
+    
+
+        /* =========================================================
+           STELLAR REAL BIG UPDATE 2026 — VISUAL TOTAL + UX
+           Adição por cima, sem remover módulos existentes.
+        ========================================================= */
+        :root {
+            --stellar-gold: #f5c451;
+            --stellar-peach: #ff8a5c;
+            --stellar-ruby: #ff2b38;
+            --stellar-ink: #050506;
+            --stellar-panel: rgba(13, 10, 10, .78);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -2;
+            background:
+                radial-gradient(circle at 18% 16%, rgba(237,28,36,.18), transparent 28%),
+                radial-gradient(circle at 82% 8%, rgba(255,138,92,.13), transparent 28%),
+                radial-gradient(circle at 55% 92%, rgba(245,196,81,.09), transparent 32%),
+                linear-gradient(135deg, #050506 0%, #080304 42%, #050506 100%);
+        }
+
+        .ultra-shell {
+            position: relative;
+            border: 1px solid rgba(255,255,255,.07);
+            background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+            box-shadow: 0 24px 80px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.05);
+            overflow: hidden;
+        }
+        .ultra-shell::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 18% 0%, rgba(237,28,36,.18), transparent 34%),
+                radial-gradient(circle at 92% 12%, rgba(245,196,81,.10), transparent 30%);
+            opacity: .9;
+        }
+        .ultra-shell > * { position: relative; z-index: 1; }
+
+        .ultra-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: .55rem;
+            padding: .45rem .8rem;
+            border-radius: 999px;
+            border: 1px solid rgba(237,28,36,.25);
+            background: rgba(237,28,36,.09);
+            color: #ffb5b8;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .24em;
+            text-transform: uppercase;
+        }
+        .ultra-kicker::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--stellar-ruby);
+            box-shadow: 0 0 18px rgba(237,28,36,.9);
+        }
+
+        .ultra-card {
+            border: 1px solid rgba(255,255,255,.07);
+            background: linear-gradient(145deg, rgba(18,18,20,.82), rgba(8,8,10,.92));
+            border-radius: 2rem;
+            transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 18px 55px rgba(0,0,0,.24);
+        }
+        .ultra-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(237,28,36,.24);
+            box-shadow: 0 20px 70px rgba(237,28,36,.08), inset 0 1px 0 rgba(255,255,255,.06);
+        }
+
+        .ultra-icon {
+            width: 3rem;
+            height: 3rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.2rem;
+            background: linear-gradient(135deg, rgba(237,28,36,.22), rgba(245,196,81,.08));
+            border: 1px solid rgba(237,28,36,.22);
+            color: #ffb4b8;
+            box-shadow: 0 0 32px rgba(237,28,36,.10);
+        }
+
+        .ultra-stat {
+            border-radius: 1.7rem;
+            border: 1px solid rgba(255,255,255,.065);
+            background: rgba(0,0,0,.32);
+            padding: 1.25rem;
+        }
+
+        .ultra-grid-line {
+            background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+            background-size: 42px 42px;
+        }
+
+        .ultra-dashboard-command {
+            border: 1px solid rgba(237,28,36,.18);
+            background: linear-gradient(135deg, rgba(237,28,36,.12), rgba(255,255,255,.025));
+            border-radius: 2rem;
+            padding: 1.25rem;
+        }
+
+        .ultra-cache-good { color: #4ade80; }
+        .ultra-cache-warn { color: #fbbf24; }
+        .ultra-cache-bad { color: #fb7185; }
+
+        .ultra-module-banner {
+            border: 1px solid rgba(255,255,255,.07);
+            background:
+                linear-gradient(135deg, rgba(237,28,36,.13), rgba(245,196,81,.04)),
+                rgba(0,0,0,.22);
+            border-radius: 2rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .ultra-module-banner h5 {
+            font-size: .78rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: white;
+        }
+        .ultra-module-banner p {
+            font-size: .7rem;
+            color: rgb(156 163 175);
+            margin-top: .2rem;
+            font-weight: 700;
+        }
+
+        .tab-content {
+            position: relative;
+            padding: .25rem;
+        }
+        .tab-content input,
+        .tab-content textarea,
+        .tab-content select {
+            background: rgba(0,0,0,.48) !important;
+            border-color: rgba(255,255,255,.075) !important;
+        }
+        .tab-content input:focus,
+        .tab-content textarea:focus,
+        .tab-content select:focus {
+            border-color: rgba(237,28,36,.75) !important;
+            box-shadow: 0 0 0 4px rgba(237,28,36,.10) !important;
+        }
+
+        .ultra-select-state {
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,.075);
+            background: rgba(0,0,0,.26);
+            padding: .7rem .9rem;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: #9ca3af;
+        }
+
+        .ultra-input-error {
+            border-color: rgba(251,113,133,.75) !important;
+            box-shadow: 0 0 0 4px rgba(251,113,133,.10) !important;
+        }
+        .ultra-input-ok {
+            border-color: rgba(34,197,94,.55) !important;
+        }
+
+        .ultra-floating-save {
+            position: sticky;
+            bottom: 1.2rem;
+            z-index: 75;
+            display: flex;
+            justify-content: flex-end;
+            pointer-events: none;
+        }
+        .ultra-floating-save > * { pointer-events: auto; }
+
+        @media (max-width: 768px) {
+            .ultra-module-banner { flex-direction: column; align-items: flex-start; }
+            .ultra-card { border-radius: 1.45rem; }
+            .ultra-shell { border-radius: 2rem !important; }
+        }
+
     </style>
 </head>
 <body class="selection:bg-red-600 selection:text-white">
@@ -737,6 +935,52 @@
             </div>
         </section>
 
+
+
+        <!-- STELLAR REAL BIG UPDATE — HOME EXPANDIDA -->
+        <section class="max-w-7xl mx-auto mt-24 space-y-10">
+            <div class="ultra-shell rounded-[3.5rem] p-8 md:p-12 ultra-grid-line">
+                <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-10 items-center">
+                    <div>
+                        <span class="ultra-kicker">Mega Update Real</span>
+                        <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mt-6 leading-[.92]">
+                            Um hub vivo, não só uma landing page.
+                        </h2>
+                        <p class="text-gray-400 mt-6 max-w-2xl leading-relaxed font-medium">
+                            Dashboard, feed social, gestão de módulos, preview de mensagens, exportação/importação, diagnóstico de canais e experiência visual remasterizada para a Stellar Society.
+                        </p>
+                        <div class="grid sm:grid-cols-3 gap-4 mt-8">
+                            <div class="ultra-stat"><p class="text-[10px] uppercase tracking-widest text-gray-500 font-black">Módulos</p><strong class="text-3xl font-black text-white">11+</strong></div>
+                            <div class="ultra-stat"><p class="text-[10px] uppercase tracking-widest text-gray-500 font-black">Painéis</p><strong class="text-3xl font-black text-red-500">Vivos</strong></div>
+                            <div class="ultra-stat"><p class="text-[10px] uppercase tracking-widest text-gray-500 font-black">Config</p><strong class="text-3xl font-black text-[#f5c451]">Backup</strong></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="ultra-card p-6"><span class="ultra-icon"><i data-lucide="shield"></i></span><h3 class="mt-5 font-black uppercase text-sm">Segurança</h3><p class="text-xs text-gray-500 mt-2 font-medium">Anti-spam, anti-link, palavras proibidas e modo global.</p></div>
+                        <div class="ultra-card p-6"><span class="ultra-icon"><i data-lucide="ticket"></i></span><h3 class="mt-5 font-black uppercase text-sm">Tickets</h3><p class="text-xs text-gray-500 mt-2 font-medium">Painel, logs, categoria e banner integrados.</p></div>
+                        <div class="ultra-card p-6"><span class="ultra-icon"><i data-lucide="user-plus"></i></span><h3 class="mt-5 font-black uppercase text-sm">Entrada</h3><p class="text-xs text-gray-500 mt-2 font-medium">Boas-vindas, invites, imagem, cor e preview.</p></div>
+                        <div class="ultra-card p-6"><span class="ultra-icon"><i data-lucide="coins"></i></span><h3 class="mt-5 font-black uppercase text-sm">Economia</h3><p class="text-xs text-gray-500 mt-2 font-medium">Notícias, cotações e alertas do ecossistema.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="ultra-card p-8 lg:col-span-1">
+                    <span class="ultra-kicker">Setup rápido</span>
+                    <h3 class="text-2xl font-black uppercase tracking-tighter mt-5">Configure em camadas</h3>
+                    <p class="text-sm text-gray-500 mt-4 leading-relaxed">Entre no dashboard, selecione o servidor, sincronize os canais e salve cada módulo sem perder o que já existe.</p>
+                </div>
+                <div class="ultra-card p-8 lg:col-span-2">
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div><p class="text-red-400 font-black text-xs uppercase tracking-widest">01</p><h4 class="font-black mt-2">Login</h4><p class="text-xs text-gray-500 mt-1">Discord OAuth</p></div>
+                        <div><p class="text-red-400 font-black text-xs uppercase tracking-widest">02</p><h4 class="font-black mt-2">Servidor</h4><p class="text-xs text-gray-500 mt-1">Admin only</p></div>
+                        <div><p class="text-red-400 font-black text-xs uppercase tracking-widest">03</p><h4 class="font-black mt-2">Canais</h4><p class="text-xs text-gray-500 mt-1">Cache do bot</p></div>
+                        <div><p class="text-red-400 font-black text-xs uppercase tracking-widest">04</p><h4 class="font-black mt-2">Deploy</h4><p class="text-xs text-gray-500 mt-1">Firestore</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- #################### PÁGINA: SOCIAL FEED (NOVA ABA) #################### -->
@@ -745,6 +989,15 @@
             <div class="text-center mb-10">
                 <h2 class="text-4xl font-black tracking-tighter uppercase text-white mb-2">Stellar Network</h2>
                 <p class="text-gray-400 font-medium text-sm">Compartilhe suas conquistas, propriedades e conecte-se com a comunidade global do Stellar.</p>
+            </div>
+
+
+
+            <!-- STELLAR REAL BIG UPDATE — SOCIAL BOOST -->
+            <div class="grid sm:grid-cols-3 gap-4 mb-8">
+                <div class="ultra-card p-5"><p class="text-[10px] font-black uppercase tracking-widest text-red-400">Trend</p><h3 class="font-black mt-2">#economia</h3><p class="text-xs text-gray-500 mt-1">Posts sobre conquistas e riqueza.</p></div>
+                <div class="ultra-card p-5"><p class="text-[10px] font-black uppercase tracking-widest text-red-400">Trend</p><h3 class="font-black mt-2">#imoveis</h3><p class="text-xs text-gray-500 mt-1">Mansões, casas e upgrades.</p></div>
+                <div class="ultra-card p-5"><p class="text-[10px] font-black uppercase tracking-widest text-red-400">Trend</p><h3 class="font-black mt-2">#eventos</h3><p class="text-xs text-gray-500 mt-1">Ranking, sorteios e participação.</p></div>
             </div>
 
             <!-- Lupinha de Pesquisa -->
@@ -888,6 +1141,30 @@
                     <div class="lg:col-span-3 space-y-6">
                         <div class="glass p-10 rounded-[3rem]">
                             
+
+
+                            <!-- STELLAR REAL BIG UPDATE — COMMAND CENTER -->
+                            <div id="ultra-dash-command-center" class="ultra-dashboard-command mb-8">
+                                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                                    <div>
+                                        <span class="ultra-kicker">Central de Diagnóstico</span>
+                                        <h4 class="text-2xl font-black uppercase tracking-tighter mt-4">Controle do servidor em tempo real</h4>
+                                        <p class="text-xs text-gray-500 font-bold mt-2 uppercase tracking-widest">Canais, categorias, cargos, cache do bot e segurança do salvamento.</p>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button onclick="window.reloadGuildCacheUltra && window.reloadGuildCacheUltra()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Recarregar canais</button>
+                                        <button onclick="window.exportGuildSettings && window.exportGuildSettings()" class="bg-white/5 hover:bg-white/10 text-white px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition"><i data-lucide="download" class="w-4 h-4"></i> Exportar</button>
+                                        <label class="bg-white/5 hover:bg-white/10 text-white px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition cursor-pointer"><i data-lucide="upload" class="w-4 h-4"></i> Importar <input type="file" accept="application/json" class="hidden" onchange="window.importGuildSettingsFile && window.importGuildSettingsFile(this)"></label>
+                                    </div>
+                                </div>
+                                <div class="grid md:grid-cols-4 gap-3 mt-6">
+                                    <div class="ultra-select-state">Canais: <span id="ultra-count-channels">--</span></div>
+                                    <div class="ultra-select-state">Categorias: <span id="ultra-count-categories">--</span></div>
+                                    <div class="ultra-select-state">Cargos: <span id="ultra-count-roles">--</span></div>
+                                    <div class="ultra-select-state">Cache: <span id="ultra-cache-status" class="ultra-cache-warn">aguardando</span></div>
+                                </div>
+                            </div>
+
                             <!-- AVISO DE ERRO VISUAL NO SITE -->
                             <div id="error-banner" class="hidden text-white p-4 rounded-2xl mb-8 text-xs font-bold uppercase tracking-widest flex items-center justify-between">
                                 <span id="error-text">Mensagem aqui</span>
@@ -2018,6 +2295,27 @@
                     window.renderBlockedChannels();
 
                 } else {
+                    // STELLAR FIX: mesmo sem documento de configuração, os selects recebem o cache do bot.
+                    populateSelect('cfg-logs', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-wel-channel', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-wel-inv-channel', window.cachedChannels, '', "Usar mesmo de Boas-Vindas");
+                    populateSelect('cfg-tk-painel', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-tk-logs', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-tk-cat', window.cachedCategories, '', "Nenhuma Categoria Selecionada");
+                    populateSelect('cfg-parc-painel', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-parc-post', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-parc-cat', window.cachedCategories, '', "Nenhuma Categoria Selecionada");
+                    populateSelect('cfg-st-painel', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-st-logs', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-eco-channel', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-boost-channel', window.cachedChannels, '', "Nenhum Canal Selecionado");
+                    populateSelect('cfg-cmd-select', window.cachedChannels, '', "Selecione um canal da lista...");
+                    populateSelect('cfg-xp-blocked-select', window.cachedChannels, '', "Selecione um canal...");
+                    populateSelect('cfg-xp-reward-role', window.cachedRoles, '', "Selecione um cargo...");
+                    populateSelect('cfg-xp-mult-role', window.cachedRoles, '', "Selecione um cargo...");
+                    const xpChannelElFix = document.getElementById('cfg-xp-channel');
+                    if (xpChannelElFix) xpChannelElFix.innerHTML = `<option value="current">Mesmo canal da mensagem</option>` + window.cachedChannels.map(c => `<option value="${c.id}"># ${c.name}</option>`).join('');
+
                     document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
                     document.querySelectorAll('input[type="checkbox"]').forEach(i => i.checked = false);
                     document.getElementById('cfg-prefix').value = '!';
@@ -3021,5 +3319,239 @@
         };
         window.onscroll = () => { const nav = document.getElementById('mainNav'); window.scrollY > 50 ? nav.querySelector('div').classList.add('py-2', 'bg-black/80') : nav.querySelector('div').classList.remove('py-2', 'bg-black/80'); };
     </script>
+
+
+    <!-- STELLAR REAL BIG UPDATE 2026 — PATCH FUNCIONAL E VISUAL -->
+    <script>
+    (function () {
+        const CHANNEL_SELECTS = [
+            ['cfg-logs', 'logs', 'Nenhum canal selecionado'],
+            ['cfg-wel-channel', 'welcome.channel', 'Nenhum canal selecionado'],
+            ['cfg-wel-inv-channel', 'welcome.inviteChannel', 'Usar mesmo de Boas-Vindas'],
+            ['cfg-tk-painel', 'ticket.canalPainel', 'Nenhum canal selecionado'],
+            ['cfg-tk-logs', 'ticket.canalLogs', 'Nenhum canal selecionado'],
+            ['cfg-parc-painel', 'parceria.painel', 'Nenhum canal selecionado'],
+            ['cfg-parc-post', 'parceria.postagem', 'Nenhum canal selecionado'],
+            ['cfg-st-painel', 'staff.channel', 'Nenhum canal selecionado'],
+            ['cfg-st-logs', 'staff.logs', 'Nenhum canal selecionado'],
+            ['cfg-eco-channel', 'economy.channel', 'Nenhum canal selecionado'],
+            ['cfg-boost-channel', 'boost.channel', 'Nenhum canal selecionado'],
+            ['cfg-cmd-select', '', 'Selecione um canal da lista'],
+            ['cfg-xp-blocked-select', '', 'Selecione um canal'],
+        ];
+        const CATEGORY_SELECTS = [
+            ['cfg-tk-cat', 'ticket.categoriaId', 'Nenhuma categoria selecionada'],
+            ['cfg-parc-cat', 'parceria.categoria', 'Nenhuma categoria selecionada']
+        ];
+        const ROLE_SELECTS = [
+            ['cfg-xp-reward-role', '', 'Selecione um cargo'],
+            ['cfg-xp-mult-role', '', 'Selecione um cargo']
+        ];
+        const MODULE_META = {
+            geral: ['settings', 'Configurações Globais', 'Prefixo, logs e dados básicos do servidor.'],
+            vip: ['crown', 'VIP & Personalização', 'Fundos, benefícios e experiência premium.'],
+            boost: ['rocket', 'Impulsos', 'Anúncios de boost e recompensas de apoiadores.'],
+            seguranca: ['shield', 'Segurança', 'Anti-spam, anti-link, filtro léxico e punições.'],
+            entrada: ['user-plus', 'Boas-Vindas', 'Mensagem de entrada, invites e preview visual.'],
+            tickets: ['ticket', 'Atendimento', 'Painel, logs, categoria e mensagem de suporte.'],
+            parcerias: ['handshake', 'Parcerias', 'Painel de solicitação, postagem e atendimento.'],
+            staff: ['users', 'Staff', 'Recrutamento, logs e anúncios da equipe.'],
+            economia: ['coins', 'Economia', 'Cotações, notícias e estado do mercado.'],
+            xp: ['trending-up', 'XP e Níveis', 'Progressão, cargos por nível e multiplicadores.'],
+            comandos: ['terminal', 'Comandos', 'Canais bloqueados e controle de uso.']
+        };
+
+        function deepGet(obj, path) {
+            if (!path) return '';
+            return path.split('.').reduce((acc, key) => acc && acc[key] !== undefined ? acc[key] : undefined, obj) || '';
+        }
+
+        function esc(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function safePopulateSelect(elementId, items, selectedValue, defaultText, type = 'channel') {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const arr = Array.isArray(items) ? items : [];
+            let html = `<option value="">${esc(defaultText)}</option>`;
+            if (!arr.length) {
+                const label = type === 'role'
+                    ? 'Cache de cargos vazio — sincronize pelo bot'
+                    : type === 'category'
+                        ? 'Cache de categorias vazio — sincronize pelo bot'
+                        : 'Cache de canais vazio — sincronize pelo bot';
+                html += `<option value="" disabled>${esc(label)}</option>`;
+            }
+            if (selectedValue && !arr.some(i => String(i.id) === String(selectedValue))) {
+                const label = type === 'role' ? '@ cargo mantido' : type === 'category' ? 'categoria mantida' : '# canal mantido';
+                html += `<option value="${esc(selectedValue)}" selected>${label} • ID ${esc(selectedValue)}</option>`;
+            }
+            html += arr.map(i => {
+                const name = type === 'role'
+                    ? (String(i.name || '').startsWith('@') ? i.name : '@ ' + (i.name || 'cargo'))
+                    : type === 'category'
+                        ? ('▣ ' + (i.name || 'categoria'))
+                        : (String(i.name || '').startsWith('#') ? i.name : '# ' + (i.name || 'canal'));
+                return `<option value="${esc(i.id)}" ${String(i.id) === String(selectedValue) ? 'selected' : ''}>${esc(name)}</option>`;
+            }).join('');
+            el.innerHTML = html;
+            el.dataset.stellarState = arr.length ? 'ready' : 'empty';
+        }
+
+        function currentSelectLooksStuck(el) {
+            if (!el) return false;
+            const txt = (el.textContent || '').toLowerCase();
+            return txt.includes('carregando canais') || txt.includes('carregando') || !el.options.length;
+        }
+
+        window.ultraRepairGuildSelects = function(config = {}, force = false) {
+            const channels = Array.isArray(window.cachedChannels) ? window.cachedChannels : [];
+            const categories = Array.isArray(window.cachedCategories) ? window.cachedCategories : [];
+            const roles = Array.isArray(window.cachedRoles) ? window.cachedRoles : [];
+
+            CHANNEL_SELECTS.forEach(([id, path, text]) => {
+                const el = document.getElementById(id);
+                if (force || currentSelectLooksStuck(el) || el?.dataset?.stellarState !== 'ready') {
+                    safePopulateSelect(id, channels, deepGet(config, path), text, 'channel');
+                }
+            });
+            CATEGORY_SELECTS.forEach(([id, path, text]) => safePopulateSelect(id, categories, deepGet(config, path), text, 'category'));
+            ROLE_SELECTS.forEach(([id, path, text]) => safePopulateSelect(id, roles, deepGet(config, path), text, 'role'));
+
+            const xpChannel = document.getElementById('cfg-xp-channel');
+            if (xpChannel && (force || currentSelectLooksStuck(xpChannel))) {
+                const selected = config?.xp?.channel || 'current';
+                xpChannel.innerHTML = `<option value="current">Mesmo canal da mensagem</option>` + channels.map(c => `<option value="${esc(c.id)}" ${String(c.id) === String(selected) ? 'selected' : ''}># ${esc(c.name)}</option>`).join('');
+            }
+            updateUltraCacheStatus();
+        };
+
+        function updateUltraCacheStatus() {
+            const ch = Array.isArray(window.cachedChannels) ? window.cachedChannels.length : 0;
+            const cat = Array.isArray(window.cachedCategories) ? window.cachedCategories.length : 0;
+            const role = Array.isArray(window.cachedRoles) ? window.cachedRoles.length : 0;
+            const countChannels = document.getElementById('ultra-count-channels');
+            const countCategories = document.getElementById('ultra-count-categories');
+            const countRoles = document.getElementById('ultra-count-roles');
+            const status = document.getElementById('ultra-cache-status');
+            if (countChannels) countChannels.textContent = ch;
+            if (countCategories) countCategories.textContent = cat;
+            if (countRoles) countRoles.textContent = role;
+            if (status) {
+                status.classList.remove('ultra-cache-good', 'ultra-cache-warn', 'ultra-cache-bad');
+                if (ch > 0) {
+                    status.textContent = 'sincronizado';
+                    status.classList.add('ultra-cache-good');
+                } else {
+                    status.textContent = 'sem cache';
+                    status.classList.add('ultra-cache-bad');
+                }
+            }
+        }
+
+        async function readGuildConfigSafe(guildId) {
+            try {
+                if (!window.stellarDb || !window.fbGetDoc || !window.authReady) return {};
+                await window.authReady;
+                const snap = await window.fbGetDoc(getGuildConfigRef(guildId));
+                return snap.exists() ? snap.data() : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        window.reloadGuildCacheUltra = async function() {
+            try {
+                if (!selectedGuild) return showToast('Selecione um servidor primeiro.', true);
+                if (!window.stellarDb) return showToast('Firebase não conectado.', true);
+                await window.authReady;
+                const cacheSnap = await window.fbGetDoc(getGuildCacheRef(selectedGuild.id));
+                if (cacheSnap.exists()) {
+                    const cache = cacheSnap.data();
+                    window.cachedChannels = Array.isArray(cache.channels) ? cache.channels : [];
+                    window.cachedCategories = Array.isArray(cache.categories) ? cache.categories : [];
+                    window.cachedRoles = Array.isArray(cache.roles) ? cache.roles : [];
+                } else {
+                    window.cachedChannels = [];
+                    window.cachedCategories = [];
+                    window.cachedRoles = [];
+                }
+                const config = await readGuildConfigSafe(selectedGuild.id);
+                window.ultraRepairGuildSelects(config, true);
+                if (window.cachedChannels.length) showToast('✅ Canais recarregados do cache do bot.');
+                else showToast('O bot ainda não enviou o cache de canais para o Firebase.', true);
+            } catch (e) {
+                showToast('Falha ao recarregar canais: ' + e.message, true);
+                window.ultraRepairGuildSelects({}, true);
+            }
+        };
+
+        function injectModuleBanners() {
+            Object.entries(MODULE_META).forEach(([id, meta]) => {
+                const tab = document.getElementById('tab-' + id);
+                if (!tab || tab.querySelector('.ultra-module-banner')) return;
+                const [icon, title, desc] = meta;
+                const banner = document.createElement('div');
+                banner.className = 'ultra-module-banner';
+                banner.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="ultra-icon"><i data-lucide="${icon}" class="w-5 h-5"></i></span>
+                        <div><h5>${title}</h5><p>${desc}</p></div>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-red-300 bg-red-600/10 border border-red-600/20 px-3 py-2 rounded-full">Remaster 2026</span>
+                `;
+                tab.insertBefore(banner, tab.firstChild);
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function applyFieldValidators() {
+            document.querySelectorAll('input[id$="color"]').forEach(input => {
+                input.addEventListener('input', () => {
+                    const v = input.value.trim();
+                    input.classList.toggle('ultra-input-ok', /^#[0-9A-F]{6}$/i.test(v));
+                    input.classList.toggle('ultra-input-error', !!v && !/^#[0-9A-F]{6}$/i.test(v));
+                });
+            });
+            document.querySelectorAll('input[id$="img"]').forEach(input => {
+                input.addEventListener('input', () => {
+                    const v = input.value.trim();
+                    input.classList.toggle('ultra-input-ok', /^https?:\/\//i.test(v));
+                    input.classList.toggle('ultra-input-error', !!v && !/^https?:\/\//i.test(v));
+                });
+            });
+        }
+
+        const oldManageGuild = window.manageGuild;
+        if (typeof oldManageGuild === 'function') {
+            window.manageGuild = async function(id, name, icon) {
+                const result = await oldManageGuild(id, name, icon);
+                injectModuleBanners();
+                updateUltraCacheStatus();
+                const config = await readGuildConfigSafe(id);
+                window.ultraRepairGuildSelects(config, true);
+                setTimeout(async () => window.ultraRepairGuildSelects(await readGuildConfigSafe(id), false), 700);
+                setTimeout(async () => window.ultraRepairGuildSelects(await readGuildConfigSafe(id), false), 1800);
+                return result;
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            injectModuleBanners();
+            applyFieldValidators();
+            updateUltraCacheStatus();
+            setInterval(() => {
+                if (selectedGuild) window.ultraRepairGuildSelects({}, false);
+            }, 4500);
+        });
+    })();
+    </script>
+
 </body>
 </html>
