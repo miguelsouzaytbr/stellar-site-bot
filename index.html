@@ -130,6 +130,34 @@
         }
     </script>
 
+
+
+    <!-- STELLAR MEGA UPDATE 2026: SEO, compartilhamento e experiência premium -->
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="author" content="Stellar Society">
+    <meta name="keywords" content="Stellar Bot, Discord Bot, Economia Discord, Dashboard Discord, Stellar Society, Bot Brasileiro, Sistema VIP, Tickets Discord, Boas-vindas Discord">
+    <meta name="application-name" content="Stellar Hub">
+    <meta name="apple-mobile-web-app-title" content="Stellar Hub">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="Stellar Hub | Dashboard de Gerenciamento">
+    <meta property="og:description" content="Gerencie economia, segurança, VIP, tickets, parcerias, XP e boas-vindas do seu servidor Discord em um painel premium.">
+    <meta property="og:image" content="https://i.imgur.com/PDEZ4HT.jpeg">
+    <meta property="og:url" content="https://miguelsouzaytbr.github.io/stellar-site-bot/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Stellar Hub | Dashboard de Gerenciamento">
+    <meta name="twitter:description" content="Dashboard premium para transformar seu Discord em um ecossistema vivo.">
+    <meta name="twitter:image" content="https://i.imgur.com/PDEZ4HT.jpeg">
+    <meta name="color-scheme" content="dark">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://discord.com">
+    <link rel="dns-prefetch" href="https://i.imgur.com">
+
     <!-- Tailwind & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -252,6 +280,269 @@
             h1 { font-size: clamp(3.2rem, 16vw, 5.6rem) !important; }
             #btn-save { position: sticky; bottom: 92px; z-index: 80; }
         }
+
+
+        /* =====================================================================
+           STELLAR MEGA UPDATE 2026 — POLIMENTO PREMIUM SEM REMOVER SISTEMAS
+           ===================================================================== */
+        :root {
+            --stellar-gold: #f5c542;
+            --stellar-orange: #ff7a1a;
+            --stellar-peach: #ffb199;
+            --stellar-ruby: #ff304f;
+            --stellar-success: #22c55e;
+            --stellar-muted: #8b8b94;
+            --stellar-panel: rgba(8, 8, 10, 0.78);
+            --stellar-panel-strong: rgba(12, 8, 8, 0.94);
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            inset: auto;
+            pointer-events: none;
+            z-index: -2;
+            filter: blur(90px);
+            opacity: .35;
+            transform: translateZ(0);
+        }
+        body::before {
+            width: 420px;
+            height: 420px;
+            left: -120px;
+            top: 140px;
+            background: radial-gradient(circle, rgba(237,28,36,.55), transparent 65%);
+        }
+        body::after {
+            width: 520px;
+            height: 520px;
+            right: -180px;
+            bottom: 80px;
+            background: radial-gradient(circle, rgba(255,122,26,.30), transparent 67%);
+        }
+
+        .mega-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            z-index: 9998;
+            background: linear-gradient(90deg, var(--stellar-red), var(--stellar-orange), var(--stellar-gold));
+            box-shadow: 0 0 20px rgba(237,28,36,.55);
+            transition: width .08s linear;
+        }
+
+        .mega-orb {
+            position: absolute;
+            border-radius: 999px;
+            pointer-events: none;
+            filter: blur(18px);
+            opacity: .20;
+            animation: megaFloat 9s ease-in-out infinite alternate;
+        }
+        .mega-orb.one { width: 120px; height: 120px; background: var(--stellar-red); right: 10%; top: 18%; }
+        .mega-orb.two { width: 90px; height: 90px; background: var(--stellar-gold); left: 6%; bottom: 14%; animation-delay: -3s; }
+        @keyframes megaFloat { from { transform: translateY(0) scale(1); } to { transform: translateY(-28px) scale(1.12); } }
+
+        .mega-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.07);
+            background: linear-gradient(145deg, rgba(18,18,20,.82), rgba(0,0,0,.72));
+            box-shadow: 0 24px 70px rgba(0,0,0,.35);
+        }
+        .mega-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(237,28,36,.13), transparent 36%, rgba(245,197,66,.08));
+            opacity: .72;
+            pointer-events: none;
+        }
+        .mega-card > * { position: relative; z-index: 1; }
+        .mega-card:hover { border-color: rgba(237,28,36,.28); transform: translateY(-3px); transition: .28s ease; }
+
+        .mega-gradient-title {
+            background: linear-gradient(90deg, #fff, #ffb4b8, #ff7a1a, #f5c542);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .mega-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .45rem .75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(237,28,36,.20);
+            background: rgba(237,28,36,.08);
+            color: #ffd1d3;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+        .mega-chip.gold { border-color: rgba(245,197,66,.24); background: rgba(245,197,66,.08); color: #ffe8a3; }
+        .mega-chip.green { border-color: rgba(34,197,94,.24); background: rgba(34,197,94,.08); color: #bbf7d0; }
+
+        .mega-search {
+            width: 100%;
+            border-radius: 1.25rem;
+            padding: .95rem 1rem .95rem 2.75rem;
+            background: rgba(0,0,0,.32);
+            border: 1px solid rgba(255,255,255,.06);
+            color: #fff;
+            outline: none;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+        .mega-search:focus { border-color: rgba(237,28,36,.55); box-shadow: 0 0 0 4px rgba(237,28,36,.08); }
+
+        .mega-kbd {
+            border: 1px solid rgba(255,255,255,.13);
+            background: rgba(255,255,255,.06);
+            border-radius: .55rem;
+            padding: .22rem .45rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #fff;
+        }
+
+        .mega-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9997;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 7rem 1rem 1rem;
+            background: rgba(0,0,0,.72);
+            backdrop-filter: blur(18px);
+        }
+        .mega-modal.active { display: flex; animation: megaFade .18s ease-out; }
+        @keyframes megaFade { from { opacity: 0; } to { opacity: 1; } }
+
+        .mega-command-panel {
+            width: min(720px, 100%);
+            border-radius: 2rem;
+            border: 1px solid rgba(255,255,255,.08);
+            background: linear-gradient(145deg, rgba(15,15,18,.98), rgba(4,4,5,.98));
+            box-shadow: 0 40px 120px rgba(0,0,0,.75), 0 0 70px rgba(237,28,36,.12);
+            overflow: hidden;
+        }
+        .mega-command-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border-top: 1px solid rgba(255,255,255,.05);
+            text-align: left;
+            transition: .2s ease;
+        }
+        .mega-command-item:hover { background: rgba(237,28,36,.10); }
+
+        .mega-float-button {
+            position: fixed;
+            right: 1.25rem;
+            width: 46px;
+            height: 46px;
+            border-radius: 999px;
+            z-index: 120;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(17,17,19,.76);
+            border: 1px solid rgba(255,255,255,.08);
+            backdrop-filter: blur(18px);
+            color: #fff;
+            transition: .22s ease;
+        }
+        .mega-float-button:hover { transform: translateY(-3px) scale(1.04); border-color: rgba(237,28,36,.45); color: #ffb4b8; }
+        #mega-back-top { bottom: 1.25rem; opacity: 0; pointer-events: none; }
+        #mega-back-top.visible { opacity: 1; pointer-events: auto; }
+        #mega-cmd-open { bottom: 4.7rem; }
+
+        .mega-network {
+            position: fixed;
+            left: 1.25rem;
+            bottom: 1.25rem;
+            z-index: 120;
+            display: flex;
+            align-items: center;
+            gap: .55rem;
+            padding: .75rem .9rem;
+            border-radius: 999px;
+            background: rgba(0,0,0,.48);
+            border: 1px solid rgba(255,255,255,.08);
+            backdrop-filter: blur(14px);
+            color: #b7f7c7;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+        }
+        .mega-network.offline { color: #ffb4b8; border-color: rgba(237,28,36,.28); }
+
+        .mega-input-counter {
+            margin-top: .55rem;
+            display: flex;
+            justify-content: flex-end;
+            color: #6b7280;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .mega-live-preview {
+            border: 1px solid rgba(237,28,36,.14);
+            background: radial-gradient(circle at top left, rgba(237,28,36,.13), rgba(0,0,0,.34) 48%), rgba(255,255,255,.03);
+            border-radius: 1.8rem;
+            padding: 1.25rem;
+        }
+        .mega-live-preview .discord-preview {
+            background: #313338;
+            border-radius: 1.1rem;
+            padding: 1rem;
+            border-left: 4px solid var(--stellar-red);
+        }
+
+        .mega-skeleton {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255,255,255,.05);
+        }
+        .mega-skeleton::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
+            animation: megaShimmer 1.4s infinite;
+        }
+        @keyframes megaShimmer { 100% { transform: translateX(100%); } }
+
+        .mega-compact .glass { border-radius: 1.25rem !important; }
+        .mega-compact .p-10 { padding: 1.5rem !important; }
+        .mega-compact .space-y-10 > :not([hidden]) ~ :not([hidden]) { margin-top: 1.5rem !important; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+        }
+        @media (max-width: 768px) {
+            #mega-cmd-open { bottom: 6.4rem; right: 1rem; }
+            #mega-back-top { bottom: 10rem; right: 1rem; }
+            .mega-network { display: none; }
+            .mega-modal { padding-top: 5rem; }
+        }
+
     </style>
 </head>
 <body class="selection:bg-red-600 selection:text-white">
@@ -330,7 +621,7 @@
                         O Sistema <br><span class="text-white/20">Definitivo</span><br>Para sua <br><span class="text-red-600">Comunidade.</span>
                     </h1>
                     <p class="text-gray-400 text-lg md:text-xl max-w-xl mb-12 leading-relaxed">
-                        O Stellar é o <b>bot de economia para Discord</b> mais completo. Economia avançada, mercado de ações, sistema de governo, e as melhores promoções e alertas VIP.
+                        O Stellar é o <b>bot de economia e gerenciamento para Discord</b> mais completo. Economia avançada, mercado de ações, sistema de governo, e as melhores promoções e alertas VIP.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                         <a href="https://discord.com/oauth2/authorize?client_id=976607745102979092&permissions=4504838994390134&integration_type=0&scope=applications.commands+bot" target="_blank" class="bg-red-600 hover:bg-red-700 px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-widest text-white transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(237,28,36,0.3)] hover:scale-105">
@@ -387,6 +678,65 @@
                 </div>
             </div>
         </section>
+
+
+        <!-- #################### STELLAR MEGA UPDATE: SEÇÃO DE CONFIANÇA #################### -->
+        <section class="max-w-7xl mx-auto mt-28">
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="mega-card rounded-[2.2rem] p-8">
+                    <div class="mega-chip mb-6"><i data-lucide="shield-check" class="w-4 h-4"></i> Segurança</div>
+                    <h3 class="text-2xl font-black uppercase tracking-tighter mb-3">Proteção de Comunidade</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Painéis para anti-spam, anti-link, filtro léxico, logs, testes rápidos e controle de módulos sem precisar editar código toda hora.</p>
+                </div>
+                <div class="mega-card rounded-[2.2rem] p-8">
+                    <div class="mega-chip gold mb-6"><i data-lucide="crown" class="w-4 h-4"></i> VIP</div>
+                    <h3 class="text-2xl font-black uppercase tracking-tighter mb-3">Monetização Premium</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Benefícios VIP, boosts, personalização visual, economia e sistemas de recompensa para transformar participação em valor real.</p>
+                </div>
+                <div class="mega-card rounded-[2.2rem] p-8">
+                    <div class="mega-chip green mb-6"><i data-lucide="activity" class="w-4 h-4"></i> Tempo Real</div>
+                    <h3 class="text-2xl font-black uppercase tracking-tighter mb-3">Dashboard Vivo</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Ajustes sincronizados com Firebase, feed social, prévias, backups, importação, exportação e ações de teste direto no Discord.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto mt-10">
+            <div class="mega-card rounded-[2.8rem] p-8 md:p-10 overflow-hidden relative">
+                <span class="mega-orb one"></span>
+                <span class="mega-orb two"></span>
+                <div class="grid lg:grid-cols-2 gap-10 items-center relative z-10">
+                    <div>
+                        <span class="mega-chip mb-5"><i data-lucide="sparkles" class="w-4 h-4"></i> Mega Update</span>
+                        <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-6 mega-gradient-title">Central mais rápida, bonita e segura.</h2>
+                        <p class="text-gray-400 leading-relaxed max-w-2xl">Esta versão adiciona refinamento visual, atalhos, paleta de comandos, prévias inteligentes, estado de conexão, indicadores de progresso e melhorias de usabilidade sem remover nenhum módulo existente.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-black/35 border border-white/5 rounded-3xl p-6">
+                            <p class="text-[10px] font-black uppercase tracking-[.25em] text-gray-500 mb-2">Atalho</p>
+                            <p class="text-white font-black text-xl"><span class="mega-kbd">Ctrl</span> + <span class="mega-kbd">K</span></p>
+                            <p class="text-xs text-gray-500 mt-3">Abre a paleta de navegação.</p>
+                        </div>
+                        <div class="bg-black/35 border border-white/5 rounded-3xl p-6">
+                            <p class="text-[10px] font-black uppercase tracking-[.25em] text-gray-500 mb-2">Painel</p>
+                            <p class="text-white font-black text-xl">Auto-polimento</p>
+                            <p class="text-xs text-gray-500 mt-3">Contadores, validações e prévias.</p>
+                        </div>
+                        <div class="bg-black/35 border border-white/5 rounded-3xl p-6">
+                            <p class="text-[10px] font-black uppercase tracking-[.25em] text-gray-500 mb-2">Status</p>
+                            <p id="mega-home-status" class="text-green-400 font-black text-xl">Online</p>
+                            <p class="text-xs text-gray-500 mt-3">Monitor de conexão local.</p>
+                        </div>
+                        <div class="bg-black/35 border border-white/5 rounded-3xl p-6">
+                            <p class="text-[10px] font-black uppercase tracking-[.25em] text-gray-500 mb-2">Versão</p>
+                            <p class="text-red-400 font-black text-xl">Stellar 2026</p>
+                            <p class="text-xs text-gray-500 mt-3">Interface premium revisada.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- #################### PÁGINA: SOCIAL FEED (NOVA ABA) #################### -->
@@ -400,7 +750,7 @@
             <!-- Lupinha de Pesquisa -->
             <div class="relative mb-8">
                 <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5"></i>
-                <input type="text" id="feed-search" onkeyup="filterFeed()" placeholder="Pesquisar por título, conteúdo, @autor ou #tags..." class="w-full bg-black/40 border border-white/5 py-4 pl-14 pr-6 rounded-2xl text-white font-medium focus:border-red-600 outline-none transition">
+                <input type="text" id="feed-search" onkeyup="filterFeed()" placeholder="Pesquisar por título, conteúdo, @autor, #tags ou palavra-chave..." class="w-full bg-black/40 border border-white/5 py-4 pl-14 pr-6 rounded-2xl text-white font-medium focus:border-red-600 outline-none transition">
             </div>
 
             <!-- Caixa de Criação de Post -->
@@ -1106,6 +1456,34 @@
     </div>
 
     <!-- SCRIPTS GERAIS -->
+
+    <!-- #################### STELLAR MEGA UPDATE: UI GLOBAL #################### -->
+    <div id="mega-progress" class="mega-progress"></div>
+
+    <button id="mega-cmd-open" class="mega-float-button" title="Abrir paleta de comandos (Ctrl+K)" aria-label="Abrir paleta de comandos">
+        <i data-lucide="command" class="w-5 h-5"></i>
+    </button>
+
+    <button id="mega-back-top" class="mega-float-button" title="Voltar ao topo" aria-label="Voltar ao topo">
+        <i data-lucide="arrow-up" class="w-5 h-5"></i>
+    </button>
+
+    <div id="mega-network" class="mega-network">
+        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+        <span id="mega-network-text">Online</span>
+    </div>
+
+    <div id="mega-command-modal" class="mega-modal" aria-hidden="true">
+        <div class="mega-command-panel">
+            <div class="p-5 border-b border-white/5 flex items-center gap-3">
+                <i data-lucide="search" class="w-5 h-5 text-red-400"></i>
+                <input id="mega-command-input" class="bg-transparent outline-none flex-1 text-white font-bold" placeholder="Pesquisar página, módulo ou ação...">
+                <span class="mega-kbd">ESC</span>
+            </div>
+            <div id="mega-command-list" class="max-h-[460px] overflow-y-auto hide-scrollbar"></div>
+        </div>
+    </div>
+
     <script>
         const CLIENT_ID = '976607745102979092';
         const REDIRECT_URI = 'https://miguelsouzaytbr.github.io/stellar-site-bot/';
@@ -1619,12 +1997,12 @@
                     // Boas Vindas
                     document.getElementById('cfg-wel-active').checked = d.welcome?.active || false;
                     document.getElementById('cfg-wel-inv-active').checked = d.welcome?.inviteActive || false;
-                    document.getElementById('cfg-wel-msg').value = d.welcome?.msg || '# <a:dindon:1468425730240286774> Boas-vindas, {user}!\n> Você acaba de entrar no **{guild}**! Sinta-se em casa.\n\n<a:seta1Img_adm:1468419286631710821> **Passos Iniciais:**\n* 📖 Leia as <#1458092487171379270> para evitar qualquer <a:warning:1468425732668784834> `Aviso`.\n* 🧭 Entenda o nosso ecossistema no <#1487555523888021777>.\n* 💸 Pegue as <#1489786478434324621> e acumule <:cash:1493784655319666789> `coins`.\n* 🛠️ Dúvidas? Abra um ticket no <#1482187262862037155> para a <:staff:1493289738981998652> **Equipe**.\n\n<:student:1493290481264754729> *Você é o membro número **#{total}**!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
+                    document.getElementById('cfg-wel-msg').value = d.welcome?.msg || '# <a:bell:1514363127175708802> Boas-vindas, {user}!\n> Você acaba de entrar no **{guild}**! Sinta-se em casa.\n\n<a:seta1Img_adm:1468419286631710821> **Passos Iniciais:**\n* 📖 Leia as <#1458092487171379270> para evitar qualquer <a:warning:1514377403240026304> `Aviso`.\n* 🧭 Entenda o nosso ecossistema no <#1487555523888021777>.\n* 💸 Pegue as <#1489786478434324621> e acumule <:cash:1501804528842833991> `coins`.\n* 🛠️ Dúvidas? Abra um ticket no <#1482187262862037155> para a <:staff:1502099467074273340> **Equipe**.\n\n<:student:1493290481264754729> *Você é o membro número **#{total}**!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
                     document.getElementById('cfg-wel-inv-msg').value = d.welcome?.inviteMsg || '🛰️ **[LOG DE INVITE]**\nO membro {user} acabou de entrar.\nConvidado por: {inviter}\nTotal de convites: **{invites}**';
                     document.getElementById('cfg-wel-img').value = d.welcome?.image || '';
                     document.getElementById('cfg-wel-color').value = d.welcome?.color || '#7000FF';
 
-                    document.getElementById('cfg-tk-msg').value = d.ticket?.text || '# <a:dindon:1468425730240286774> Central de Atendimento\n> Precisa de ajuda, tem uma dúvida ou quer fazer uma denúncia? Você está no lugar certo!\n\n<a:seta1Img_adm:1468419286631710821> **Como abrir seu ticket:**\n* Selecione o motivo do seu contato no menu logo abaixo.\n* Evite abrir tickets sem necessidade para não levar um <a:warning:1468425732668784834> `Aviso`.\n* Aguarde pacientemente. Nossa <:staff:1493289738981998652> **Equipe** vai te atender o mais rápido possível.\n\n<:student:1493290481264754729> *Dica: Muitas dúvidas já estão respondidas no <#1487555523888021777>!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
+                    document.getElementById('cfg-tk-msg').value = d.ticket?.text || '# <a:bell:1514363127175708802> Central de Atendimento\n> Precisa de ajuda, tem uma dúvida ou quer fazer uma denúncia? Você está no lugar certo!\n\n<a:seta1Img_adm:1468419286631710821> **Como abrir seu ticket:**\n* Selecione o motivo do seu contato no menu logo abaixo.\n* Evite abrir tickets sem necessidade para não levar um <a:warning:1514377403240026304> `Aviso`.\n* Aguarde pacientemente. Nossa <:staff:1502099467074273340> **Equipe** vai te atender o mais rápido possível.\n\n<:student:1493290481264754729> *Dica: Muitas dúvidas já estão respondidas no <#1487555523888021777>!*\n🔗 **Painel Oficial:** [Stellar Hub](https://miguelsouzaytbr.github.io/stellar-site-bot/#)';
                     document.getElementById('cfg-tk-img').value = d.ticket?.image || '';
 
                     document.getElementById('cfg-parc-msg').value = d.parceria?.text || 'Clique no botão abaixo para abrir uma parceria.';
@@ -2300,6 +2678,327 @@
             }
             showToast(`💬 Abrindo Chat Direto com ${targetName}... (Em Breve)`, false);
         };
+
+
+
+        // =====================================================================
+        // STELLAR MEGA UPDATE 2026 — EXPERIÊNCIA, POLIMENTO E SEGURANÇA VISUAL
+        // =====================================================================
+        window.STELLAR_MEGA_VERSION = '2026.06-MEGA';
+
+        function megaSafe(fn) {
+            try { return fn(); } catch (err) { console.warn('[STELLAR MEGA]', err); }
+        }
+
+        function megaParseWelcomePreview(raw) {
+            const guildName = selectedGuild?.name || document.getElementById('manage-name')?.innerText || 'Stellar Society';
+            const userName = document.getElementById('user-tag')?.innerText || '@usuario';
+            return String(raw || '')
+                .replaceAll('{user}', `<span class="text-red-300 font-black">${userName}</span>`)
+                .replaceAll('{username}', userName.replace('@', ''))
+                .replaceAll('{guild}', guildName)
+                .replaceAll('{server}', guildName)
+                .replaceAll('{total}', '1500')
+                .replaceAll('{inviter}', 'Stellar Staff')
+                .replaceAll('{inviter_tag}', 'Stellar Staff#0001')
+                .replaceAll('{invites}', '15')
+                .replaceAll('{id}', '123456789')
+                .replaceAll('{created_at}', 'hoje')
+                .replaceAll('{joined_at}', 'agora')
+                .replaceAll('{account_age}', '365 dias')
+                .replace(/\n/g, '<br>');
+        }
+
+        function megaUpdateScrollProgress() {
+            const bar = document.getElementById('mega-progress');
+            if (!bar) return;
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            const percent = max <= 0 ? 0 : (window.scrollY / max) * 100;
+            bar.style.width = `${Math.min(100, Math.max(0, percent))}%`;
+        }
+
+        function megaNetworkState() {
+            const box = document.getElementById('mega-network');
+            const txt = document.getElementById('mega-network-text');
+            const home = document.getElementById('mega-home-status');
+            if (!box || !txt) return;
+            const online = navigator.onLine;
+            box.classList.toggle('offline', !online);
+            txt.textContent = online ? 'Online' : 'Offline';
+            const dot = box.querySelector('span');
+            if (dot) dot.className = `w-2 h-2 rounded-full ${online ? 'bg-green-400 animate-pulse' : 'bg-red-500'} `;
+            if (home) {
+                home.textContent = online ? 'Online' : 'Offline';
+                home.className = online ? 'text-green-400 font-black text-xl' : 'text-red-400 font-black text-xl';
+            }
+        }
+
+        function megaBuildCommandPalette() {
+            const list = document.getElementById('mega-command-list');
+            if (!list) return;
+
+            const items = [
+                { title: 'Início', sub: 'Página principal', icon: 'home', action: () => switchPage('home') },
+                { title: 'Feed Stellar Network', sub: 'Publicações globais', icon: 'globe', action: () => switchPage('social') },
+                { title: 'Dashboard', sub: 'Gerenciar servidores', icon: 'layout-dashboard', action: () => switchPage('dashboard') },
+                { title: 'Configurações Gerais', sub: 'Prefixo e logs', icon: 'settings', action: () => { switchPage('dashboard'); openTab('geral'); } },
+                { title: 'VIP', sub: 'Benefícios e personalização', icon: 'crown', action: () => { switchPage('dashboard'); openTab('vip'); } },
+                { title: 'Boost', sub: 'Impulsos do servidor', icon: 'rocket', action: () => { switchPage('dashboard'); openTab('boost'); } },
+                { title: 'Segurança', sub: 'Anti-spam, links e palavras', icon: 'shield', action: () => { switchPage('dashboard'); openTab('seguranca'); } },
+                { title: 'Boas-Vindas', sub: 'Entrada, invites e banner', icon: 'user-plus', action: () => { switchPage('dashboard'); openTab('entrada'); } },
+                { title: 'Tickets', sub: 'Atendimento e logs', icon: 'ticket', action: () => { switchPage('dashboard'); openTab('tickets'); } },
+                { title: 'Parcerias', sub: 'Painel e análise', icon: 'handshake', action: () => { switchPage('dashboard'); openTab('parcerias'); } },
+                { title: 'Staff', sub: 'Recrutamento e fichas', icon: 'users', action: () => { switchPage('dashboard'); openTab('staff'); } },
+                { title: 'Economia', sub: 'Notícias e cotações', icon: 'coins', action: () => { switchPage('dashboard'); openTab('economia'); } },
+                { title: 'XP e Níveis', sub: 'Level up e cargos', icon: 'trending-up', action: () => { switchPage('dashboard'); openTab('xp'); } },
+                { title: 'Comandos', sub: 'Controle por comando', icon: 'terminal', action: () => { switchPage('dashboard'); openTab('comandos'); } }
+            ];
+
+            window.__stellarCommandItems = items;
+            const render = (query = '') => {
+                const q = query.trim().toLowerCase();
+                const filtered = items.filter(item => `${item.title} ${item.sub}`.toLowerCase().includes(q));
+                list.innerHTML = filtered.map((item, idx) => `
+                    <button type="button" class="mega-command-item" data-cmd-index="${items.indexOf(item)}">
+                        <span class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-2xl bg-red-600/10 border border-red-600/20 flex items-center justify-center text-red-300"><i data-lucide="${item.icon}" class="w-4 h-4"></i></span>
+                            <span>
+                                <span class="block text-sm font-black uppercase tracking-wider text-white">${item.title}</span>
+                                <span class="block text-xs text-gray-500 font-bold">${item.sub}</span>
+                            </span>
+                        </span>
+                        <span class="mega-kbd">Enter</span>
+                    </button>
+                `).join('') || `<div class="p-8 text-center text-gray-500 text-xs font-black uppercase tracking-widest">Nada encontrado</div>`;
+                lucide.createIcons();
+            };
+
+            window.__stellarRenderCommands = render;
+            render();
+        }
+
+        function megaOpenCommandPalette() {
+            const modal = document.getElementById('mega-command-modal');
+            const input = document.getElementById('mega-command-input');
+            if (!modal || !input) return;
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            input.value = '';
+            window.__stellarRenderCommands?.('');
+            setTimeout(() => input.focus(), 50);
+        }
+
+        function megaCloseCommandPalette() {
+            const modal = document.getElementById('mega-command-modal');
+            if (!modal) return;
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        function megaBindCommandPalette() {
+            megaBuildCommandPalette();
+            const open = document.getElementById('mega-cmd-open');
+            const modal = document.getElementById('mega-command-modal');
+            const input = document.getElementById('mega-command-input');
+            const list = document.getElementById('mega-command-list');
+
+            open?.addEventListener('click', megaOpenCommandPalette);
+            modal?.addEventListener('click', (e) => { if (e.target === modal) megaCloseCommandPalette(); });
+            input?.addEventListener('input', () => window.__stellarRenderCommands?.(input.value));
+            list?.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-cmd-index]');
+                if (!btn) return;
+                const item = window.__stellarCommandItems?.[Number(btn.dataset.cmdIndex)];
+                if (!item) return;
+                megaCloseCommandPalette();
+                item.action();
+            });
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                    e.preventDefault();
+                    megaOpenCommandPalette();
+                }
+                if (e.key === 'Escape') megaCloseCommandPalette();
+            });
+        }
+
+        function megaInstallSidebarSearch() {
+            const sidebar = document.querySelector('#dash-manage-guild aside .space-y-3');
+            if (!sidebar || document.getElementById('mega-tab-search')) return;
+            const wrap = document.createElement('div');
+            wrap.className = 'relative mb-4';
+            wrap.innerHTML = `
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500"></i>
+                <input id="mega-tab-search" class="mega-search" placeholder="Buscar módulo...">
+            `;
+            sidebar.parentElement.insertBefore(wrap, sidebar);
+            document.getElementById('mega-tab-search')?.addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase().trim();
+                sidebar.querySelectorAll('button').forEach(btn => {
+                    btn.style.display = btn.innerText.toLowerCase().includes(q) ? '' : 'none';
+                });
+            });
+            lucide.createIcons();
+        }
+
+        function megaInstallCounters() {
+            document.querySelectorAll('textarea, input[type="text"]').forEach(el => {
+                if (el.dataset.megaCounter === '1') return;
+                el.dataset.megaCounter = '1';
+                const counter = document.createElement('div');
+                counter.className = 'mega-input-counter';
+                el.insertAdjacentElement('afterend', counter);
+                const update = () => {
+                    const max = el.getAttribute('maxlength');
+                    counter.textContent = max ? `${el.value.length}/${max}` : `${el.value.length} caracteres`;
+                };
+                el.addEventListener('input', update);
+                update();
+            });
+        }
+
+        function megaInstallWelcomePreview() {
+            const tab = document.getElementById('tab-entrada');
+            if (!tab || document.getElementById('mega-welcome-preview')) return;
+            const preview = document.createElement('div');
+            preview.id = 'mega-welcome-preview';
+            preview.className = 'mega-live-preview';
+            preview.innerHTML = `
+                <div class="flex items-center justify-between gap-4 mb-4">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-[.25em] text-red-300">Prévia inteligente</p>
+                        <h5 class="text-lg font-black uppercase tracking-tighter text-white">Boas-vindas no Discord</h5>
+                    </div>
+                    <span class="mega-chip"><i data-lucide="eye" class="w-3 h-3"></i> Live</span>
+                </div>
+                <div class="discord-preview">
+                    <div class="flex items-start gap-3">
+                        <img src="https://i.imgur.com/PDEZ4HT.jpeg" class="w-10 h-10 rounded-full border border-red-500/30" alt="Stellar">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 text-sm mb-1"><b class="text-white">Stellar Hub</b><span class="bg-[#5865F2] text-white text-[9px] font-black px-1.5 py-0.5 rounded">BOT</span></div>
+                            <div id="mega-welcome-preview-text" class="text-[#dbdee1] text-sm leading-relaxed break-words"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            tab.appendChild(preview);
+            const update = () => {
+                const raw = document.getElementById('cfg-wel-msg')?.value || 'Seja bem-vindo(a) {user}!';
+                const out = document.getElementById('mega-welcome-preview-text');
+                if (out) out.innerHTML = megaParseWelcomePreview(raw);
+            };
+            ['cfg-wel-msg', 'cfg-wel-color', 'cfg-wel-img'].forEach(id => document.getElementById(id)?.addEventListener('input', update));
+            update();
+            lucide.createIcons();
+        }
+
+        function megaInstallDashboardInsights() {
+            const target = document.querySelector('#dash-manage-guild .lg\\:col-span-3');
+            if (!target || document.getElementById('mega-insight-strip')) return;
+            const strip = document.createElement('div');
+            strip.id = 'mega-insight-strip';
+            strip.className = 'grid md:grid-cols-3 gap-4 mb-6';
+            strip.innerHTML = `
+                <div class="mega-card rounded-3xl p-5"><p class="text-[10px] font-black uppercase tracking-[.24em] text-gray-500 mb-2">Servidor</p><h5 class="text-white font-black uppercase truncate">${selectedGuild?.name || 'Selecionado'}</h5><p class="text-xs text-gray-500 mt-2">Configuração ativa no painel.</p></div>
+                <div class="mega-card rounded-3xl p-5"><p class="text-[10px] font-black uppercase tracking-[.24em] text-gray-500 mb-2">Sincronização</p><h5 class="text-green-400 font-black uppercase">Firebase Ready</h5><p class="text-xs text-gray-500 mt-2">Alterações preparadas para salvar.</p></div>
+                <div class="mega-card rounded-3xl p-5"><p class="text-[10px] font-black uppercase tracking-[.24em] text-gray-500 mb-2">Atalhos</p><h5 class="text-red-300 font-black uppercase">Ctrl + K</h5><p class="text-xs text-gray-500 mt-2">Navegação rápida pelo dashboard.</p></div>
+            `;
+            target.prepend(strip);
+        }
+
+        function megaInstallValidationPolish() {
+            document.querySelectorAll('input[id$="color"]').forEach(input => {
+                const validate = () => {
+                    const value = input.value.trim();
+                    const ok = !value || /^#?[0-9a-fA-F]{6}$/.test(value);
+                    input.classList.toggle('border-red-500', !ok);
+                    input.classList.toggle('border-green-500', ok && !!value);
+                };
+                input.addEventListener('input', validate);
+                validate();
+            });
+
+            document.querySelectorAll('input[id$="img"]').forEach(input => {
+                const validate = () => {
+                    const value = input.value.trim();
+                    const ok = !value || /^https?:\/\//i.test(value);
+                    input.classList.toggle('border-red-500', !ok);
+                    input.classList.toggle('border-green-500', ok && !!value);
+                };
+                input.addEventListener('input', validate);
+                validate();
+            });
+        }
+
+        function megaInstallBackTop() {
+            const btn = document.getElementById('mega-back-top');
+            btn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+            window.addEventListener('scroll', () => {
+                megaUpdateScrollProgress();
+                btn?.classList.toggle('visible', window.scrollY > 420);
+            }, { passive: true });
+            megaUpdateScrollProgress();
+        }
+
+        function megaInstallLeaveGuard() {
+            window.addEventListener('beforeunload', (e) => {
+                const btn = document.getElementById('btn-save');
+                if (btn && btn.classList.contains('dirty-dot')) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+        }
+
+        function megaWrapCoreFunctions() {
+            if (!window.__megaWrappedOpenTab && typeof openTab === 'function') {
+                window.__megaWrappedOpenTab = true;
+                const oldOpenTab = openTab;
+                window.openTab = function(tabName) {
+                    const res = oldOpenTab.apply(this, arguments);
+                    setTimeout(() => {
+                        megaInstallCounters();
+                        megaInstallWelcomePreview();
+                        megaInstallValidationPolish();
+                        lucide.createIcons();
+                    }, 80);
+                    return res;
+                };
+            }
+
+            if (!window.__megaWrappedManageGuild && typeof manageGuild === 'function') {
+                window.__megaWrappedManageGuild = true;
+                const oldManageGuild = manageGuild;
+                window.manageGuild = async function() {
+                    const res = await oldManageGuild.apply(this, arguments);
+                    setTimeout(() => {
+                        megaInstallSidebarSearch();
+                        megaInstallDashboardInsights();
+                        megaInstallCounters();
+                        megaInstallWelcomePreview();
+                        megaInstallValidationPolish();
+                        lucide.createIcons();
+                    }, 500);
+                    return res;
+                };
+            }
+        }
+
+        function initStellarMegaUpdate() {
+            megaSafe(() => megaBindCommandPalette());
+            megaSafe(() => megaInstallBackTop());
+            megaSafe(() => megaNetworkState());
+            megaSafe(() => megaInstallLeaveGuard());
+            megaSafe(() => megaWrapCoreFunctions());
+            megaSafe(() => megaInstallCounters());
+            megaSafe(() => megaInstallValidationPolish());
+            window.addEventListener('online', megaNetworkState);
+            window.addEventListener('offline', megaNetworkState);
+            setInterval(megaNetworkState, 15000);
+            lucide.createIcons();
+        }
+
+        window.addEventListener('load', () => setTimeout(initStellarMegaUpdate, 450));
 
         // =====================================================================
         // INICIALIZAÇÃO
