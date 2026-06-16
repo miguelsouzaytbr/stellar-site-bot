@@ -3553,5 +3553,595 @@
     })();
     </script>
 
+
+
+    <!-- =====================================================================
+         STELLAR COMMUNITY SUITE — REAL FEATURE UPDATE
+         Funções novas reais no painel/site sem remover módulos existentes.
+    ====================================================================== -->
+    <style>
+        .suite-section { position: relative; }
+        .suite-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2rem;
+            border: 1px solid rgba(255,255,255,.075);
+            background: linear-gradient(145deg, rgba(22,12,12,.86), rgba(6,6,8,.94));
+            box-shadow: 0 20px 60px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.045);
+            transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+        }
+        .suite-card:hover { transform: translateY(-4px); border-color: rgba(237,28,36,.32); box-shadow: 0 22px 70px rgba(237,28,36,.09), inset 0 1px 0 rgba(255,255,255,.06); }
+        .suite-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at top left, rgba(237,28,36,.17), transparent 35%), radial-gradient(circle at bottom right, rgba(245,196,81,.10), transparent 40%);
+        }
+        .suite-card > * { position: relative; z-index: 1; }
+        .suite-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .42rem .72rem;
+            border-radius: 999px;
+            border: 1px solid rgba(237,28,36,.24);
+            background: rgba(237,28,36,.09);
+            color: #ffc6c8;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+        }
+        .suite-chip.gold { border-color: rgba(245,196,81,.28); background: rgba(245,196,81,.09); color: #ffe7a1; }
+        .suite-chip.green { border-color: rgba(34,197,94,.26); background: rgba(34,197,94,.08); color: #bbf7d0; }
+        .suite-chip.purple { border-color: rgba(168,85,247,.26); background: rgba(168,85,247,.09); color: #e9d5ff; }
+        .suite-input,
+        .suite-select,
+        .suite-textarea {
+            width: 100%;
+            background: rgba(0,0,0,.48) !important;
+            border: 1px solid rgba(255,255,255,.075) !important;
+            border-radius: 1.35rem;
+            padding: 1rem 1.1rem;
+            color: #fff;
+            outline: none;
+            font-weight: 800;
+            font-size: .82rem;
+        }
+        .suite-textarea { min-height: 120px; resize: vertical; line-height: 1.55; }
+        .suite-input:focus,
+        .suite-select:focus,
+        .suite-textarea:focus { border-color: rgba(237,28,36,.70) !important; box-shadow: 0 0 0 4px rgba(237,28,36,.10) !important; }
+        .suite-label { display: block; margin-bottom: .8rem; color: #8f8f98; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .26em; }
+        .suite-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .55rem;
+            border-radius: 1.15rem;
+            padding: .95rem 1.15rem;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            transition: .2s ease;
+        }
+        .suite-btn:hover { transform: translateY(-2px); }
+        .suite-btn.red { background: #ED1C24; color: #fff; box-shadow: 0 0 22px rgba(237,28,36,.22); }
+        .suite-btn.dark { background: rgba(255,255,255,.06); color: #d4d4d8; border: 1px solid rgba(255,255,255,.075); }
+        .suite-btn.gold { background: rgba(245,196,81,.12); color: #ffe8a3; border: 1px solid rgba(245,196,81,.20); }
+        .suite-mini-stat { border-radius: 1.3rem; border: 1px solid rgba(255,255,255,.07); background: rgba(0,0,0,.30); padding: 1rem; }
+        .suite-preview { border-left: 4px solid #ED1C24; background: #2b2d31; color: #dbdee1; border-radius: 1rem; padding: 1rem; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .suite-preview-title { color: #fff; font-weight: 900; margin-bottom: .45rem; }
+        .suite-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(237,28,36,.32), transparent); margin: 1.4rem 0; }
+        .suite-badge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .9rem; }
+        .suite-feature-pill { border-radius: 1.2rem; padding: .95rem; background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.06); }
+        .suite-feature-pill h4 { color: #fff; font-size: .78rem; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; }
+        .suite-feature-pill p { color: #8f8f98; font-size: .72rem; margin-top: .35rem; line-height: 1.4; }
+        .suite-route-btn.active-suite { background: rgba(237,28,36,.22) !important; color: #fff !important; border-color: rgba(237,28,36,.34) !important; }
+        .suite-home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 1rem; }
+        .suite-home-icon { width: 3rem; height: 3rem; border-radius: 1.1rem; display: inline-flex; align-items:center; justify-content:center; background: rgba(237,28,36,.13); border: 1px solid rgba(237,28,36,.22); color: #ffb4b8; margin-bottom: 1rem; }
+        @media (max-width: 768px) {
+            .suite-card { border-radius: 1.45rem; }
+            .suite-btn { width: 100%; }
+        }
+    </style>
+
+    <script>
+    (function () {
+        const SUITE_VERSION = 'Stellar Community Suite 1.0';
+        const EVENT_PRESETS = {
+            livre: {
+                title: 'Evento Livre Stellar',
+                body: 'Participe enviando sua melhor criação no canal do evento. A staff avaliará criatividade, estética e participação real.',
+                rules: 'Sem spam, sem conteúdo ofensivo, uma participação por pessoa e resultado anunciado oficialmente.'
+            },
+            casal: {
+                title: 'Perfis Combinando — Dia dos Namorados',
+                body: 'Monte um perfil combinando com outra pessoa e envie 2 imagens: seu perfil e o perfil do parceiro. Capriche nas cores, bio e identidade visual.',
+                rules: 'Exatamente 2 imagens, mencionar parceiro, uma dupla por pessoa, sem fake e sem conteúdo impróprio.'
+            },
+            print: {
+                title: 'Print Premiado da Semana',
+                body: 'Envie um print épico do seu momento no servidor: call, evento, conquista, economia, ranking ou meme interno.',
+                rules: 'Print real do servidor, sem exposição indevida, sem flood e sem manipulação.'
+            },
+            quarto: {
+                title: 'Quarto Premiado Stellar',
+                body: 'Mostre seu cantinho, setup, estilo ou composição visual. O objetivo é criatividade e identidade.',
+                rules: 'Imagem autoral, sem conteúdo sensível, permitido edição leve, resultado por votos ou staff.'
+            }
+        };
+        const MISSION_PRESETS = [
+            ['Mensagem Ativa', 'Enviar 50 mensagens reais sem flood', 'Coins + XP'],
+            ['Call Social', 'Ficar 2 horas em call pública', 'Cargo temporário + coins'],
+            ['Convite Real', 'Trazer 3 membros ativos', 'Bônus de invite'],
+            ['Arte da Semana', 'Postar arte, print ou perfil no feed', 'Destaque no servidor'],
+            ['Ajuda Comunitária', 'Responder dúvidas de 5 membros', 'Reputação + XP'],
+            ['Economia Forte', 'Concluir 3 comandos econômicos diferentes', 'Cashback no bot'],
+            ['Caça ao Drop', 'Clicar primeiro em um drop surpresa', 'Prêmio instantâneo'],
+            ['Missão VIP', 'Participar de evento exclusivo VIP', 'Benefício premium']
+        ];
+        const LOVED_FEATURES = [
+            ['sparkles', 'Missões Diárias', 'Objetivos de chat, call, convite, economia e eventos.'],
+            ['calendar-days', 'Eventos Inteligentes', 'Presets prontos com regras, prêmios, duração e anúncio.'],
+            ['gift', 'Sorteios Avançados', 'Sorteios por reação, participação, cargo, invite ou atividade.'],
+            ['shopping-bag', 'Loja VIP Visual', 'Editor de planos, benefícios, banners e chamadas de venda.'],
+            ['mic', 'TempCalls Premium', 'Painel para criar calls temporárias com limite, tempo e privacidade.'],
+            ['trophy', 'Rankings Semanais', 'Ranking de XP, call, mensagens, convites e economia.'],
+            ['lightbulb', 'Ideias da Comunidade', 'Mural de sugestões, votação e status de aprovação.'],
+            ['megaphone', 'Gerador de Anúncios', 'Cria anúncios bonitos para evento, venda, manutenção e novidade.'],
+            ['flame', 'Streaks', 'Sequência diária de atividade com recompensas.'],
+            ['badge-check', 'Reputação', 'Sistema social para destacar membros confiáveis e ativos.'],
+            ['dice-5', 'Drops Surpresa', 'Prêmios jogados no chat para o primeiro resgatar.'],
+            ['shield-alert', 'Simulador Anti-Raid', 'Teste visual de segurança antes de uma crise real.']
+        ];
+
+        function esc(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function selectedGuildSafe() {
+            try {
+                if (typeof selectedGuild !== 'undefined' && selectedGuild) return selectedGuild;
+            } catch (e) {}
+            return window.selectedGuild || null;
+        }
+
+        function configRefSafe(guildId) {
+            try {
+                if (typeof getGuildConfigRef === 'function') return getGuildConfigRef(guildId);
+            } catch (e) {}
+            if (window.fbDoc && window.stellarDb) return window.fbDoc(window.stellarDb, 'guildConfigs', guildId);
+            return null;
+        }
+
+        function toast(msg, error = false) {
+            try {
+                if (typeof showToast === 'function') return showToast(msg, error);
+            } catch (e) {}
+            console[error ? 'error' : 'log'](msg);
+            alert(msg);
+        }
+
+        function currentChannels() {
+            return Array.isArray(window.cachedChannels) ? window.cachedChannels : [];
+        }
+        function currentRoles() {
+            return Array.isArray(window.cachedRoles) ? window.cachedRoles : [];
+        }
+        function currentCategories() {
+            return Array.isArray(window.cachedCategories) ? window.cachedCategories : [];
+        }
+        function optionList(items, empty = 'Selecione...') {
+            const arr = Array.isArray(items) ? items : [];
+            return `<option value="">${esc(empty)}</option>` + arr.map(i => `<option value="${esc(i.id)}">${esc(i.name || i.id)}</option>`).join('');
+        }
+
+        function suiteButton(id, icon, label, color = 'text-gray-400') {
+            return `
+                <button onclick="openTab('${id}')" id="btn-tab-${id}" class="suite-route-btn w-full p-4 rounded-2xl bg-white/5 text-[10px] font-black uppercase tracking-widest ${color} hover:text-white transition flex items-center gap-3 border border-transparent hover:border-red-600/25">
+                    <i data-lucide="${icon}" class="w-4 h-4"></i> ${label}
+                </button>
+            `;
+        }
+
+        function injectHomeSuite() {
+            const home = document.getElementById('page-home');
+            if (!home || document.getElementById('suite-loved-section')) return;
+            const section = document.createElement('section');
+            section.id = 'suite-loved-section';
+            section.className = 'max-w-7xl mx-auto mt-24 suite-section';
+            section.innerHTML = `
+                <div class="suite-card p-8 md:p-12 mb-8">
+                    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                        <div>
+                            <span class="suite-chip gold"><i data-lucide="sparkles" class="w-4 h-4"></i> ${SUITE_VERSION}</span>
+                            <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mt-6 leading-[.92]">Funções que fazem a comunidade voltar.</h2>
+                            <p class="text-gray-400 mt-5 max-w-3xl leading-relaxed font-medium">Camada nova focada em retenção: missões, eventos, sorteios, rankings, ideias, drops, streaks, tempcalls e geradores de anúncio. É conteúdo para membro participar, competir, votar e ganhar prêmio.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 min-w-[280px]">
+                            <div class="suite-mini-stat"><p class="text-[9px] font-black uppercase text-gray-500 tracking-widest">Novas áreas</p><strong class="text-3xl text-white">8</strong></div>
+                            <div class="suite-mini-stat"><p class="text-[9px] font-black uppercase text-gray-500 tracking-widest">Ideias prontas</p><strong class="text-3xl text-red-400">24+</strong></div>
+                            <div class="suite-mini-stat"><p class="text-[9px] font-black uppercase text-gray-500 tracking-widest">Foco</p><strong class="text-3xl text-[#f5c451]">Retenção</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="suite-home-grid">
+                    ${LOVED_FEATURES.map(([icon, title, desc]) => `
+                        <div class="suite-card p-6">
+                            <span class="suite-home-icon"><i data-lucide="${icon}" class="w-5 h-5"></i></span>
+                            <h3 class="font-black uppercase tracking-tight text-white">${esc(title)}</h3>
+                            <p class="text-xs text-gray-500 mt-2 leading-relaxed font-medium">${esc(desc)}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            home.appendChild(section);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function tabHeader(icon, title, desc, chip = 'Novo módulo') {
+            return `
+                <div class="suite-card p-6 md:p-8 mb-8">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-center gap-4">
+                            <span class="suite-home-icon mb-0"><i data-lucide="${icon}" class="w-5 h-5"></i></span>
+                            <div>
+                                <span class="suite-chip">${chip}</span>
+                                <h4 class="text-2xl font-black uppercase tracking-tighter mt-3">${title}</h4>
+                                <p class="text-sm text-gray-500 font-medium mt-1">${desc}</p>
+                            </div>
+                        </div>
+                        <button onclick="saveCommunitySuite()" class="suite-btn red"><i data-lucide="save" class="w-4 h-4"></i> Salvar Suite</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function eventsTab() {
+            return `
+            <div id="tab-eventos" class="tab-content hidden space-y-8">
+                ${tabHeader('calendar-days', 'Central de Eventos', 'Crie eventos com preset, regras, prêmios, canal e anúncio pronto.', 'Eventos')}
+                <div class="grid lg:grid-cols-2 gap-6">
+                    <div class="suite-card p-6 space-y-5">
+                        <div><label class="suite-label">Preset</label><select id="suite-event-preset" class="suite-select" onchange="suiteApplyEventPreset()"><option value="livre">Evento Livre</option><option value="casal">Perfis Combinando</option><option value="print">Print Premiado</option><option value="quarto">Quarto Premiado</option></select></div>
+                        <div><label class="suite-label">Nome do Evento</label><input id="suite-event-title" class="suite-input" placeholder="Evento da Semana"></div>
+                        <div><label class="suite-label">Canal do Evento</label><select id="suite-event-channel" class="suite-select suite-channel-select"></select></div>
+                        <div class="grid md:grid-cols-2 gap-4"><div><label class="suite-label">Duração</label><input id="suite-event-duration" class="suite-input" placeholder="7 dias"></div><div><label class="suite-label">Modo de Resultado</label><select id="suite-event-result" class="suite-select"><option>Manual pela staff</option><option>Votos por reação</option><option>Sorteio dos participantes</option><option>Ranking por pontos</option></select></div></div>
+                        <div><label class="suite-label">Prêmios</label><textarea id="suite-event-prizes" class="suite-textarea" placeholder="1º VIP + 1M coins\n2º 500k coins\n3º 250k coins"></textarea></div>
+                    </div>
+                    <div class="suite-card p-6 space-y-5">
+                        <div><label class="suite-label">Descrição</label><textarea id="suite-event-body" class="suite-textarea"></textarea></div>
+                        <div><label class="suite-label">Regras</label><textarea id="suite-event-rules" class="suite-textarea"></textarea></div>
+                        <div class="flex flex-wrap gap-3"><button onclick="suiteGenerateEventAnnouncement()" class="suite-btn gold"><i data-lucide="wand-2" class="w-4 h-4"></i> Gerar anúncio</button><button onclick="suiteCopyFrom('suite-event-announcement')" class="suite-btn dark"><i data-lucide="copy" class="w-4 h-4"></i> Copiar</button></div>
+                        <textarea id="suite-event-announcement" class="suite-textarea" placeholder="O anúncio gerado aparece aqui..."></textarea>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function missionsTab() {
+            return `
+            <div id="tab-missoes" class="tab-content hidden space-y-8">
+                ${tabHeader('sparkles', 'Missões & Retenção', 'Missões diárias/semanais para mensagem, call, convite, economia e eventos.', 'Engajamento')}
+                <div class="grid lg:grid-cols-[.9fr_1.1fr] gap-6">
+                    <div class="suite-card p-6">
+                        <label class="suite-label">Gerador de missão rápida</label>
+                        <div class="space-y-4">
+                            <select id="suite-mission-type" class="suite-select"><option>Mensagens</option><option>Call</option><option>Convites</option><option>Feed Social</option><option>Economia</option><option>Evento</option><option>Ajuda</option></select>
+                            <input id="suite-mission-goal" class="suite-input" placeholder="Ex: Enviar 50 mensagens reais">
+                            <input id="suite-mission-reward" class="suite-input" placeholder="Ex: 100k coins + 500 XP">
+                            <button onclick="suiteAddMission()" class="suite-btn red w-full"><i data-lucide="plus" class="w-4 h-4"></i> Adicionar Missão</button>
+                        </div>
+                        <div class="suite-divider"></div>
+                        <div class="suite-badge-grid">
+                            ${MISSION_PRESETS.map((m, idx) => `<button onclick="suiteUseMissionPreset(${idx})" class="suite-feature-pill text-left"><h4>${esc(m[0])}</h4><p>${esc(m[1])}</p></button>`).join('')}
+                        </div>
+                    </div>
+                    <div class="suite-card p-6">
+                        <label class="suite-label">Lista de missões publicáveis</label>
+                        <textarea id="suite-missions-list" class="suite-textarea min-h-[360px]" placeholder="As missões adicionadas aparecem aqui..."></textarea>
+                        <div class="flex flex-wrap gap-3 mt-4"><button onclick="suiteGenerateMissionBoard()" class="suite-btn gold"><i data-lucide="clipboard-list" class="w-4 h-4"></i> Formatar painel</button><button onclick="suiteCopyFrom('suite-missions-list')" class="suite-btn dark"><i data-lucide="copy" class="w-4 h-4"></i> Copiar</button></div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function giveawaysTab() {
+            return `
+            <div id="tab-sorteios" class="tab-content hidden space-y-8">
+                ${tabHeader('gift', 'Sorteios Avançados', 'Monte sorteios com cargo exigido, duração, ganhadores, prêmio e regras anti-fake.', 'Prêmios')}
+                <div class="suite-card p-6 grid lg:grid-cols-2 gap-6">
+                    <div class="space-y-5">
+                        <div><label class="suite-label">Prêmio</label><input id="suite-giveaway-prize" class="suite-input" placeholder="Nitro, VIP, coins, divulgação..."></div>
+                        <div class="grid md:grid-cols-2 gap-4"><div><label class="suite-label">Ganhadores</label><input id="suite-giveaway-winners" class="suite-input" type="number" value="1"></div><div><label class="suite-label">Duração</label><input id="suite-giveaway-time" class="suite-input" placeholder="24h"></div></div>
+                        <div><label class="suite-label">Canal</label><select id="suite-giveaway-channel" class="suite-select suite-channel-select"></select></div>
+                        <div><label class="suite-label">Cargo exigido opcional</label><select id="suite-giveaway-role" class="suite-select suite-role-select"></select></div>
+                    </div>
+                    <div class="space-y-5">
+                        <div><label class="suite-label">Regras do sorteio</label><textarea id="suite-giveaway-rules" class="suite-textarea" placeholder="Sem fake, conta criada recentemente pode ser revisada, precisa estar no servidor até o resultado..."></textarea></div>
+                        <button onclick="suiteGenerateGiveaway()" class="suite-btn gold"><i data-lucide="wand-2" class="w-4 h-4"></i> Gerar texto</button>
+                        <textarea id="suite-giveaway-text" class="suite-textarea" placeholder="Texto pronto do sorteio..."></textarea>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function vipShopTab() {
+            return `
+            <div id="tab-lojavip" class="tab-content hidden space-y-8">
+                ${tabHeader('shopping-bag', 'Loja VIP & Monetização', 'Editor rápido de planos, benefícios, chamadas de venda e campanhas.', 'Venda')}
+                <div class="suite-card p-6 space-y-6">
+                    <div class="grid md:grid-cols-3 gap-4"><div><label class="suite-label">Plano em destaque</label><input id="suite-vip-plan" class="suite-input" placeholder="VIP Lendário"></div><div><label class="suite-label">Preço</label><input id="suite-vip-price" class="suite-input" placeholder="R$ 19,90"></div><div><label class="suite-label">Canal da loja</label><select id="suite-vip-channel" class="suite-select suite-channel-select"></select></div></div>
+                    <div><label class="suite-label">Benefícios</label><textarea id="suite-vip-benefits" class="suite-textarea" placeholder="+ Bônus diário\n+ Tag exclusiva\n+ Transferência interserver\n+ Prioridade em eventos"></textarea></div>
+                    <div class="grid md:grid-cols-2 gap-4"><button onclick="suiteGenerateVipAd('normal')" class="suite-btn red"><i data-lucide="megaphone" class="w-4 h-4"></i> Gerar anúncio VIP</button><button onclick="suiteGenerateVipAd('urgente')" class="suite-btn gold"><i data-lucide="flame" class="w-4 h-4"></i> Gerar campanha limitada</button></div>
+                    <textarea id="suite-vip-ad" class="suite-textarea" placeholder="Anúncio gerado..."></textarea>
+                </div>
+            </div>`;
+        }
+
+        function tempCallsTab() {
+            return `
+            <div id="tab-tempcalls" class="tab-content hidden space-y-8">
+                ${tabHeader('mic', 'TempCalls Premium', 'Configure ideias de calls temporárias, layouts e regras de uso.', 'Social')}
+                <div class="suite-card p-6 grid lg:grid-cols-2 gap-6">
+                    <div class="space-y-5"><div><label class="suite-label">Canal de criação</label><select id="suite-temp-channel" class="suite-select suite-channel-select"></select></div><div><label class="suite-label">Categoria das calls</label><select id="suite-temp-category" class="suite-select suite-category-select"></select></div><div class="grid md:grid-cols-2 gap-4"><div><label class="suite-label">Tempo máximo</label><input id="suite-temp-time" class="suite-input" placeholder="10h"></div><div><label class="suite-label">Limite padrão</label><input id="suite-temp-limit" class="suite-input" placeholder="5 membros"></div></div></div>
+                    <div class="space-y-5"><label class="suite-label">Layouts permitidos</label><textarea id="suite-temp-layouts" class="suite-textarea" placeholder="Call Pública\nCall Privada\nDupla\nStudy Room\nEvento VIP"></textarea><label class="suite-label">Texto do painel</label><textarea id="suite-temp-panel" class="suite-textarea" placeholder="Crie sua call temporária, escolha nome, limite, privacidade e duração."></textarea></div>
+                </div>
+            </div>`;
+        }
+
+        function ideasTab() {
+            return `
+            <div id="tab-ideias" class="tab-content hidden space-y-8">
+                ${tabHeader('lightbulb', 'Central de Ideias', 'Mural de sugestões com votação, status e recompensa para boas ideias.', 'Comunidade')}
+                <div class="suite-card p-6 grid lg:grid-cols-2 gap-6">
+                    <div class="space-y-5"><div><label class="suite-label">Canal de ideias</label><select id="suite-ideas-channel" class="suite-select suite-channel-select"></select></div><div><label class="suite-label">Recompensa por ideia aprovada</label><input id="suite-ideas-reward" class="suite-input" placeholder="50k coins + tag de colaborador"></div><div><label class="suite-label">Status disponíveis</label><textarea id="suite-ideas-status" class="suite-textarea">Recebida\nEm análise\nAprovada\nEm desenvolvimento\nImplementada\nRecusada</textarea></div></div>
+                    <div class="space-y-5"><label class="suite-label">Mensagem do painel</label><textarea id="suite-ideas-panel" class="suite-textarea" placeholder="Envie sugestões para melhorar a Stellar. As melhores ideias podem virar update real e render recompensas."></textarea><button onclick="suiteGenerateIdeasPanel()" class="suite-btn gold"><i data-lucide="wand-2" class="w-4 h-4"></i> Gerar painel</button></div>
+                </div>
+            </div>`;
+        }
+
+        function rankingTab() {
+            return `
+            <div id="tab-ranking" class="tab-content hidden space-y-8">
+                ${tabHeader('trophy', 'Rankings & Competição', 'Configure rankings semanais que dão motivo pra galera competir.', 'Competição')}
+                <div class="suite-card p-6 space-y-6">
+                    <div class="suite-badge-grid">
+                        ${['XP semanal','Horas em call','Mensagens reais','Convites ativos','Patrimônio','Eventos vencidos','Reputação','Streak diário'].map(x => `<label class="suite-feature-pill flex items-center gap-3"><input type="checkbox" class="suite-ranking-check" value="${esc(x)}" checked><div><h4>${esc(x)}</h4><p>Ativa este ranking no painel.</p></div></label>`).join('')}
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4"><div><label class="suite-label">Canal do ranking</label><select id="suite-ranking-channel" class="suite-select suite-channel-select"></select></div><div><label class="suite-label">Reset</label><select id="suite-ranking-reset" class="suite-select"><option>Semanal</option><option>Diário</option><option>Mensal</option><option>Manual</option></select></div><div><label class="suite-label">Prêmio top 1</label><input id="suite-ranking-prize" class="suite-input" placeholder="VIP 7 dias + 500k"></div></div>
+                    <button onclick="suiteGenerateRankingText()" class="suite-btn gold"><i data-lucide="trophy" class="w-4 h-4"></i> Gerar anúncio do ranking</button>
+                    <textarea id="suite-ranking-text" class="suite-textarea"></textarea>
+                </div>
+            </div>`;
+        }
+
+        function automationTab() {
+            return `
+            <div id="tab-automacao" class="tab-content hidden space-y-8">
+                ${tabHeader('bot', 'Automação & Drops', 'Mensagens automáticas, drops surpresa, streaks e alertas programados.', 'Automação')}
+                <div class="suite-card p-6 grid lg:grid-cols-2 gap-6">
+                    <div class="space-y-5"><div><label class="suite-label">Canal de automação</label><select id="suite-auto-channel" class="suite-select suite-channel-select"></select></div><div><label class="suite-label">Intervalo mínimo</label><input id="suite-auto-interval" class="suite-input" placeholder="30m"></div><div><label class="suite-label">Tipos ativos</label><textarea id="suite-auto-types" class="suite-textarea">Drop de coins\nPergunta relâmpago\nMensagem de call\nMissão diária\nLembrete de evento\nDestaque VIP</textarea></div></div>
+                    <div class="space-y-5"><label class="suite-label">Mensagem automática padrão</label><textarea id="suite-auto-message" class="suite-textarea" placeholder="🔥 Drop surpresa apareceu! Clique primeiro no Discord para resgatar."></textarea><label class="suite-label">Prêmios possíveis</label><textarea id="suite-auto-rewards" class="suite-textarea" placeholder="10k coins\n50k coins\nVIP 1 dia\nCargo temporário\nDivulgação"></textarea></div>
+                </div>
+            </div>`;
+        }
+
+        function injectSuiteTabs() {
+            const sidebar = document.querySelector('#dash-manage-guild aside .space-y-3');
+            const contentWrap = document.querySelector('#dash-manage-guild .lg\\:col-span-3 .glass');
+            if (!sidebar || !contentWrap || document.getElementById('btn-tab-eventos')) return;
+            sidebar.insertAdjacentHTML('beforeend', `
+                <div class="pt-4 mt-4 border-t border-white/10"></div>
+                ${suiteButton('eventos', 'calendar-days', 'Eventos', 'text-red-300')}
+                ${suiteButton('missoes', 'sparkles', 'Missões', 'text-[#f5c451]')}
+                ${suiteButton('sorteios', 'gift', 'Sorteios', 'text-green-300')}
+                ${suiteButton('lojavip', 'shopping-bag', 'Loja VIP', 'text-[#F1C40F]')}
+                ${suiteButton('tempcalls', 'mic', 'TempCalls', 'text-purple-300')}
+                ${suiteButton('ideias', 'lightbulb', 'Ideias', 'text-orange-300')}
+                ${suiteButton('ranking', 'trophy', 'Rankings', 'text-yellow-300')}
+                ${suiteButton('automacao', 'bot', 'Automação', 'text-pink-300')}
+            `);
+            contentWrap.insertAdjacentHTML('beforeend', eventsTab() + missionsTab() + giveawaysTab() + vipShopTab() + tempCallsTab() + ideasTab() + rankingTab() + automationTab());
+            populateSuiteSelects();
+            suiteApplyEventPreset();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function populateSuiteSelects() {
+            document.querySelectorAll('.suite-channel-select').forEach(el => { el.innerHTML = optionList(currentChannels(), 'Selecionar canal...'); });
+            document.querySelectorAll('.suite-role-select').forEach(el => { el.innerHTML = optionList(currentRoles(), 'Selecionar cargo opcional...'); });
+            document.querySelectorAll('.suite-category-select').forEach(el => { el.innerHTML = optionList(currentCategories(), 'Selecionar categoria...'); });
+        }
+
+        function suiteData() {
+            const get = id => document.getElementById(id)?.value || '';
+            const checks = [...document.querySelectorAll('.suite-ranking-check:checked')].map(x => x.value);
+            return {
+                version: SUITE_VERSION,
+                updatedAt: Date.now(),
+                events: { preset: get('suite-event-preset'), title: get('suite-event-title'), channel: get('suite-event-channel'), duration: get('suite-event-duration'), result: get('suite-event-result'), prizes: get('suite-event-prizes'), body: get('suite-event-body'), rules: get('suite-event-rules'), announcement: get('suite-event-announcement') },
+                missions: { list: get('suite-missions-list'), type: get('suite-mission-type'), goal: get('suite-mission-goal'), reward: get('suite-mission-reward') },
+                giveaways: { prize: get('suite-giveaway-prize'), winners: get('suite-giveaway-winners'), time: get('suite-giveaway-time'), channel: get('suite-giveaway-channel'), role: get('suite-giveaway-role'), rules: get('suite-giveaway-rules'), text: get('suite-giveaway-text') },
+                vipShop: { plan: get('suite-vip-plan'), price: get('suite-vip-price'), channel: get('suite-vip-channel'), benefits: get('suite-vip-benefits'), ad: get('suite-vip-ad') },
+                tempCalls: { channel: get('suite-temp-channel'), category: get('suite-temp-category'), time: get('suite-temp-time'), limit: get('suite-temp-limit'), layouts: get('suite-temp-layouts'), panel: get('suite-temp-panel') },
+                ideas: { channel: get('suite-ideas-channel'), reward: get('suite-ideas-reward'), status: get('suite-ideas-status'), panel: get('suite-ideas-panel') },
+                ranking: { channel: get('suite-ranking-channel'), reset: get('suite-ranking-reset'), prize: get('suite-ranking-prize'), enabled: checks, text: get('suite-ranking-text') },
+                automation: { channel: get('suite-auto-channel'), interval: get('suite-auto-interval'), types: get('suite-auto-types'), message: get('suite-auto-message'), rewards: get('suite-auto-rewards') }
+            };
+        }
+
+        function applySuiteData(data = {}) {
+            const set = (id, value) => { const el = document.getElementById(id); if (el && value !== undefined && value !== null) el.value = value; };
+            const d = data.communitySuite || data || {};
+            set('suite-event-preset', d.events?.preset); set('suite-event-title', d.events?.title); set('suite-event-channel', d.events?.channel); set('suite-event-duration', d.events?.duration); set('suite-event-result', d.events?.result); set('suite-event-prizes', d.events?.prizes); set('suite-event-body', d.events?.body); set('suite-event-rules', d.events?.rules); set('suite-event-announcement', d.events?.announcement);
+            set('suite-missions-list', d.missions?.list); set('suite-mission-type', d.missions?.type); set('suite-mission-goal', d.missions?.goal); set('suite-mission-reward', d.missions?.reward);
+            set('suite-giveaway-prize', d.giveaways?.prize); set('suite-giveaway-winners', d.giveaways?.winners); set('suite-giveaway-time', d.giveaways?.time); set('suite-giveaway-channel', d.giveaways?.channel); set('suite-giveaway-role', d.giveaways?.role); set('suite-giveaway-rules', d.giveaways?.rules); set('suite-giveaway-text', d.giveaways?.text);
+            set('suite-vip-plan', d.vipShop?.plan); set('suite-vip-price', d.vipShop?.price); set('suite-vip-channel', d.vipShop?.channel); set('suite-vip-benefits', d.vipShop?.benefits); set('suite-vip-ad', d.vipShop?.ad);
+            set('suite-temp-channel', d.tempCalls?.channel); set('suite-temp-category', d.tempCalls?.category); set('suite-temp-time', d.tempCalls?.time); set('suite-temp-limit', d.tempCalls?.limit); set('suite-temp-layouts', d.tempCalls?.layouts); set('suite-temp-panel', d.tempCalls?.panel);
+            set('suite-ideas-channel', d.ideas?.channel); set('suite-ideas-reward', d.ideas?.reward); set('suite-ideas-status', d.ideas?.status); set('suite-ideas-panel', d.ideas?.panel);
+            set('suite-ranking-channel', d.ranking?.channel); set('suite-ranking-reset', d.ranking?.reset); set('suite-ranking-prize', d.ranking?.prize); set('suite-ranking-text', d.ranking?.text);
+            set('suite-auto-channel', d.automation?.channel); set('suite-auto-interval', d.automation?.interval); set('suite-auto-types', d.automation?.types); set('suite-auto-message', d.automation?.message); set('suite-auto-rewards', d.automation?.rewards);
+            if (Array.isArray(d.ranking?.enabled)) {
+                document.querySelectorAll('.suite-ranking-check').forEach(ch => ch.checked = d.ranking.enabled.includes(ch.value));
+            }
+        }
+
+        window.saveCommunitySuite = async function () {
+            const guild = selectedGuildSafe();
+            if (!guild) return toast('Selecione um servidor antes de salvar a Community Suite.', true);
+            try {
+                if (window.authReady) await window.authReady;
+                const ref = configRefSafe(guild.id);
+                if (!ref || !window.fbSetDoc) throw new Error('Firebase não conectado.');
+                await window.fbSetDoc(ref, { communitySuite: suiteData() }, { merge: true });
+                localStorage.setItem('stellar_community_suite_' + guild.id, JSON.stringify(suiteData()));
+                toast('✅ Community Suite salva com sucesso.');
+            } catch (e) {
+                localStorage.setItem('stellar_community_suite_' + guild.id, JSON.stringify(suiteData()));
+                toast('Salvei localmente, mas o Firebase falhou: ' + e.message, true);
+            }
+        };
+
+        async function loadCommunitySuite() {
+            const guild = selectedGuildSafe();
+            if (!guild) return;
+            populateSuiteSelects();
+            try {
+                if (window.authReady) await window.authReady;
+                const ref = configRefSafe(guild.id);
+                if (ref && window.fbGetDoc) {
+                    const snap = await window.fbGetDoc(ref);
+                    if (snap.exists()) applySuiteData(snap.data());
+                }
+            } catch (e) {
+                try { applySuiteData(JSON.parse(localStorage.getItem('stellar_community_suite_' + guild.id) || '{}')); } catch (_) {}
+            }
+        }
+
+        window.suiteApplyEventPreset = function () {
+            const key = document.getElementById('suite-event-preset')?.value || 'livre';
+            const p = EVENT_PRESETS[key] || EVENT_PRESETS.livre;
+            const title = document.getElementById('suite-event-title');
+            const body = document.getElementById('suite-event-body');
+            const rules = document.getElementById('suite-event-rules');
+            const duration = document.getElementById('suite-event-duration');
+            const prizes = document.getElementById('suite-event-prizes');
+            if (title && !title.value) title.value = p.title;
+            if (body) body.value = p.body;
+            if (rules) rules.value = p.rules;
+            if (duration && !duration.value) duration.value = '7 dias';
+            if (prizes && !prizes.value) prizes.value = '🥇 VIP especial + 1.000.000 coins\n🥈 500.000 coins + destaque\n🥉 250.000 coins';
+        };
+
+        window.suiteGenerateEventAnnouncement = function () {
+            const title = document.getElementById('suite-event-title')?.value || 'Evento Stellar';
+            const body = document.getElementById('suite-event-body')?.value || '';
+            const rules = document.getElementById('suite-event-rules')?.value || '';
+            const prizes = document.getElementById('suite-event-prizes')?.value || '';
+            const duration = document.getElementById('suite-event-duration')?.value || 'tempo limitado';
+            const result = document.getElementById('suite-event-result')?.value || 'Manual pela staff';
+            document.getElementById('suite-event-announcement').value = `# 🔔 ${title}\n\n> ${body}\n\n🎁 **PREMIAÇÕES**\n${prizes}\n\n⏳ **DURAÇÃO:** ${duration}\n🏆 **RESULTADO:** ${result}\n\n📌 **REGRAS**\n${rules}\n\n➡️ Participa direito, chama a galera e movimenta a Stellar.`;
+        };
+
+        window.suiteUseMissionPreset = function (idx) {
+            const m = MISSION_PRESETS[idx] || MISSION_PRESETS[0];
+            document.getElementById('suite-mission-type').value = m[0];
+            document.getElementById('suite-mission-goal').value = m[1];
+            document.getElementById('suite-mission-reward').value = m[2];
+        };
+        window.suiteAddMission = function () {
+            const type = document.getElementById('suite-mission-type')?.value || 'Missão';
+            const goal = document.getElementById('suite-mission-goal')?.value || 'Objetivo não definido';
+            const reward = document.getElementById('suite-mission-reward')?.value || 'Recompensa a definir';
+            const list = document.getElementById('suite-missions-list');
+            list.value += `${list.value ? '\n\n' : ''}• **${type}**\n  Objetivo: ${goal}\n  Recompensa: ${reward}`;
+        };
+        window.suiteGenerateMissionBoard = function () {
+            const list = document.getElementById('suite-missions-list');
+            const content = list.value || '• **Mensagem Ativa**\n  Objetivo: Enviar 50 mensagens reais\n  Recompensa: 100k coins';
+            list.value = `# ✨ MISSÕES STELLAR\n\n> Complete objetivos, participe da comunidade e resgate recompensas.\n\n${content}\n\n📌 Missões com flood, fake ou abuso podem ser anuladas pela staff.`;
+        };
+        window.suiteGenerateGiveaway = function () {
+            const prize = document.getElementById('suite-giveaway-prize')?.value || 'Prêmio especial';
+            const winners = document.getElementById('suite-giveaway-winners')?.value || '1';
+            const time = document.getElementById('suite-giveaway-time')?.value || '24h';
+            const rules = document.getElementById('suite-giveaway-rules')?.value || 'Sem fake, sem abuso, precisa estar no servidor até o resultado.';
+            document.getElementById('suite-giveaway-text').value = `# 🎁 SORTEIO STELLAR\n\n🏆 **Prêmio:** ${prize}\n👑 **Ganhadores:** ${winners}\n⏳ **Duração:** ${time}\n\n📌 **Regras**\n${rules}\n\nClique para participar e boa sorte!`;
+        };
+        window.suiteGenerateVipAd = function (mode) {
+            const plan = document.getElementById('suite-vip-plan')?.value || 'VIP Lendário';
+            const price = document.getElementById('suite-vip-price')?.value || 'preço especial';
+            const benefits = document.getElementById('suite-vip-benefits')?.value || '+ Benefícios exclusivos\n+ Destaque no servidor\n+ Bônus no bot';
+            const urgent = mode === 'urgente';
+            document.getElementById('suite-vip-ad').value = `# ${urgent ? '🔥 OFERTA LIMITADA' : '💎 LOJA VIP STELLAR'}\n\n> O plano **${plan}** está disponível por **${price}**.\n\n${benefits}\n\n${urgent ? '⏳ Promoção por tempo limitado. Depois pode sair do ar.' : '➡️ Garanta seus benefícios e apoie o crescimento da Stellar.'}`;
+        };
+        window.suiteGenerateIdeasPanel = function () {
+            const reward = document.getElementById('suite-ideas-reward')?.value || 'recompensa especial';
+            document.getElementById('suite-ideas-panel').value = `# 💡 CENTRAL DE IDEIAS STELLAR\n\n> Envie sugestões para melhorar o servidor, eventos, economia, bot e comunidade.\n\n🏆 Ideias aprovadas podem receber: **${reward}**\n\nStatus possíveis:\n${document.getElementById('suite-ideas-status')?.value || 'Recebida\nEm análise\nAprovada\nImplementada'}\n\nA staff avaliará as melhores propostas.`;
+        };
+        window.suiteGenerateRankingText = function () {
+            const enabled = [...document.querySelectorAll('.suite-ranking-check:checked')].map(x => x.value).join(', ') || 'XP semanal';
+            const reset = document.getElementById('suite-ranking-reset')?.value || 'Semanal';
+            const prize = document.getElementById('suite-ranking-prize')?.value || 'prêmio especial';
+            document.getElementById('suite-ranking-text').value = `# 🏆 RANKING STELLAR\n\n> Competição ativa: **${enabled}**\n🔄 Reset: **${reset}**\n🎁 Prêmio Top 1: **${prize}**\n\nParticipe de forma real. Flood, fake ou abuso anulam a pontuação.`;
+        };
+        window.suiteCopyFrom = async function (id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            try { await navigator.clipboard.writeText(el.value || el.textContent || ''); toast('Copiado.'); } catch (e) { el.select?.(); document.execCommand('copy'); toast('Copiado.'); }
+        };
+
+        function hookOpenTab() {
+            const oldOpenTab = window.openTab;
+            if (typeof oldOpenTab !== 'function' || oldOpenTab.__suiteHooked) return;
+            window.openTab = function (tabName) {
+                const result = oldOpenTab(tabName);
+                document.querySelectorAll('.suite-route-btn').forEach(btn => btn.classList.remove('active-suite'));
+                const btn = document.getElementById('btn-tab-' + tabName);
+                if (btn) btn.classList.add('active-suite');
+                setTimeout(populateSuiteSelects, 150);
+                return result;
+            };
+            window.openTab.__suiteHooked = true;
+        }
+
+        function hookManageGuild() {
+            const oldManage = window.manageGuild;
+            if (typeof oldManage !== 'function' || oldManage.__suiteHooked) return;
+            window.manageGuild = async function () {
+                const result = await oldManage.apply(this, arguments);
+                injectSuiteTabs();
+                setTimeout(populateSuiteSelects, 250);
+                setTimeout(loadCommunitySuite, 650);
+                setTimeout(populateSuiteSelects, 1400);
+                return result;
+            };
+            window.manageGuild.__suiteHooked = true;
+        }
+
+        function initSuite() {
+            injectHomeSuite();
+            injectSuiteTabs();
+            hookOpenTab();
+            hookManageGuild();
+            setInterval(populateSuiteSelects, 5000);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSuite);
+        else initSuite();
+        window.addEventListener('load', () => setTimeout(initSuite, 900));
+    })();
+    </script>
+
 </body>
 </html>
