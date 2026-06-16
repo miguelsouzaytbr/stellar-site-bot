@@ -870,6 +870,131 @@
 }
 
 </style>
+<style id="stellar-app-platform-css">
+/* =========================================================
+   STELLAR APP PLATFORM UPDATE — protótipo de app social próprio
+   Não substitui o Discord ainda: cria camada web/social em cima do Stellar.
+   ========================================================= */
+:root {
+  --app-bg: #060607;
+  --app-panel: rgba(14,14,16,.86);
+  --app-card: rgba(22,22,25,.78);
+  --app-border: rgba(255,255,255,.075);
+  --app-text: #f4f4f5;
+  --app-muted: #9ca3af;
+  --app-accent: #ED1C24;
+  --app-accent-2: #f5c542;
+  --app-radius: 28px;
+}
+body[data-stellar-theme="white"] { --app-bg: #f7f7f8; --app-panel: rgba(255,255,255,.86); --app-card: rgba(255,255,255,.74); --app-border: rgba(15,15,18,.10); --app-text: #111113; --app-muted: #52525b; }
+body[data-stellar-theme="gray"] { --app-bg: #d7d7da; --app-panel: rgba(240,240,243,.88); --app-card: rgba(255,255,255,.62); --app-border: rgba(24,24,27,.12); --app-text: #111113; --app-muted: #52525b; }
+body[data-stellar-theme="darkgray"] { --app-bg: #18181b; --app-panel: rgba(39,39,42,.84); --app-card: rgba(31,31,35,.78); --app-border: rgba(255,255,255,.08); --app-text: #f4f4f5; --app-muted: #a1a1aa; }
+body[data-stellar-theme="black"] { --app-bg: #000; --app-panel: rgba(8,8,10,.92); --app-card: rgba(12,12,14,.84); --app-border: rgba(255,255,255,.06); --app-text: #fff; --app-muted: #85858d; }
+body[data-stellar-premium-bg="stellar-gradient"] #page-app::before { background: radial-gradient(circle at 14% 18%, rgba(237,28,36,.42), transparent 30%), radial-gradient(circle at 86% 8%, rgba(245,197,66,.18), transparent 30%), linear-gradient(135deg, #040405, #250509 44%, #080405); }
+body[data-stellar-premium-bg="midnight-violet"] #page-app::before { background: radial-gradient(circle at 20% 12%, rgba(124,58,237,.42), transparent 32%), radial-gradient(circle at 90% 85%, rgba(236,72,153,.2), transparent 30%), linear-gradient(135deg, #05030a, #14051f 55%, #030305); }
+body[data-stellar-premium-bg="ice-platinum"] #page-app::before { background: radial-gradient(circle at 10% 15%, rgba(226,232,240,.42), transparent 30%), radial-gradient(circle at 90% 10%, rgba(56,189,248,.18), transparent 30%), linear-gradient(135deg, #07090d, #111827 55%, #020617); }
+body[data-stellar-premium-bg="custom"] #page-app::before { background-image: var(--stellar-custom-bg); background-size: cover; background-position: center; filter: blur(0); opacity: .22; }
+#page-app { color: var(--app-text); background: var(--app-bg); min-height: 100vh; position: relative; overflow: hidden; }
+#page-app::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(circle at 18% 14%, rgba(237,28,36,.20), transparent 30%), radial-gradient(circle at 86% 10%, rgba(245,197,66,.10), transparent 28%), linear-gradient(135deg, var(--app-bg), var(--app-bg)); }
+.stellar-app-shell { max-width: 1480px; margin: 0 auto; display: grid; grid-template-columns: 290px minmax(0,1fr) 330px; gap: 18px; }
+.stellar-app-sidebar, .stellar-app-panel, .stellar-app-right, .stellar-app-card { border: 1px solid var(--app-border); background: var(--app-panel); backdrop-filter: blur(22px); border-radius: var(--app-radius); box-shadow: 0 24px 90px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04); }
+.stellar-app-sidebar { position: sticky; top: 118px; height: calc(100vh - 140px); padding: 18px; overflow: auto; }
+.stellar-app-right { position: sticky; top: 118px; height: calc(100vh - 140px); padding: 18px; overflow: auto; }
+.stellar-app-logo { display:flex; align-items:center; gap:12px; padding:14px; border-radius: 22px; background: linear-gradient(135deg, rgba(237,28,36,.16), rgba(255,255,255,.035)); border: 1px solid rgba(237,28,36,.18); }
+.stellar-app-logo img { width: 44px; height:44px; border-radius: 16px; object-fit: cover; border:1px solid rgba(237,28,36,.35); }
+.stellar-app-logo strong { display:block; font-size: 14px; text-transform: uppercase; letter-spacing: -.02em; }
+.stellar-app-logo small { display:block; font-size: 9px; color: var(--app-muted); text-transform: uppercase; font-weight: 900; letter-spacing: .16em; margin-top:2px; }
+.stellar-app-nav { display:grid; gap:8px; margin-top:18px; }
+.stellar-app-nav button { width:100%; display:flex; align-items:center; gap:11px; padding:13px 14px; border-radius: 18px; color: var(--app-muted); background: transparent; font-size: 11px; font-weight: 950; text-transform: uppercase; letter-spacing:.12em; transition:.2s ease; text-align:left; }
+.stellar-app-nav button:hover, .stellar-app-nav button.active { background: rgba(237,28,36,.13); color: var(--app-text); border: 1px solid rgba(237,28,36,.18); }
+.stellar-app-nav button.premium { color: #f7d772; }
+.stellar-app-main { min-width:0; display:grid; gap:18px; }
+.stellar-app-hero { position:relative; overflow:hidden; padding: 30px; border-radius: 34px; border:1px solid var(--app-border); background: linear-gradient(135deg, rgba(237,28,36,.18), rgba(245,197,66,.05)), var(--app-panel); }
+.stellar-app-hero::after { content:''; position:absolute; width:280px; height:280px; right:-80px; top:-90px; background: radial-gradient(circle, rgba(237,28,36,.45), transparent 65%); filter: blur(14px); opacity:.55; }
+.stellar-app-hero > * { position:relative; z-index:1; }
+.stellar-app-kicker { display:inline-flex; align-items:center; gap:8px; color:#ffb4b8; background:rgba(237,28,36,.10); border:1px solid rgba(237,28,36,.24); border-radius:999px; padding:8px 12px; font-size:10px; font-weight:950; text-transform:uppercase; letter-spacing:.2em; }
+.stellar-app-title { font-size: clamp(2.6rem, 7vw, 5.7rem); line-height:.88; font-weight:1000; text-transform:uppercase; letter-spacing:-.08em; margin-top:20px; max-width:780px; }
+.stellar-app-title span { background: linear-gradient(90deg, #fff, #ff9da3, #ff7a1a, #f5c542); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.stellar-app-desc { max-width: 780px; color: var(--app-muted); line-height: 1.7; font-weight: 700; margin-top: 16px; }
+.stellar-app-stat-grid { display:grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap:12px; margin-top:22px; }
+.stellar-app-stat { padding:16px; border-radius:22px; background:rgba(0,0,0,.26); border:1px solid var(--app-border); }
+.stellar-app-stat strong { display:block; color:var(--app-text); font-size:24px; font-weight:1000; }
+.stellar-app-stat small { display:block; color:var(--app-muted); font-size:9px; text-transform:uppercase; letter-spacing:.16em; font-weight:950; margin-top:4px; }
+.stellar-app-tab { display:none; }
+.stellar-app-tab.active { display:block; animation: stellarAppFade .22s ease-out; }
+@keyframes stellarAppFade { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+.stellar-app-panel { padding: 22px; }
+.stellar-app-grid { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:16px; }
+.stellar-app-grid.three { grid-template-columns: repeat(3,minmax(0,1fr)); }
+.stellar-app-card { padding: 18px; background: var(--app-card); }
+.stellar-app-card h3, .stellar-app-panel h2 { color: var(--app-text); font-weight: 1000; text-transform: uppercase; letter-spacing: -.03em; }
+.stellar-app-card p, .stellar-app-panel p { color: var(--app-muted); font-weight: 700; line-height:1.55; font-size: 13px; }
+.stellar-app-label { display:block; margin-bottom:8px; color:var(--app-muted); font-size:10px; text-transform:uppercase; letter-spacing:.18em; font-weight:950; }
+.stellar-app-input, .stellar-app-textarea, .stellar-app-select { width:100%; border-radius:18px; background: rgba(0,0,0,.28); border:1px solid var(--app-border); color:var(--app-text); outline:none; padding:14px 15px; font-size:13px; font-weight:800; }
+.stellar-app-textarea { min-height: 120px; resize: vertical; }
+.stellar-app-input:focus, .stellar-app-textarea:focus, .stellar-app-select:focus { border-color: rgba(237,28,36,.58); box-shadow:0 0 0 4px rgba(237,28,36,.09); }
+.stellar-app-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:16px; padding:12px 16px; background: rgba(255,255,255,.055); border:1px solid var(--app-border); color:var(--app-text); font-size:10px; font-weight:950; text-transform:uppercase; letter-spacing:.14em; transition:.2s ease; }
+.stellar-app-btn:hover { transform: translateY(-2px); border-color: rgba(237,28,36,.38); background: rgba(237,28,36,.13); }
+.stellar-app-btn.red { background: var(--app-accent); color:#fff; border-color: transparent; }
+.stellar-app-btn.gold { background: linear-gradient(135deg, #f5c542, #ff7a1a); color:#140a03; border-color: transparent; }
+.stellar-app-btn.ghost { background: transparent; }
+.stellar-profile-preview { overflow:hidden; border-radius: 28px; border:1px solid var(--app-border); background: rgba(0,0,0,.34); }
+.stellar-profile-banner { height: 150px; background: radial-gradient(circle at top left, rgba(237,28,36,.45), transparent 50%), linear-gradient(135deg, #161618, #050506); background-size: cover; background-position:center; }
+.stellar-profile-body { padding: 0 18px 20px; }
+.stellar-avatar-wrap { width: 102px; height:102px; border-radius: 32px; padding:4px; margin-top:-50px; background: #111; border: 1px solid var(--app-border); }
+.stellar-avatar-wrap.border-red { background: linear-gradient(135deg, #ED1C24, #8b1116); }
+.stellar-avatar-wrap.border-gold { background: linear-gradient(135deg, #f5c542, #ff7a1a); }
+.stellar-avatar-wrap.border-premium { background: linear-gradient(135deg, #ED1C24, #f5c542, #7c3aed, #22c55e); }
+.stellar-avatar-wrap img { width:100%; height:100%; border-radius: 28px; object-fit:cover; background:#222; }
+.stellar-profile-name-row { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-top:12px; }
+.stellar-profile-name-row h3 { font-size:28px; line-height:1; }
+.stellar-handle { color: var(--app-muted); font-weight:900; font-size:12px; margin-top:4px; }
+.stellar-badge { display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:999px; background:rgba(237,28,36,.10); border:1px solid rgba(237,28,36,.23); color:#ffb4b8; font-size:10px; text-transform:uppercase; font-weight:950; letter-spacing:.12em; }
+.stellar-profile-bio { color: var(--app-muted); font-size:13px; line-height:1.6; font-weight:700; margin-top:12px; white-space:pre-wrap; }
+.stellar-social-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.stellar-social-row div { flex:1; min-width:95px; padding:12px; border-radius:18px; background:rgba(0,0,0,.24); border:1px solid var(--app-border); }
+.stellar-social-row strong { display:block; font-size:19px; color:var(--app-text); font-weight:1000; }
+.stellar-social-row small { color:var(--app-muted); font-size:9px; text-transform:uppercase; font-weight:950; letter-spacing:.12em; }
+.stellar-feed-post, .stellar-message, .stellar-server-row, .stellar-rank-row, .stellar-user-row { border:1px solid var(--app-border); background:rgba(0,0,0,.25); border-radius:22px; padding:14px; }
+.stellar-user-row, .stellar-server-row, .stellar-rank-row { display:flex; align-items:center; gap:14px; }
+.stellar-user-row img, .stellar-message img { width:46px; height:46px; border-radius:16px; object-fit:cover; background:#222; }
+.stellar-user-main { flex:1; min-width:0; }
+.stellar-user-main strong { display:block; color:var(--app-text); font-weight:1000; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.stellar-user-main small { display:block; color:var(--app-muted); font-size:11px; font-weight:800; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.stellar-chat-layout { display:grid; grid-template-columns: 270px minmax(0,1fr); gap:14px; }
+.stellar-group-list { display:grid; gap:10px; max-height: 560px; overflow:auto; }
+.stellar-chat-window { min-height: 560px; display:flex; flex-direction:column; }
+.stellar-chat-messages { flex:1; overflow:auto; display:grid; align-content:start; gap:10px; padding: 4px; }
+.stellar-message { display:flex; align-items:flex-start; gap:12px; }
+.stellar-message strong { color:var(--app-text); font-size:13px; }
+.stellar-message p { margin-top:4px; white-space:pre-wrap; }
+.stellar-chat-composer { display:flex; gap:10px; margin-top:12px; }
+.stellar-chat-composer input { flex:1; }
+.stellar-theme-grid { display:grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap:10px; }
+.stellar-theme-card { min-height:88px; border-radius:20px; border:1px solid var(--app-border); padding:12px; cursor:pointer; position:relative; overflow:hidden; }
+.stellar-theme-card strong { position:relative; z-index:1; font-size:12px; text-transform:uppercase; color:var(--app-text); }
+.stellar-theme-card small { position:relative; z-index:1; display:block; color:var(--app-muted); font-size:10px; font-weight:900; margin-top:4px; }
+.stellar-theme-card.white { background:#f8f8f8; color:#111; }
+.stellar-theme-card.gray { background:#bdbdc2; color:#111; }
+.stellar-theme-card.darkgray { background:#27272a; }
+.stellar-theme-card.black { background:#000; }
+.stellar-theme-card.gradient { background:linear-gradient(135deg,#ED1C24,#ff7a1a,#f5c542); }
+.stellar-theme-card.violet { background:linear-gradient(135deg,#1a0528,#7c3aed,#ec4899); }
+.stellar-theme-card.platinum { background:linear-gradient(135deg,#020617,#64748b,#e2e8f0); }
+.stellar-premium-lock { position:absolute; right:10px; bottom:10px; z-index:1; font-size:10px; font-weight:1000; color:#111; background:#f5c542; border-radius:999px; padding:4px 7px; }
+.stellar-rank-pos { width:48px; height:48px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-weight:1000; background:rgba(237,28,36,.12); border:1px solid rgba(237,28,36,.24); color:#ffb4b8; }
+.stellar-rank-row.top1 .stellar-rank-pos { background:linear-gradient(135deg,#f5c542,#ff7a1a); color:#160d02; }
+.stellar-rank-row.top2 .stellar-rank-pos { background:linear-gradient(135deg,#fff,#94a3b8); color:#111; }
+.stellar-rank-row.top3 .stellar-rank-pos { background:linear-gradient(135deg,#fb923c,#7c2d12); color:#fff; }
+.stellar-rank-money { margin-left:auto; text-align:right; color:#f5c542; font-weight:1000; }
+.stellar-empty { border:1px dashed var(--app-border); border-radius:22px; padding:26px; text-align:center; color:var(--app-muted); font-size:13px; font-weight:800; line-height:1.6; }
+.stellar-palette-preview { height:118px; border-radius:22px; border:1px solid var(--app-border); background: var(--app-bg); }
+.stellar-server-icon { width:54px; height:54px; border-radius:18px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:1000; background:linear-gradient(135deg,#ED1C24,#8b1116); background-size:cover; background-position:center; flex:0 0 auto; }
+.stellar-divider { height:1px; background: var(--app-border); margin:16px 0; }
+@media (max-width: 1180px) { .stellar-app-shell { grid-template-columns: 230px minmax(0,1fr); } .stellar-app-right { display:none; } }
+@media (max-width: 850px) { .stellar-app-shell { display:block; } .stellar-app-sidebar { position:relative; top:auto; height:auto; margin-bottom:16px; } .stellar-app-nav { grid-template-columns: repeat(2,minmax(0,1fr)); } .stellar-app-stat-grid, .stellar-app-grid, .stellar-app-grid.three, .stellar-chat-layout, .stellar-theme-grid { grid-template-columns:1fr; } .stellar-app-title { letter-spacing:-.05em; } }
+
+</style>
 </head>
 <body class="selection:bg-red-600 selection:text-white">
 
@@ -1178,6 +1303,173 @@
             </div>
         </section>
     </main>
+
+    
+<!-- =========================================================
+     STELLAR APP PLATFORM UPDATE — aplicativo social próprio
+     ========================================================= -->
+<main id="page-app" class="page pt-36 pb-28 px-4 sm:px-6">
+  <section class="stellar-app-shell">
+    <aside class="stellar-app-sidebar hide-scrollbar">
+      <div class="stellar-app-logo">
+        <img src="https://i.imgur.com/PDEZ4HT.jpeg" alt="Stellar App">
+        <div><strong>Stellar App</strong><small>Social Layer</small></div>
+      </div>
+      <div class="stellar-app-nav" id="stellar-app-nav">
+        <button class="active" data-app-tab="home"><i data-lucide="sparkles" class="w-4 h-4"></i> Início</button>
+        <button data-app-tab="profile"><i data-lucide="user-cog" class="w-4 h-4"></i> Editar Perfil</button>
+        <button data-app-tab="explore"><i data-lucide="users" class="w-4 h-4"></i> Seguidores</button>
+        <button data-app-tab="messages"><i data-lucide="messages-square" class="w-4 h-4"></i> Mensagens</button>
+        <button data-app-tab="servers"><i data-lucide="server" class="w-4 h-4"></i> Servidores</button>
+        <button data-app-tab="ranking"><i data-lucide="trophy" class="w-4 h-4"></i> Ranking Real</button>
+        <button data-app-tab="visual" class="premium"><i data-lucide="palette" class="w-4 h-4"></i> Visual / Premium</button>
+        <button data-app-tab="store" class="premium"><i data-lucide="gem" class="w-4 h-4"></i> Loja Social</button>
+      </div>
+      <div class="stellar-divider"></div>
+      <div class="stellar-app-card">
+        <span class="stellar-badge">Alpha Web</span>
+        <p class="mt-3">Camada social própria da Stellar: perfil, grupos, seguidores, mensagens, visual premium e rankings reais do bot.</p>
+      </div>
+    </aside>
+
+    <div class="stellar-app-main">
+      <div class="stellar-app-hero">
+        <span class="stellar-app-kicker"><i data-lucide="orbit" class="w-4 h-4"></i> Stellar Social OS</span>
+        <h1 class="stellar-app-title">O site virando <span>app próprio.</span></h1>
+        <p class="stellar-app-desc">Um espaço separado do Discord, mas conectado com ele: perfil público, grupos, mensagens, servidores, seguidores, visual premium e ranking real puxado do bot. Sem fake no ranking.</p>
+        <div class="stellar-app-stat-grid">
+          <div class="stellar-app-stat"><strong id="stellar-app-stat-users">0</strong><small>Perfis locais</small></div>
+          <div class="stellar-app-stat"><strong id="stellar-app-stat-groups">0</strong><small>Grupos</small></div>
+          <div class="stellar-app-stat"><strong id="stellar-app-stat-following">0</strong><small>Seguindo</small></div>
+          <div class="stellar-app-stat"><strong id="stellar-app-stat-rank">OFF</strong><small>Ranking real</small></div>
+        </div>
+      </div>
+
+      <div id="stellar-app-tab-home" class="stellar-app-tab active">
+        <div class="stellar-app-grid three">
+          <article class="stellar-app-card"><span class="stellar-badge">Perfil</span><h3 class="mt-4">Identidade própria</h3><p>Nome, @handle, bio, avatar, banner, borda, status e cartão público.</p></article>
+          <article class="stellar-app-card"><span class="stellar-badge">Social</span><h3 class="mt-4">Seguidores reais</h3><p>Sistema de seguir perfis, descobrir membros e montar rede social da Stellar.</p></article>
+          <article class="stellar-app-card"><span class="stellar-badge">Chat</span><h3 class="mt-4">Grupos e mensagens</h3><p>Criação de grupos, salas e conversas persistidas no navegador/Firebase quando disponível.</p></article>
+          <article class="stellar-app-card"><span class="stellar-badge">Servidores</span><h3 class="mt-4">Comunidades internas</h3><p>Protótipo de criação de servidores/grupos próprios dentro do site.</p></article>
+          <article class="stellar-app-card"><span class="stellar-badge">Ranking</span><h3 class="mt-4">Sem boneco fake</h3><p>Ranking de moedas só mostra dados reais sincronizados pelo bot seguindo a lógica do comando top.</p></article>
+          <article class="stellar-app-card"><span class="stellar-badge">Premium</span><h3 class="mt-4">Visual monetizável</h3><p>Cores, temas, degradês, fundos personalizados e bordas premium pra vender estética.</p></article>
+        </div>
+      </div>
+
+      <div id="stellar-app-tab-profile" class="stellar-app-tab">
+        <div class="stellar-app-grid">
+          <section class="stellar-app-panel">
+            <h2>Editor de Perfil</h2>
+            <p class="mt-2">Isso aqui é a base do perfil público do usuário dentro do app da Stellar.</p>
+            <div class="stellar-divider"></div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div><label class="stellar-app-label">Nome exibido</label><input id="stellar-profile-name" class="stellar-app-input" maxlength="32" placeholder="Miguel"></div>
+              <div><label class="stellar-app-label">@handle</label><input id="stellar-profile-handle" class="stellar-app-input" maxlength="24" placeholder="polenghx"></div>
+            </div>
+            <div class="mt-4"><label class="stellar-app-label">Bio</label><textarea id="stellar-profile-bio" class="stellar-app-textarea" maxlength="280" placeholder="Dono da Stellar Society..."></textarea></div>
+            <div class="grid md:grid-cols-2 gap-4 mt-4">
+              <div><label class="stellar-app-label">Avatar URL</label><input id="stellar-profile-avatar" class="stellar-app-input" placeholder="https://..."></div>
+              <div><label class="stellar-app-label">Upload Avatar</label><input id="stellar-profile-avatar-file" type="file" accept="image/*" class="stellar-app-input"></div>
+              <div><label class="stellar-app-label">Banner URL</label><input id="stellar-profile-banner" class="stellar-app-input" placeholder="https://..."></div>
+              <div><label class="stellar-app-label">Borda de avatar</label><select id="stellar-profile-border" class="stellar-app-select"><option value="">Padrão</option><option value="border-red">Vermelha</option><option value="border-gold">Dourada</option><option value="border-premium">Premium Degradê</option></select></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4 mt-4">
+              <div><label class="stellar-app-label">Status</label><select id="stellar-profile-status" class="stellar-app-select"><option>Online</option><option>Ocupado</option><option>Farmando coins</option><option>Em call</option><option>Procurando grupo</option></select></div>
+              <div><label class="stellar-app-label">Cor principal</label><input id="stellar-profile-accent" type="color" class="stellar-app-input" value="#ED1C24"></div>
+            </div>
+            <div class="flex flex-wrap gap-3 mt-5"><button onclick="stellarApp.saveProfile()" class="stellar-app-btn red"><i data-lucide="save" class="w-4 h-4"></i> Salvar Perfil</button><button onclick="stellarApp.copyProfile()" class="stellar-app-btn"><i data-lucide="copy" class="w-4 h-4"></i> Copiar Perfil</button></div>
+          </section>
+          <section class="stellar-app-panel"><h2>Prévia Pública</h2><div id="stellar-profile-preview" class="mt-4"></div></section>
+        </div>
+      </div>
+
+      <div id="stellar-app-tab-explore" class="stellar-app-tab">
+        <section class="stellar-app-panel">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2>Seguidores & Perfis</h2><p class="mt-2">Descoberta de perfis e follow system. Sem depender de servidor fake.</p></div><button onclick="stellarApp.seedRealUserFromProfile()" class="stellar-app-btn red"><i data-lucide="user-plus" class="w-4 h-4"></i> Publicar meu perfil</button></div>
+          <div class="mt-4"><input id="stellar-user-search" oninput="stellarApp.renderUsers()" class="stellar-app-input" placeholder="Pesquisar perfil, @handle ou bio..."></div>
+          <div id="stellar-user-list" class="grid md:grid-cols-2 gap-3 mt-5"></div>
+        </section>
+      </div>
+
+      <div id="stellar-app-tab-messages" class="stellar-app-tab">
+        <section class="stellar-app-panel">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2>Mensagens e Grupos</h2><p class="mt-2">Protótipo de chat próprio: crie grupos, mande mensagens e organize salas.</p></div><button onclick="stellarApp.createGroupPrompt()" class="stellar-app-btn red"><i data-lucide="plus" class="w-4 h-4"></i> Criar Grupo</button></div>
+          <div class="stellar-chat-layout mt-5">
+            <div><div id="stellar-group-list" class="stellar-group-list"></div></div>
+            <div class="stellar-app-card stellar-chat-window">
+              <div id="stellar-chat-header"></div>
+              <div class="stellar-divider"></div>
+              <div id="stellar-chat-messages" class="stellar-chat-messages"></div>
+              <div class="stellar-chat-composer"><input id="stellar-chat-input" class="stellar-app-input" placeholder="Mensagem..."><button onclick="stellarApp.sendMessage()" class="stellar-app-btn red"><i data-lucide="send" class="w-4 h-4"></i></button></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="stellar-app-tab-servers" class="stellar-app-tab">
+        <div class="stellar-app-grid">
+          <section class="stellar-app-panel"><h2>Criar servidor/grupo</h2><p class="mt-2">Começo da camada de comunidades próprias da Stellar.</p><div class="stellar-divider"></div>
+            <label class="stellar-app-label">Nome</label><input id="stellar-server-name" class="stellar-app-input" placeholder="Stellar RP • Economia">
+            <label class="stellar-app-label mt-4">Descrição</label><textarea id="stellar-server-desc" class="stellar-app-textarea" placeholder="Comunidade focada em economia, eventos e calls..."></textarea>
+            <div class="grid md:grid-cols-2 gap-4 mt-4"><div><label class="stellar-app-label">Tema</label><select id="stellar-server-theme" class="stellar-app-select"><option>Economia</option><option>Social</option><option>Eventos</option><option>VIP</option><option>RP</option><option>Parcerias</option></select></div><div><label class="stellar-app-label">Privacidade</label><select id="stellar-server-privacy" class="stellar-app-select"><option>Público</option><option>Privado</option><option>Somente convite</option></select></div></div>
+            <button onclick="stellarApp.createServer()" class="stellar-app-btn red mt-5"><i data-lucide="server" class="w-4 h-4"></i> Criar Servidor</button>
+          </section>
+          <section class="stellar-app-panel"><h2>Servidores criados</h2><div id="stellar-server-list" class="grid gap-3 mt-4"></div></section>
+        </div>
+      </div>
+
+      <div id="stellar-app-tab-ranking" class="stellar-app-tab">
+        <section class="stellar-app-panel">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><h2>Ranking real de moedas</h2><p class="mt-2">Sem nomes inventados. A lista só aparece se o bot sincronizar dados reais seguindo carteira + banco + inventário.</p></div><button onclick="stellarApp.loadRealRanking(true)" class="stellar-app-btn red"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Atualizar real</button></div>
+          <div id="stellar-ranking-source" class="stellar-empty mt-5">Aguardando dados reais do bot...</div>
+          <div id="stellar-real-ranking" class="grid gap-3 mt-5"></div>
+        </section>
+      </div>
+
+      <div id="stellar-app-tab-visual" class="stellar-app-tab">
+        <section class="stellar-app-panel">
+          <h2>Visual do Site/App</h2><p class="mt-2">Temas normais grátis e temas premium pra monetizar estética.</p>
+          <div class="stellar-divider"></div>
+          <h3 class="mb-3">Cores grátis</h3>
+          <div class="stellar-theme-grid">
+            <button class="stellar-theme-card white" onclick="stellarApp.setTheme('white')"><strong>Branco</strong><small>Clean</small></button>
+            <button class="stellar-theme-card gray" onclick="stellarApp.setTheme('gray')"><strong>Cinza</strong><small>Soft</small></button>
+            <button class="stellar-theme-card darkgray" onclick="stellarApp.setTheme('darkgray')"><strong>Cinza escuro</strong><small>Dark</small></button>
+            <button class="stellar-theme-card black" onclick="stellarApp.setTheme('black')"><strong>Preto</strong><small>Amoled</small></button>
+          </div>
+          <h3 class="mt-6 mb-3">Premium visual</h3>
+          <div class="stellar-theme-grid">
+            <button class="stellar-theme-card gradient" onclick="stellarApp.setPremiumBg('stellar-gradient')"><strong>Stellar Fire</strong><small>Degradê</small><span class="stellar-premium-lock">VIP</span></button>
+            <button class="stellar-theme-card violet" onclick="stellarApp.setPremiumBg('midnight-violet')"><strong>Midnight Violet</strong><small>Premium</small><span class="stellar-premium-lock">VIP</span></button>
+            <button class="stellar-theme-card platinum" onclick="stellarApp.setPremiumBg('ice-platinum')"><strong>Ice Platinum</strong><small>Premium</small><span class="stellar-premium-lock">VIP</span></button>
+            <button class="stellar-theme-card black" onclick="stellarApp.setPremiumBg('none')"><strong>Remover</strong><small>Padrão</small></button>
+          </div>
+          <div class="grid md:grid-cols-[1fr_auto] gap-3 mt-5"><input id="stellar-custom-bg" class="stellar-app-input" placeholder="URL de background personalizado premium"><button onclick="stellarApp.setCustomBg()" class="stellar-app-btn gold">Aplicar fundo</button></div>
+        </section>
+      </div>
+
+      <div id="stellar-app-tab-store" class="stellar-app-tab">
+        <section class="stellar-app-panel">
+          <h2>Loja Social / Premium</h2><p class="mt-2">Base pra vender cosméticos sem mexer na economia diretamente.</p>
+          <div class="stellar-app-grid three mt-5">
+            <article class="stellar-app-card"><span class="stellar-badge">Visual</span><h3 class="mt-4">Bordas de avatar</h3><p>Degradês, neon, ouro, lendário e borda animada futura.</p><button class="stellar-app-btn gold mt-4">Preview</button></article>
+            <article class="stellar-app-card"><span class="stellar-badge">Perfil</span><h3 class="mt-4">Banners premium</h3><p>Fundos exclusivos para perfil público e cartão social.</p><button class="stellar-app-btn gold mt-4">Preview</button></article>
+            <article class="stellar-app-card"><span class="stellar-badge">App</span><h3 class="mt-4">Temas do site</h3><p>Cores e backgrounds pagos para transformar o app em experiência VIP.</p><button class="stellar-app-btn gold mt-4">Preview</button></article>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <aside class="stellar-app-right hide-scrollbar">
+      <div id="stellar-right-profile"></div>
+      <div class="stellar-divider"></div>
+      <section class="stellar-app-card"><h3>Atividade</h3><div id="stellar-activity-feed" class="grid gap-3 mt-4"></div></section>
+      <div class="stellar-divider"></div>
+      <section class="stellar-app-card"><h3>Próximos passos</h3><p class="mt-3">Para virar app real completo, o backend precisa salvar perfis, mensagens, grupos e ranking no Firebase pelo bot/API. Esta versão já prepara a interface e os caminhos.</p></section>
+    </aside>
+  </section>
+</main>
+
 
     <!-- #################### PÁGINA: DASHBOARD (LOGIN & SELEÇÃO) #################### -->
     <main id="page-dashboard" class="page pt-40 pb-32 px-6">
@@ -4774,6 +5066,527 @@
     window.addEventListener('load', () => setTimeout(initPublicExperience, 800));
 })();
 
+</script>
+
+<script id="stellar-app-platform-js">
+(function () {
+  const VERSION = 'STELLAR_APP_PLATFORM_2026_01';
+  const LS = 'stellar_app_platform_state_v1';
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+  const logo = 'https://i.imgur.com/PDEZ4HT.jpeg';
+
+  const blankState = () => ({
+    profile: {
+      name: 'Membro Stellar',
+      handle: 'stellaruser',
+      bio: 'Construindo meu império dentro da Stellar Society.',
+      avatar: logo,
+      banner: '',
+      border: 'border-red',
+      status: 'Online',
+      accent: '#ED1C24',
+      followers: 0,
+      following: 0,
+      posts: 0
+    },
+    users: [],
+    following: [],
+    groups: [
+      { id: 'global', name: 'Stellar Global', desc: 'Chat geral do app Stellar.', theme: 'Social', privacy: 'Público', icon: 'S', channels: ['geral', 'eventos', 'prints'], createdAt: Date.now() }
+    ],
+    activeGroup: 'global',
+    messages: {
+      global: [
+        { from: 'Stellar App', avatar: logo, text: 'Bem-vindo ao protótipo social da Stellar. Crie grupo, edite perfil e mande mensagem.', at: Date.now() }
+      ]
+    },
+    servers: [],
+    activity: [],
+    theme: 'black',
+    premiumBg: 'none',
+    customBg: '',
+    ranking: []
+  });
+
+  let state = loadState();
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(LS);
+      if (!raw) return blankState();
+      return deepMerge(blankState(), JSON.parse(raw));
+    } catch (_) {
+      return blankState();
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem(LS, JSON.stringify(state));
+    syncStats();
+  }
+
+  function deepMerge(base, extra) {
+    for (const k of Object.keys(extra || {})) {
+      if (extra[k] && typeof extra[k] === 'object' && !Array.isArray(extra[k]) && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) {
+        base[k] = deepMerge(base[k], extra[k]);
+      } else {
+        base[k] = extra[k];
+      }
+    }
+    return base;
+  }
+
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[ch]));
+  }
+
+  function money(valor) {
+    const n = Math.floor(Number(valor) || 0);
+    const abs = Math.abs(n);
+    if (abs >= 1_000_000_000_000) return `R$ ${(n / 1_000_000_000_000).toFixed(1).replace('.', ',')}T`;
+    if (abs >= 1_000_000_000) return `R$ ${(n / 1_000_000_000).toFixed(1).replace('.', ',')}B`;
+    if (abs >= 1_000_000) return `R$ ${(n / 1_000_000).toFixed(1).replace('.', ',')}M`;
+    if (abs >= 100_000) return `R$ ${Math.round(n / 1000).toLocaleString('pt-BR')}K`;
+    return `R$ ${n.toLocaleString('pt-BR')}`;
+  }
+
+  function toast(msg) {
+    if (typeof window.showToast === 'function') return window.showToast(msg);
+    let t = $('#stellar-app-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'stellar-app-toast';
+      t.style.cssText = 'position:fixed;right:18px;bottom:18px;z-index:99999;padding:14px 16px;border-radius:16px;background:#111;color:white;border:1px solid rgba(255,255,255,.1);font:800 12px Plus Jakarta Sans,Arial;box-shadow:0 20px 60px rgba(0,0,0,.4)';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    clearTimeout(t._hide);
+    t._hide = setTimeout(() => t.remove(), 2600);
+  }
+
+  function getCurrentDiscordUser() {
+    const tag = $('#user-tag')?.innerText?.trim();
+    const avatar = $('#user-avatar')?.src;
+    if (tag && tag !== 'User') return { name: tag, avatar: avatar || logo, handle: tag.toLowerCase().replace(/[^a-z0-9_]/g, '') };
+    return null;
+  }
+
+  function addActivity(text) {
+    state.activity.unshift({ text, at: Date.now() });
+    state.activity = state.activity.slice(0, 12);
+    saveState();
+    renderActivity();
+  }
+
+  function applyTheme() {
+    document.body.setAttribute('data-stellar-theme', state.theme || 'black');
+    document.body.setAttribute('data-stellar-premium-bg', state.premiumBg || 'none');
+    if (state.customBg) document.documentElement.style.setProperty('--stellar-custom-bg', `url('${String(state.customBg).replace(/'/g, '')}')`);
+  }
+
+  function syncInputs() {
+    const p = state.profile;
+    setValue('stellar-profile-name', p.name);
+    setValue('stellar-profile-handle', p.handle);
+    setValue('stellar-profile-bio', p.bio);
+    setValue('stellar-profile-avatar', p.avatar);
+    setValue('stellar-profile-banner', p.banner);
+    setValue('stellar-profile-border', p.border);
+    setValue('stellar-profile-status', p.status);
+    setValue('stellar-profile-accent', p.accent);
+    setValue('stellar-custom-bg', state.customBg);
+  }
+
+  function setValue(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.value = value || '';
+  }
+
+  function profileAvatar() {
+    return state.profile.avatar || logo;
+  }
+
+  function renderProfilePreview() {
+    const box = $('#stellar-profile-preview');
+    const side = $('#stellar-right-profile');
+    if (!box && !side) return;
+    const p = state.profile;
+    const bannerStyle = p.banner ? `background-image: linear-gradient(rgba(0,0,0,.18), rgba(0,0,0,.22)), url('${escapeHtml(p.banner)}')` : `background: radial-gradient(circle at top left, ${p.accent || '#ED1C24'}88, transparent 48%), linear-gradient(135deg,#111,#040404)`;
+    const html = `
+      <article class="stellar-profile-preview">
+        <div class="stellar-profile-banner" style="${bannerStyle}"></div>
+        <div class="stellar-profile-body">
+          <div class="stellar-avatar-wrap ${escapeHtml(p.border || '')}"><img src="${escapeHtml(profileAvatar())}" onerror="this.src='${logo}'" alt="Avatar"></div>
+          <div class="stellar-profile-name-row">
+            <div><h3>${escapeHtml(p.name)}</h3><div class="stellar-handle">@${escapeHtml(p.handle || 'stellaruser')}</div></div>
+            <span class="stellar-badge">${escapeHtml(p.status || 'Online')}</span>
+          </div>
+          <div class="stellar-profile-bio">${escapeHtml(p.bio || '')}</div>
+          <div class="stellar-social-row"><div><strong>${Number(p.followers || 0)}</strong><small>Seguidores</small></div><div><strong>${state.following.length}</strong><small>Seguindo</small></div><div><strong>${Number(p.posts || 0)}</strong><small>Posts</small></div></div>
+        </div>
+      </article>`;
+    if (box) box.innerHTML = html;
+    if (side) side.innerHTML = html;
+  }
+
+  function renderUsers() {
+    const list = $('#stellar-user-list');
+    if (!list) return;
+    const q = ($('#stellar-user-search')?.value || '').toLowerCase().trim();
+    const me = { ...state.profile, id: 'me', self: true };
+    const users = [me, ...state.users].filter(u => {
+      const blob = `${u.name || ''} ${u.handle || ''} ${u.bio || ''}`.toLowerCase();
+      return !q || blob.includes(q);
+    });
+    if (!users.length) {
+      list.innerHTML = '<div class="stellar-empty">Nenhum perfil publicado ainda. Publique o seu para começar a rede social da Stellar.</div>';
+      return;
+    }
+    list.innerHTML = users.map(u => {
+      const following = state.following.includes(u.id);
+      return `<article class="stellar-user-row">
+        <img src="${escapeHtml(u.avatar || logo)}" onerror="this.src='${logo}'" alt="Avatar">
+        <div class="stellar-user-main"><strong>${escapeHtml(u.name || 'Membro Stellar')}</strong><small>@${escapeHtml(u.handle || 'stellar')} • ${escapeHtml(u.bio || 'Sem bio')}</small></div>
+        ${u.self ? '<span class="stellar-badge">Você</span>' : `<button onclick="stellarApp.toggleFollow('${escapeHtml(u.id)}')" class="stellar-app-btn ${following ? 'ghost' : 'red'}">${following ? 'Seguindo' : 'Seguir'}</button>`}
+      </article>`;
+    }).join('');
+  }
+
+  function renderGroups() {
+    const list = $('#stellar-group-list');
+    if (!list) return;
+    if (!state.groups.length) state.groups.push({ id: 'global', name: 'Stellar Global', desc: 'Chat geral', theme: 'Social', privacy: 'Público', icon: 'S', channels: ['geral'], createdAt: Date.now() });
+    list.innerHTML = state.groups.map(g => `<button onclick="stellarApp.selectGroup('${g.id}')" class="stellar-server-row ${state.activeGroup === g.id ? 'border-red-500/40' : ''}"><div class="stellar-server-icon">${escapeHtml(g.icon || g.name?.[0] || 'S')}</div><div class="stellar-user-main"><strong>${escapeHtml(g.name)}</strong><small>${escapeHtml(g.theme)} • ${escapeHtml(g.privacy)} • ${(state.messages[g.id] || []).length} mensagens</small></div></button>`).join('');
+    renderChat();
+  }
+
+  function renderChat() {
+    const group = state.groups.find(g => g.id === state.activeGroup) || state.groups[0];
+    const header = $('#stellar-chat-header');
+    const body = $('#stellar-chat-messages');
+    if (!group || !header || !body) return;
+    header.innerHTML = `<div class="flex items-center gap-3"><div class="stellar-server-icon">${escapeHtml(group.icon || 'S')}</div><div><h3>${escapeHtml(group.name)}</h3><p>${escapeHtml(group.desc || 'Grupo da Stellar')}</p></div></div>`;
+    const msgs = state.messages[group.id] || [];
+    body.innerHTML = msgs.length ? msgs.map(m => `<article class="stellar-message"><img src="${escapeHtml(m.avatar || logo)}" onerror="this.src='${logo}'"><div><strong>${escapeHtml(m.from || 'Membro')}</strong><small class="block text-gray-500 text-[10px] font-bold uppercase">${new Date(m.at || Date.now()).toLocaleString('pt-BR')}</small><p>${escapeHtml(m.text)}</p></div></article>`).join('') : '<div class="stellar-empty">Nenhuma mensagem ainda. Seja o primeiro a mandar algo.</div>';
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function renderServers() {
+    const list = $('#stellar-server-list');
+    if (!list) return;
+    const servers = state.servers.length ? state.servers : state.groups.map(g => ({ ...g, id: g.id }));
+    list.innerHTML = servers.length ? servers.map(s => `<article class="stellar-server-row"><div class="stellar-server-icon">${escapeHtml(s.icon || s.name?.[0] || 'S')}</div><div class="stellar-user-main"><strong>${escapeHtml(s.name)}</strong><small>${escapeHtml(s.theme || 'Social')} • ${escapeHtml(s.privacy || 'Público')} • ${escapeHtml(s.desc || 'Sem descrição')}</small></div><button onclick="stellarApp.openServer('${escapeHtml(s.id)}')" class="stellar-app-btn">Abrir</button></article>`).join('') : '<div class="stellar-empty">Crie o primeiro servidor interno da Stellar.</div>';
+  }
+
+  function renderActivity() {
+    const box = $('#stellar-activity-feed');
+    if (!box) return;
+    const items = state.activity.length ? state.activity : [{ text: 'Stellar App iniciado.', at: Date.now() }];
+    box.innerHTML = items.slice(0, 8).map(a => `<div class="stellar-feed-post"><p>${escapeHtml(a.text)}</p><small class="text-gray-500 text-[10px] font-black uppercase">${new Date(a.at).toLocaleString('pt-BR')}</small></div>`).join('');
+  }
+
+  function syncStats() {
+    const set = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+    set('stellar-app-stat-users', String(1 + state.users.length));
+    set('stellar-app-stat-groups', String(state.groups.length));
+    set('stellar-app-stat-following', String(state.following.length));
+    set('stellar-app-stat-rank', state.ranking?.length ? 'ON' : 'OFF');
+  }
+
+  async function saveProfileToFirebase() {
+    try {
+      if (!window.stellarDb || !window.fbDoc || !window.fbSetDoc) return false;
+      const user = await (window.authReady || Promise.resolve(null));
+      const uid = user?.uid || window.firebaseUserId || `local_${state.profile.handle || 'stellar'}`;
+      const ref = window.fbDoc(window.stellarDb, 'stellarAppProfiles', uid);
+      await window.fbSetDoc(ref, { ...state.profile, uid, updatedAt: Date.now() }, { merge: true });
+      return true;
+    } catch (err) {
+      console.warn('[StellarApp] Falha ao salvar perfil Firebase:', err.message);
+      return false;
+    }
+  }
+
+  async function tryReadDoc(ref) {
+    try {
+      if (!window.fbGetDoc) return null;
+      const snap = await window.fbGetDoc(ref);
+      return snap.exists ? snap.data() : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function normalizeRankingData(data) {
+    const raw = data?.entries || data?.leaderboard || data?.players || data?.ranking || data?.top || (Array.isArray(data) ? data : []);
+    if (!Array.isArray(raw)) return [];
+    return raw.map((r, index) => {
+      const carteira = Number(r.carteira ?? r.wallet ?? r.cash ?? 0) || 0;
+      const banco = Number(r.banco ?? r.bank ?? 0) || 0;
+      const inventario = Number(r.inventario ?? r.inventory ?? 0) || 0;
+      const total = Number(r.total ?? r.score ?? r.patrimonio ?? r.wealth ?? (carteira + banco + inventario)) || 0;
+      return {
+        userId: String(r.userId || r.id || r.discordId || r.uid || `unknown_${index}`),
+        username: r.username || r.name || r.tag || (r.userId ? `Usuário ${String(r.userId).slice(-4)}` : 'Usuário real'),
+        avatar: r.avatar || r.avatarURL || r.photoURL || '',
+        carteira,
+        banco,
+        inventario,
+        total,
+        vip: r.vip || r.vipLabel || r.plano || null
+      };
+    }).filter(r => r.total > 0 && !String(r.userId).startsWith('unknown_')).sort((a, b) => b.total - a.total);
+  }
+
+  function renderRanking(sourceText = '') {
+    const box = $('#stellar-real-ranking');
+    const src = $('#stellar-ranking-source');
+    if (!box) return;
+    const rank = state.ranking || [];
+    if (!rank.length) {
+      box.innerHTML = '';
+      if (src) src.innerHTML = 'Nenhum ranking real sincronizado ainda.<br>O site não vai mostrar nomes aleatórios. O bot precisa enviar um documento com entries reais em <b>stellarRankings/globalWealth</b> ou caminho compatível.';
+      overrideOldPublicRankingEmpty();
+      return;
+    }
+    if (src) src.textContent = sourceText || `Ranking real carregado • ${rank.length} membros`;
+    box.innerHTML = rank.slice(0, 20).map((r, i) => `<article class="stellar-rank-row ${i < 3 ? 'top' + (i + 1) : ''}">
+      <div class="stellar-rank-pos">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i + 1)}</div>
+      <img src="${escapeHtml(r.avatar || logo)}" onerror="this.src='${logo}'" style="width:48px;height:48px;border-radius:16px;object-fit:cover;background:#222">
+      <div class="stellar-user-main"><strong>${escapeHtml(r.username)}</strong><small>${r.vip ? 'VIP ' + escapeHtml(r.vip) + ' • ' : ''}${escapeHtml(r.userId)}</small></div>
+      <div class="stellar-rank-money"><div>${money(r.total)}</div><small class="text-gray-500 text-[10px] font-black uppercase">Carteira ${money(r.carteira)} • Banco ${money(r.banco)}</small></div>
+    </article>`).join('');
+    overrideOldPublicRankingReal(rank);
+  }
+
+  function overrideOldPublicRankingEmpty() {
+    const old = $('#public-ranking-list');
+    if (!old) return;
+    old.innerHTML = '<div class="public-wall-item"><p>Ranking público real ainda não sincronizado. Sem players fakes por aqui.</p><small>Aguardando bot enviar o top real</small></div>';
+    const btn = document.querySelector('[onclick="window.publicShuffleRanking()"]');
+    if (btn) btn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4"></i> Atualizar real';
+    window.publicShuffleRanking = () => window.stellarApp.loadRealRanking(true);
+  }
+
+  function overrideOldPublicRankingReal(rank) {
+    const old = $('#public-ranking-list');
+    if (!old) return;
+    old.innerHTML = rank.slice(0, 8).map((r, i) => `<div class="public-rank-row ${i < 3 ? 'top' + (i + 1) : ''}"><div class="public-rank-pos">#${i + 1}</div><div class="flex-1 min-w-0"><strong>${escapeHtml(r.username)}</strong><small>${escapeHtml(r.userId)}</small></div><div class="public-rank-score">${money(r.total)}</div></div>`).join('');
+  }
+
+  async function loadRealRanking(manual = false) {
+    const paths = [];
+    if (window.stellarDb && window.fbDoc) {
+      if (window.stellarAppId) paths.push(['artifacts', window.stellarAppId, 'public', 'data', 'stellarRankings', 'globalWealth']);
+      paths.push(['stellarRankings', 'globalWealth']);
+      paths.push(['publicRankings', 'globalWealth']);
+      paths.push(['rankings', 'globalWealth']);
+      paths.push(['economyRanking', 'global']);
+      paths.push(['siteRankings', 'wealth']);
+    }
+
+    for (const p of paths) {
+      const data = await tryReadDoc(window.fbDoc(window.stellarDb, ...p));
+      const normalized = normalizeRankingData(data);
+      if (normalized.length) {
+        state.ranking = normalized;
+        saveState();
+        renderRanking(`Ranking real carregado de ${p.join('/')} • ${normalized.length} membros`);
+        if (manual) toast('Ranking real atualizado.');
+        return normalized;
+      }
+    }
+
+    // Também aceita preload manual no window, caso o bot injete via HTML ou cache.
+    const preload = normalizeRankingData(window.stellarRealRanking || window.STELLAR_REAL_RANKING || null);
+    if (preload.length) {
+      state.ranking = preload;
+      saveState();
+      renderRanking(`Ranking real carregado do preload local • ${preload.length} membros`);
+      return preload;
+    }
+
+    state.ranking = [];
+    saveState();
+    renderRanking('Nenhum ranking real encontrado.');
+    if (manual) toast('Nenhum ranking real encontrado. Sem fake.');
+    return [];
+  }
+
+  function injectNav() {
+    if (document.querySelector('[data-page="app"]')) return;
+    const desktopNav = document.querySelector('.hidden.lg\\:flex.items-center.gap-6') || document.querySelector('nav .hidden.lg\\:flex');
+    if (desktopNav) desktopNav.insertAdjacentHTML('beforeend', '<button onclick="switchPage(\'app\')" class="nav-link text-red-300" data-page="app">Stellar App</button>');
+    const mobileNav = document.querySelector('.lg\\:hidden.fixed .glass') || document.querySelector('.lg\\:hidden .glass');
+    if (mobileNav) mobileNav.insertAdjacentHTML('beforeend', '<button onclick="switchPage(\'app\')" data-page="app" class="p-2 flex-shrink-0 text-red-400 hover:text-red-500 transition" title="Stellar App"><i data-lucide="app-window"></i></button>');
+  }
+
+  function bindEvents() {
+    $$('#stellar-app-nav button[data-app-tab]').forEach(btn => {
+      btn.onclick = () => openAppTab(btn.dataset.appTab);
+    });
+    ['stellar-profile-name','stellar-profile-handle','stellar-profile-bio','stellar-profile-avatar','stellar-profile-banner','stellar-profile-border','stellar-profile-status','stellar-profile-accent'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        const p = state.profile;
+        p.name = $('#stellar-profile-name')?.value || p.name;
+        p.handle = ($('#stellar-profile-handle')?.value || p.handle).replace(/^@/, '').replace(/\s+/g, '').toLowerCase();
+        p.bio = $('#stellar-profile-bio')?.value || '';
+        p.avatar = $('#stellar-profile-avatar')?.value || p.avatar || logo;
+        p.banner = $('#stellar-profile-banner')?.value || '';
+        p.border = $('#stellar-profile-border')?.value || '';
+        p.status = $('#stellar-profile-status')?.value || 'Online';
+        p.accent = $('#stellar-profile-accent')?.value || '#ED1C24';
+        renderProfilePreview();
+      });
+    });
+    const file = $('#stellar-profile-avatar-file');
+    if (file) file.onchange = () => {
+      const f = file.files?.[0];
+      if (!f) return;
+      if (f.size > 2 * 1024 * 1024) return toast('Imagem muito grande. Usa até 2MB no protótipo.');
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.profile.avatar = reader.result;
+        setValue('stellar-profile-avatar', state.profile.avatar);
+        renderProfilePreview();
+      };
+      reader.readAsDataURL(f);
+    };
+    const chatInput = $('#stellar-chat-input');
+    if (chatInput) chatInput.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') window.stellarApp.sendMessage(); });
+  }
+
+  function openAppTab(tab) {
+    $$('#stellar-app-nav button').forEach(b => b.classList.toggle('active', b.dataset.appTab === tab));
+    $$('.stellar-app-tab').forEach(t => t.classList.toggle('active', t.id === `stellar-app-tab-${tab}`));
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  window.stellarApp = {
+    openAppTab,
+    saveProfile: async function () {
+      const discord = getCurrentDiscordUser();
+      if (discord && (!state.profile.name || state.profile.name === 'Membro Stellar')) {
+        state.profile.name = discord.name;
+        state.profile.handle = discord.handle;
+        state.profile.avatar = discord.avatar;
+      }
+      saveState();
+      await saveProfileToFirebase();
+      renderProfilePreview();
+      renderUsers();
+      addActivity('Perfil atualizado.');
+      toast('Perfil salvo.');
+    },
+    copyProfile: function () {
+      const p = state.profile;
+      navigator.clipboard?.writeText(`✦ ${p.name} (@${p.handle})\n${p.bio}\nStatus: ${p.status}\nStellar App`).then(() => toast('Perfil copiado.'));
+    },
+    seedRealUserFromProfile: function () {
+      const id = `profile_${state.profile.handle || Date.now()}`;
+      state.users = state.users.filter(u => u.id !== id);
+      state.users.unshift({ id, ...state.profile, followers: state.profile.followers || 0 });
+      saveState();
+      renderUsers();
+      addActivity('Perfil publicado na aba social.');
+    },
+    toggleFollow: function (id) {
+      if (state.following.includes(id)) state.following = state.following.filter(x => x !== id);
+      else state.following.push(id);
+      saveState();
+      renderUsers();
+      renderProfilePreview();
+      addActivity(state.following.includes(id) ? 'Você seguiu um perfil.' : 'Você deixou de seguir um perfil.');
+    },
+    createGroupPrompt: function () {
+      const name = prompt('Nome do grupo:');
+      if (!name) return;
+      const id = `group_${Date.now()}`;
+      state.groups.unshift({ id, name, desc: 'Grupo criado pelo Stellar App.', theme: 'Social', privacy: 'Público', icon: name[0]?.toUpperCase() || 'G', channels: ['geral'], createdAt: Date.now() });
+      state.messages[id] = [];
+      state.activeGroup = id;
+      saveState();
+      renderGroups();
+      renderServers();
+      addActivity(`Grupo ${name} criado.`);
+    },
+    selectGroup: function (id) { state.activeGroup = id; saveState(); renderGroups(); },
+    sendMessage: function () {
+      const input = $('#stellar-chat-input');
+      const text = input?.value?.trim();
+      if (!text) return;
+      const groupId = state.activeGroup || 'global';
+      if (!state.messages[groupId]) state.messages[groupId] = [];
+      state.messages[groupId].push({ from: state.profile.name, avatar: profileAvatar(), text, at: Date.now() });
+      state.messages[groupId] = state.messages[groupId].slice(-150);
+      input.value = '';
+      saveState();
+      renderChat();
+    },
+    createServer: function () {
+      const name = $('#stellar-server-name')?.value?.trim();
+      if (!name) return toast('Coloca um nome pro servidor.');
+      const server = {
+        id: `server_${Date.now()}`,
+        name,
+        desc: $('#stellar-server-desc')?.value?.trim() || 'Servidor interno da Stellar.',
+        theme: $('#stellar-server-theme')?.value || 'Social',
+        privacy: $('#stellar-server-privacy')?.value || 'Público',
+        icon: name[0]?.toUpperCase() || 'S',
+        channels: ['geral', 'avisos', 'eventos'],
+        createdAt: Date.now()
+      };
+      state.servers.unshift(server);
+      state.groups.unshift({ ...server });
+      state.messages[server.id] = [];
+      saveState();
+      renderServers();
+      renderGroups();
+      addActivity(`Servidor ${name} criado.`);
+    },
+    openServer: function (id) { openAppTab('messages'); state.activeGroup = id; saveState(); renderGroups(); },
+    setTheme: function (theme) { state.theme = theme; saveState(); applyTheme(); toast('Tema aplicado.'); },
+    setPremiumBg: function (bg) { state.premiumBg = bg || 'none'; saveState(); applyTheme(); toast(bg === 'none' ? 'Premium removido.' : 'Visual premium aplicado.'); },
+    setCustomBg: function () { const url = $('#stellar-custom-bg')?.value?.trim(); if (!/^https?:\/\//i.test(url)) return toast('Coloca uma URL válida.'); state.customBg = url; state.premiumBg = 'custom'; saveState(); applyTheme(); toast('Background personalizado aplicado.'); },
+    loadRealRanking,
+    renderAll: renderAll
+  };
+
+  function renderAll() {
+    applyTheme();
+    syncInputs();
+    renderProfilePreview();
+    renderUsers();
+    renderGroups();
+    renderServers();
+    renderActivity();
+    renderRanking();
+    syncStats();
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function init() {
+    injectNav();
+    bindEvents();
+    const discord = getCurrentDiscordUser();
+    if (discord && state.profile.name === 'Membro Stellar') {
+      state.profile.name = discord.name;
+      state.profile.handle = discord.handle;
+      state.profile.avatar = discord.avatar;
+      saveState();
+    }
+    renderAll();
+    loadRealRanking(false);
+    document.documentElement.setAttribute('data-stellar-app-platform', VERSION);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  window.addEventListener('load', () => setTimeout(init, 700));
+})();
 </script>
 
 </body>
