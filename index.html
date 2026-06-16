@@ -742,6 +742,134 @@
         }
 
     </style>
+
+<style>
+/* =========================================================
+   STELLAR PUBLIC EXPERIENCE UPDATE — coisas novas pro site
+   ========================================================= */
+.public-hero,
+.public-panel,
+.public-live-card,
+.public-feature-card {
+    border: 1px solid rgba(255,255,255,.07);
+    background: linear-gradient(145deg, rgba(18,14,14,.86), rgba(5,5,7,.92));
+    box-shadow: 0 30px 90px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.045);
+}
+.public-hero::before,
+.public-panel::before,
+.public-live-card::before,
+.public-feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at top left, rgba(237,28,36,.16), transparent 38%), radial-gradient(circle at 92% 12%, rgba(245,197,66,.07), transparent 34%);
+    opacity: .88;
+}
+.public-hero > *, .public-panel > *, .public-live-card > *, .public-feature-card > * { position: relative; z-index: 1; }
+.public-panel, .public-live-card, .public-feature-card { position: relative; overflow: hidden; }
+.public-title-gradient {
+    background: linear-gradient(90deg, #fff, #ffb3b7, #ff7a1a, #f5c542);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.public-kicker,
+.public-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    color: #ffb4b8;
+    background: rgba(237,28,36,.08);
+    border: 1px solid rgba(237,28,36,.22);
+    padding: .48rem .78rem;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+}
+.public-mini { margin-bottom: 1rem; color: #ffd0d3; }
+.public-orb { position: absolute; border-radius: 999px; pointer-events: none; filter: blur(22px); opacity: .24; animation: publicFloat 8s ease-in-out infinite alternate; }
+.public-orb-a { width: 170px; height: 170px; background: #ED1C24; right: 10%; top: 12%; }
+.public-orb-b { width: 120px; height: 120px; background: #f5c542; left: 7%; bottom: 10%; animation-delay: -3s; }
+@keyframes publicFloat { from { transform: translateY(0) scale(1); } to { transform: translateY(-26px) scale(1.08); } }
+.public-pulse { width: 13px; height: 13px; border-radius: 999px; background: #22c55e; box-shadow: 0 0 0 8px rgba(34,197,94,.12), 0 0 26px rgba(34,197,94,.65); }
+.public-stat { border-radius: 1.5rem; border: 1px solid rgba(255,255,255,.065); background: rgba(0,0,0,.32); padding: 1.1rem; }
+.public-stat span { display: block; color: #fff; font-weight: 900; font-size: 1.55rem; letter-spacing: -.04em; }
+.public-stat small { color: #8b8b94; font-size: 10px; text-transform: uppercase; font-weight: 900; letter-spacing: .15em; }
+.public-feature-card { transition: transform .22s ease, border-color .22s ease; }
+.public-feature-card:hover { transform: translateY(-4px); border-color: rgba(237,28,36,.32); }
+.public-feature-card span { width: 3rem; height: 3rem; border-radius: 1.2rem; display: inline-flex; align-items: center; justify-content: center; background: rgba(237,28,36,.13); border: 1px solid rgba(237,28,36,.20); color: #ffb4b8; }
+.public-feature-card h3 { margin-top: 1.1rem; color: white; font-weight: 900; text-transform: uppercase; letter-spacing: -.02em; }
+.public-feature-card p { color: #9ca3af; font-size: .8rem; line-height: 1.55; margin-top: .5rem; font-weight: 600; }
+.public-small-btn { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; border-radius: 1rem; padding: .75rem .95rem; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.045); color: white; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; transition: .2s ease; }
+.public-small-btn:hover { border-color: rgba(237,28,36,.45); background: rgba(237,28,36,.12); color: #ffb4b8; }
+.public-input,
+.public-textarea { width: 100%; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,.075); background: rgba(0,0,0,.42); color: white; padding: 1rem 1.1rem; outline: none; font-size: .82rem; font-weight: 800; }
+.public-input:focus,
+.public-textarea:focus { border-color: rgba(237,28,36,.70); box-shadow: 0 0 0 4px rgba(237,28,36,.10); }
+.public-rank-row { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 1.4rem; border: 1px solid rgba(255,255,255,.06); background: rgba(0,0,0,.28); }
+.public-rank-row.top1 { background: linear-gradient(90deg, rgba(245,197,66,.16), rgba(0,0,0,.28)); border-color: rgba(245,197,66,.25); }
+.public-rank-row.top2 { background: linear-gradient(90deg, rgba(255,255,255,.10), rgba(0,0,0,.28)); }
+.public-rank-row.top3 { background: linear-gradient(90deg, rgba(255,122,26,.12), rgba(0,0,0,.28)); }
+.public-rank-pos { width: 3rem; height: 3rem; border-radius: 1.1rem; display: flex; align-items: center; justify-content: center; background: rgba(237,28,36,.12); border: 1px solid rgba(237,28,36,.22); color: #ffb4b8; font-weight: 900; }
+.public-rank-row strong { display: block; color: white; font-weight: 900; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.public-rank-row small { display: block; color: #8b8b94; font-size: 11px; font-weight: 700; margin-top: .15rem; }
+.public-rank-score { color: #f5c542; font-weight: 900; font-size: .82rem; text-align: right; white-space: nowrap; }
+.public-profile-card:empty::before { content: 'Gere um cartão público para aparecer aqui.'; display: block; color: #6b7280; border: 1px dashed rgba(255,255,255,.10); border-radius: 1.5rem; padding: 1.5rem; font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; }
+.public-profile-glow { border-radius: 1.7rem; padding: 1.5rem; background: radial-gradient(circle at top left, rgba(237,28,36,.20), transparent 45%), rgba(0,0,0,.38); border: 1px solid rgba(237,28,36,.22); }
+.public-profile-glow small { color: #ffb4b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .18em; }
+.public-profile-glow h3 { color: white; font-size: 2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem; }
+.public-profile-glow p { color: #9ca3af; font-weight: 800; }
+.public-profile-glow button { margin-top: 1rem; color: #ffb4b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; }
+.public-event-card,
+.public-vip-card,
+.public-badge-card,
+.public-wiki-card,
+.public-road-row,
+.public-wall-item { border: 1px solid rgba(255,255,255,.065); background: rgba(0,0,0,.30); border-radius: 1.45rem; padding: 1.1rem; }
+.public-event-card span,
+.public-vip-card small { color: #ffb4b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; }
+.public-event-card h3,
+.public-vip-card h3 { color: white; font-weight: 900; text-transform: uppercase; margin-top: .55rem; }
+.public-event-card p,
+.public-vip-card p { color: #9ca3af; font-size: .78rem; font-weight: 700; margin-top: .45rem; }
+.public-event-card strong { display: block; color: #f5c542; font-size: .78rem; font-weight: 900; margin-top: .75rem; }
+.public-event-card small { display: block; color: #6ee7b7; font-size: 10px; text-transform: uppercase; font-weight: 900; margin-top: .35rem; }
+.public-vip-card button { margin-top: .9rem; color: #ffb4b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .13em; }
+.public-pass-row strong { color: white; font-size: .82rem; text-transform: uppercase; font-weight: 900; }
+.public-pass-row span { float: right; color: #f5c542; font-size: .78rem; font-weight: 900; }
+.public-pass-row div { clear: both; height: .6rem; margin-top: .6rem; border-radius: 999px; background: rgba(255,255,255,.06); overflow: hidden; }
+.public-pass-row b { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #ED1C24, #ff7a1a, #f5c542); box-shadow: 0 0 18px rgba(237,28,36,.35); }
+.public-badge-card { display: flex; gap: .9rem; align-items: flex-start; }
+.public-badge-card span { font-size: 1.7rem; }
+.public-badge-card strong { display: block; color: white; font-weight: 900; }
+.public-badge-card p { color: #8b8b94; font-size: .74rem; line-height: 1.45; margin-top: .25rem; font-weight: 650; }
+.public-wiki-card i { color: #ffb4b8; width: 1.35rem; height: 1.35rem; }
+.public-wiki-card strong { display: block; color: white; font-weight: 900; text-transform: uppercase; margin-top: .8rem; }
+.public-wiki-card p { color: #8b8b94; font-size: .78rem; margin-top: .35rem; line-height: 1.5; }
+.public-road-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.public-road-row strong { color: white; font-weight: 900; text-transform: uppercase; }
+.public-road-row small { display: block; color: #9ca3af; font-size: 11px; margin-top: .18rem; }
+.public-road-row button { white-space: nowrap; border-radius: 999px; background: rgba(237,28,36,.10); border: 1px solid rgba(237,28,36,.24); color: #ffb4b8; padding: .65rem .8rem; font-size: 10px; font-weight: 900; }
+.public-command-pill { border-radius: 999px; background: rgba(237,28,36,.10); border: 1px solid rgba(237,28,36,.22); color: #ffb4b8; padding: .72rem .95rem; font-size: 11px; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+.public-wall-item p { color: white; font-size: .85rem; font-weight: 700; }
+.public-wall-item small { color: #8b8b94; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; }
+.public-sim-result { display: grid; gap: .8rem; }
+.public-sim-result div { border: 1px solid rgba(255,255,255,.065); background: rgba(0,0,0,.30); border-radius: 1.2rem; padding: 1rem; }
+.public-sim-result strong { display: block; color: white; font-size: 1.35rem; font-weight: 900; }
+.public-sim-result small { color: #8b8b94; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; }
+.public-sim-result p { color: #9ca3af; font-size: .78rem; line-height: 1.5; font-weight: 700; }
+.public-event-generator { background: rgba(0,0,0,.26); border: 1px solid rgba(255,255,255,.06); }
+@media (max-width: 768px) {
+    .public-hero { border-radius: 2.2rem !important; padding: 1.6rem !important; }
+    .public-panel { border-radius: 2rem !important; padding: 1.35rem !important; }
+    .public-rank-row { align-items: flex-start; }
+    .public-rank-score { font-size: .72rem; }
+}
+
+</style>
 </head>
 <body class="selection:bg-red-600 selection:text-white">
 
@@ -4142,6 +4270,511 @@
         window.addEventListener('load', () => setTimeout(initSuite, 900));
     })();
     </script>
+
+
+<!-- STELLAR PUBLIC EXPERIENCE UPDATE — novas coisas públicas pro site -->
+<script>
+(function () {
+    'use strict';
+    const VERSION = 'Public Experience Update 2026.06';
+
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+    const state = {
+        ranking: [
+            { user: 'Miguel', tag: '@polenghx021', score: 9824000, badge: 'Magnata', accent: 'ruby' },
+            { user: 'Stellar Queen', tag: '@stellar', score: 7210000, badge: 'VIP Lendário', accent: 'gold' },
+            { user: 'Noite', tag: '@noite', score: 5200000, badge: 'Top Voz', accent: 'peach' },
+            { user: 'Kaiser', tag: '@kaiser', score: 3130000, badge: 'Investidor', accent: 'red' },
+            { user: 'Luna', tag: '@luna', score: 2540000, badge: 'Eventos', accent: 'gold' }
+        ],
+        events: [
+            { title: 'Noite dos Magnatas', date: 'Sábado • 20:00', prize: 'Coins + VIP Trial', status: 'Inscrições abertas', type: 'Economia' },
+            { title: 'Print Premiado', date: 'Domingo • 18:00', prize: 'Cargo destaque', status: 'Votação pública', type: 'Social' },
+            { title: 'Corrida de Missões', date: 'Semanal', prize: 'Hall da Fama', status: 'Temporada ativa', type: 'Progressão' }
+        ],
+        achievements: [
+            ['💸', 'Primeiro Milhão', 'Acumule R$ 1.000.000 na economia.'],
+            ['🏠', 'Proprietário', 'Compre seu primeiro imóvel na Stellar.'],
+            ['👑', 'Morador de Elite', 'Entre para a zona VIP da comunidade.'],
+            ['🎰', 'Sorte Grande', 'Ganhe uma aposta pesada no cassino.'],
+            ['🎤', 'Voz Ativa', 'Participe das calls e mantenha streak.'],
+            ['🧠', 'Ideia Aprovada', 'Tenha uma sugestão implementada.'],
+            ['🔥', 'Streak 7D', 'Participe por 7 dias seguidos.'],
+            ['🛡️', 'Membro Confiável', 'Passe 30 dias sem punição.']
+        ],
+        roadmap: [
+            { title: 'Rankings públicos reais', status: 'Planejado', votes: 37 },
+            { title: 'Perfis públicos dos membros', status: 'Em design', votes: 52 },
+            { title: 'Temporadas com passe grátis/VIP', status: 'Ideia forte', votes: 48 },
+            { title: 'Mapa da cidade Stellar', status: 'Experimental', votes: 29 }
+        ],
+        commands: {
+            economia: ['!atm', '!daily', '!trabalhar', '!bolsa', '!loja', '!top'],
+            social: ['!perfil', '!facereveal', '!rank', '!rep', '!casar', '!avatar'],
+            eventos: ['!sorteio', '!missao', '!evento', '!quiz', '!drop', '!ranking'],
+            casa: ['!imoveis', '!casa', '!fazenda', '!deposito', '!negocios', '!construtora']
+        },
+        bios: [
+            '✦ Morador da Stellar Society • Economia, eventos e caos controlado. ✦',
+            '⚜️ Construindo meu império na Stellar • VIP vibes • #StellarSociety',
+            '💸 Magnata em formação • Ranking, missões e conquistas na Stellar.',
+            '🌌 Stellar Society • Onde comunidade vira universo.'
+        ]
+    };
+
+    function money(value) {
+        return Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+    }
+
+    function toastPublic(message) {
+        if (typeof window.toast === 'function') return window.toast(message);
+        let box = $('#public-toast');
+        if (!box) {
+            box = document.createElement('div');
+            box.id = 'public-toast';
+            box.className = 'fixed right-5 top-28 z-[9999] bg-red-600 text-white px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest shadow-2xl transition-all';
+            document.body.appendChild(box);
+        }
+        box.textContent = message;
+        box.style.opacity = '1';
+        setTimeout(() => { box.style.opacity = '0'; }, 2200);
+    }
+
+    function copyText(text) {
+        const value = String(text || '');
+        if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(value).then(() => toastPublic('Copiado.')).catch(() => fallbackCopy(value));
+        } else fallbackCopy(value);
+    }
+
+    function fallbackCopy(value) {
+        const el = document.createElement('textarea');
+        el.value = value;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        el.remove();
+        toastPublic('Copiado.');
+    }
+
+    function injectPublicNav() {
+        const desktopNav = document.querySelector('nav .hidden.lg\\:flex');
+        if (desktopNav && !desktopNav.querySelector('[data-page="public"]')) {
+            desktopNav.insertAdjacentHTML('beforeend', '<button onclick="switchPage(\'public\')" class="nav-link" data-page="public">Hub Público</button>');
+        }
+
+        const mobileNav = document.querySelector('.lg\\:hidden.fixed .glass');
+        if (mobileNav && !mobileNav.querySelector('[data-page="public"]')) {
+            mobileNav.insertAdjacentHTML('beforeend', '<button onclick="switchPage(\'public\')" data-page="public" class="p-2 flex-shrink-0 text-gray-500 hover:text-red-500 transition" title="Hub Público"><i data-lucide="sparkles"></i></button>');
+        }
+    }
+
+    function publicPageHtml() {
+        return `
+        <main id="page-public" class="page pt-40 pb-32 px-6">
+            <section class="max-w-7xl mx-auto space-y-12">
+                <div class="public-hero rounded-[3.5rem] p-8 md:p-12 relative overflow-hidden">
+                    <div class="public-orb public-orb-a"></div>
+                    <div class="public-orb public-orb-b"></div>
+                    <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-10 items-center relative z-10">
+                        <div>
+                            <span class="public-kicker"><i data-lucide="sparkles" class="w-4 h-4"></i> Stellar Public Experience</span>
+                            <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[.88] mt-7">A vitrine pública da <span class="public-title-gradient">Stellar Society</span>.</h1>
+                            <p class="text-gray-400 text-lg leading-relaxed max-w-2xl mt-7">Ranking, eventos, conquistas, VIP, simuladores, mural, roadmap e ferramentas que fazem a galera entrar no site mesmo sem ser admin.</p>
+                            <div class="flex flex-col sm:flex-row gap-4 mt-9">
+                                <a href="https://discord.gg/MhJPqajwfT" target="_blank" class="bg-red-600 hover:bg-red-700 px-7 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-white transition flex items-center justify-center gap-2"><i data-lucide="message-square" class="w-4 h-4"></i> Entrar na Stellar</a>
+                                <button onclick="document.getElementById('public-ranking')?.scrollIntoView({behavior:'smooth'})" class="bg-white/5 hover:bg-white/10 px-7 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-white transition flex items-center justify-center gap-2 border border-white/10"><i data-lucide="trophy" class="w-4 h-4"></i> Ver Rankings</button>
+                            </div>
+                        </div>
+                        <div class="public-live-card rounded-[2.5rem] p-6">
+                            <div class="flex items-center justify-between mb-5">
+                                <div>
+                                    <p class="text-[10px] text-red-300 uppercase tracking-[.25em] font-black">Status Público</p>
+                                    <h3 class="text-2xl font-black uppercase tracking-tighter">Comunidade viva</h3>
+                                </div>
+                                <span class="public-pulse"></span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="public-stat"><span id="pub-stat-members">1.5K+</span><small>Membros</small></div>
+                                <div class="public-stat"><span id="pub-stat-events">12+</span><small>Eventos/mês</small></div>
+                                <div class="public-stat"><span id="pub-stat-rewards">50M+</span><small>Coins em prêmios</small></div>
+                                <div class="public-stat"><span id="pub-stat-systems">30+</span><small>Sistemas</small></div>
+                            </div>
+                            <div class="mt-5 rounded-2xl bg-black/35 border border-white/5 p-4">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Chamada pronta</p>
+                                <p id="public-cta-text" class="text-sm text-gray-300 leading-relaxed">Entre na Stellar Society, participe de eventos, suba no ranking, ganhe coins e construa seu império no Discord.</p>
+                                <button onclick="window.publicCopyCTA()" class="mt-4 text-red-300 hover:text-white text-[10px] font-black uppercase tracking-widest">Copiar chamada</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="grid lg:grid-cols-4 gap-5" id="public-feature-grid"></section>
+
+                <section class="grid lg:grid-cols-[1fr_.85fr] gap-8 items-start">
+                    <div id="public-ranking" class="public-panel rounded-[2.5rem] p-7">
+                        <div class="flex items-center justify-between mb-6 gap-4">
+                            <div>
+                                <span class="public-mini">Competição</span>
+                                <h2 class="text-3xl font-black uppercase tracking-tighter">Ranking público</h2>
+                            </div>
+                            <button onclick="window.publicShuffleRanking()" class="public-small-btn"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Atualizar</button>
+                        </div>
+                        <div id="public-ranking-list" class="space-y-4"></div>
+                    </div>
+
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">Perfil</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-5">Cartão de membro</h2>
+                        <div class="space-y-4">
+                            <input id="public-profile-name" class="public-input" placeholder="Seu nome no Discord">
+                            <select id="public-profile-style" class="public-input"><option value="Magnata">Magnata</option><option value="VIP Lendário">VIP Lendário</option><option value="Caçador de Eventos">Caçador de Eventos</option><option value="Investidor">Investidor</option></select>
+                            <input id="public-profile-money" class="public-input" type="number" placeholder="Sua fortuna / score">
+                            <button onclick="window.publicGenerateProfile()" class="w-full bg-red-600 hover:bg-red-700 px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-white">Gerar cartão</button>
+                        </div>
+                        <div id="public-profile-card" class="public-profile-card mt-6"></div>
+                    </div>
+                </section>
+
+                <section class="grid lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 public-panel rounded-[2.5rem] p-7">
+                        <div class="flex items-center justify-between mb-6 gap-4">
+                            <div>
+                                <span class="public-mini">Agenda</span>
+                                <h2 class="text-3xl font-black uppercase tracking-tighter">Eventos ativos</h2>
+                            </div>
+                            <button onclick="window.publicRandomEvent()" class="public-small-btn"><i data-lucide="dice-5" class="w-4 h-4"></i> Ideia aleatória</button>
+                        </div>
+                        <div id="public-events-list" class="grid md:grid-cols-3 gap-4"></div>
+                        <div class="mt-6 public-event-generator rounded-3xl p-5">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Gerador de evento público</p>
+                            <textarea id="public-event-output" class="public-textarea" rows="4" readonly></textarea>
+                            <button onclick="window.publicCopyFrom('public-event-output')" class="mt-3 public-small-btn">Copiar anúncio</button>
+                        </div>
+                    </div>
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">Temporada</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-6">Passe Stellar</h2>
+                        <div class="space-y-5">
+                            <div class="public-pass-row"><strong>Missões diárias</strong><span>72%</span><div><b style="width:72%"></b></div></div>
+                            <div class="public-pass-row"><strong>Eventos sociais</strong><span>48%</span><div><b style="width:48%"></b></div></div>
+                            <div class="public-pass-row"><strong>Ranking semanal</strong><span>86%</span><div><b style="width:86%"></b></div></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-6 leading-relaxed">Uma área pública de temporada deixa todo mundo vendo progresso, recompensas e motivos pra voltar.</p>
+                    </div>
+                </section>
+
+                <section class="grid lg:grid-cols-2 gap-8">
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">VIP</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-6">Vitrine VIP pública</h2>
+                        <div id="public-vip-grid" class="grid sm:grid-cols-2 gap-4"></div>
+                    </div>
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">Simulador</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-6">Quanto eu ganho?</h2>
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <input id="public-sim-msg" type="number" class="public-input" placeholder="Msgs/dia" value="80">
+                            <input id="public-sim-call" type="number" class="public-input" placeholder="Horas call" value="2">
+                            <input id="public-sim-days" type="number" class="public-input" placeholder="Dias" value="7">
+                        </div>
+                        <button onclick="window.publicRunSimulator()" class="mt-4 w-full bg-red-600 hover:bg-red-700 px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-white">Calcular evolução</button>
+                        <div id="public-sim-result" class="public-sim-result mt-5"></div>
+                    </div>
+                </section>
+
+                <section class="grid lg:grid-cols-[.9fr_1.1fr] gap-8">
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">Badges</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-6">Conquistas</h2>
+                        <div id="public-achievements" class="grid sm:grid-cols-2 gap-3"></div>
+                    </div>
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">Wiki</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-6">Mini wiki do universo</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="public-wiki-card"><i data-lucide="coins"></i><strong>Economia</strong><p>Trabalhe, invista, compre imóveis, suba no ranking e dispute eventos.</p></div>
+                            <div class="public-wiki-card"><i data-lucide="home"></i><strong>Imóveis</strong><p>Compre casas, mansões, depósitos e negócios dentro do ecossistema.</p></div>
+                            <div class="public-wiki-card"><i data-lucide="users"></i><strong>Comunidade</strong><p>Feed, sugestões, parcerias, staff, perfil e atividades sociais.</p></div>
+                            <div class="public-wiki-card"><i data-lucide="trophy"></i><strong>Competição</strong><p>Rankings semanais, hall da fama, eventos e prêmios públicos.</p></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid lg:grid-cols-3 gap-6">
+                    <div class="public-panel rounded-[2.5rem] p-7 lg:col-span-2">
+                        <span class="public-mini">Roadmap</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-6">Vote nas próximas ideias</h2>
+                        <div id="public-roadmap" class="space-y-3"></div>
+                    </div>
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">Bio</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-5">Gerador de bio</h2>
+                        <textarea id="public-bio-output" class="public-textarea" rows="5" readonly></textarea>
+                        <div class="flex gap-2 mt-3">
+                            <button onclick="window.publicRandomBio()" class="public-small-btn flex-1">Gerar</button>
+                            <button onclick="window.publicCopyFrom('public-bio-output')" class="public-small-btn flex-1">Copiar</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid lg:grid-cols-2 gap-8">
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">Comandos</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-5">Preview de comandos</h2>
+                        <select id="public-command-category" class="public-input" onchange="window.publicRenderCommands()"><option value="economia">Economia</option><option value="social">Social</option><option value="eventos">Eventos</option><option value="casa">Casa e negócios</option></select>
+                        <div id="public-command-list" class="flex flex-wrap gap-2 mt-5"></div>
+                    </div>
+                    <div class="public-panel rounded-[2.5rem] p-7">
+                        <span class="public-mini">Mural</span>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter mb-5">Recados da comunidade</h2>
+                        <div class="grid sm:grid-cols-[1fr_auto] gap-3 mb-4">
+                            <input id="public-wall-input" class="public-input" maxlength="120" placeholder="Escreva um recado curto">
+                            <button onclick="window.publicAddWall()" class="bg-red-600 hover:bg-red-700 px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-white">Enviar</button>
+                        </div>
+                        <div id="public-wall-list" class="space-y-3"></div>
+                    </div>
+                </section>
+            </section>
+        </main>`;
+    }
+
+    function injectPublicPage() {
+        if ($('#page-public')) return;
+        const dashboard = $('#page-dashboard');
+        if (dashboard) dashboard.insertAdjacentHTML('beforebegin', publicPageHtml());
+        else document.body.insertAdjacentHTML('beforeend', publicPageHtml());
+    }
+
+    function renderFeatureGrid() {
+        const grid = $('#public-feature-grid');
+        if (!grid) return;
+        const items = [
+            ['trophy', 'Ranking público', 'Top membros, magnatas, eventos, voz e XP em uma vitrine linda.'],
+            ['calendar-days', 'Eventos ativos', 'Agenda pública com prêmios, horários e status de inscrição.'],
+            ['crown', 'Vitrine VIP', 'Planos, benefícios e chamadas prontas para vender melhor.'],
+            ['badge-check', 'Conquistas', 'Badges públicos para membros sentirem progresso real.'],
+            ['map', 'Mini wiki', 'Explica economia, imóveis, eventos e universo Stellar.'],
+            ['message-circle-heart', 'Mural', 'Recados públicos da comunidade com fallback local.'],
+            ['calculator', 'Simulador', 'Calcula evolução por mensagens, calls e dias ativos.'],
+            ['sparkles', 'Bio generator', 'Gera bios e chamadas estilosas para divulgar a Stellar.'],
+            ['route', 'Roadmap votável', 'Mostra ideias futuras e deixa a galera votar.'],
+            ['terminal', 'Preview comandos', 'Mostra comandos por categoria sem precisar abrir Discord.'],
+            ['flame', 'Passe/temporada', 'Progresso público de missões, eventos e rankings.'],
+            ['handshake', 'Parceiros', 'Espaço futuro para vitrine de parceiros e destaques.']
+        ];
+        grid.innerHTML = items.map(([icon, title, desc]) => `
+            <article class="public-feature-card rounded-[2rem] p-6">
+                <span><i data-lucide="${icon}" class="w-5 h-5"></i></span>
+                <h3>${title}</h3>
+                <p>${desc}</p>
+            </article>
+        `).join('');
+    }
+
+    function renderRanking() {
+        const box = $('#public-ranking-list');
+        if (!box) return;
+        box.innerHTML = state.ranking.map((r, i) => `
+            <div class="public-rank-row ${i < 3 ? 'top' + (i + 1) : ''}">
+                <div class="public-rank-pos">#${i + 1}</div>
+                <div class="flex-1 min-w-0">
+                    <strong>${r.user}</strong>
+                    <small>${r.tag} • ${r.badge}</small>
+                </div>
+                <div class="public-rank-score">${money(r.score).replace('R$', 'R$ ')}</div>
+            </div>
+        `).join('');
+    }
+
+    function renderEvents() {
+        const box = $('#public-events-list');
+        if (!box) return;
+        box.innerHTML = state.events.map(e => `
+            <article class="public-event-card">
+                <span>${e.type}</span>
+                <h3>${e.title}</h3>
+                <p>${e.date}</p>
+                <strong>${e.prize}</strong>
+                <small>${e.status}</small>
+            </article>
+        `).join('');
+        const out = $('#public-event-output');
+        if (out && !out.value) out.value = '# 🔥 EVENTO STELLAR\n\n> Noite dos Magnatas começou. Participe, suba no ranking e concorra a coins + VIP Trial.\n\n📅 Sábado • 20:00\n🏆 Prêmio: Coins + VIP Trial\n📌 Regras: participação real, sem fake e sem abuso.';
+    }
+
+    function renderVip() {
+        const box = $('#public-vip-grid');
+        if (!box) return;
+        const plans = [
+            ['Bronze', 'Entrada premium', 'Bônus leve, tag exclusiva e destaque inicial.'],
+            ['Ouro', 'Mais vendido', 'Mais vantagens, boosts e presença no servidor.'],
+            ['Elite', 'Para magnatas', 'Benefícios altos, prioridade e estética diferenciada.'],
+            ['Lendário', 'Topo da Stellar', 'Experiência máxima e vantagens raras.']
+        ];
+        box.innerHTML = plans.map(([name, tag, desc]) => `
+            <article class="public-vip-card">
+                <small>${tag}</small>
+                <h3>VIP ${name}</h3>
+                <p>${desc}</p>
+                <button onclick="window.publicCopyPlan('${name}')">Copiar pitch</button>
+            </article>
+        `).join('');
+    }
+
+    function renderAchievements() {
+        const box = $('#public-achievements');
+        if (!box) return;
+        box.innerHTML = state.achievements.map(([emoji, title, desc]) => `
+            <article class="public-badge-card"><span>${emoji}</span><div><strong>${title}</strong><p>${desc}</p></div></article>
+        `).join('');
+    }
+
+    function renderRoadmap() {
+        const box = $('#public-roadmap');
+        if (!box) return;
+        const saved = JSON.parse(localStorage.getItem('stellar_public_votes') || '{}');
+        box.innerHTML = state.roadmap.map((item, idx) => {
+            const votes = item.votes + Number(saved[idx] || 0);
+            return `<div class="public-road-row">
+                <div><strong>${item.title}</strong><small>${item.status}</small></div>
+                <button onclick="window.publicVoteRoadmap(${idx})">🔥 ${votes}</button>
+            </div>`;
+        }).join('');
+    }
+
+    function renderCommands() {
+        const cat = $('#public-command-category')?.value || 'economia';
+        const box = $('#public-command-list');
+        if (!box) return;
+        box.innerHTML = (state.commands[cat] || []).map(cmd => `<button onclick="window.publicCopyText('${cmd}')" class="public-command-pill">${cmd}</button>`).join('');
+    }
+
+    function wallItems() {
+        try { return JSON.parse(localStorage.getItem('stellar_public_wall') || '[]'); } catch (e) { return []; }
+    }
+
+    function renderWall() {
+        const box = $('#public-wall-list');
+        if (!box) return;
+        const items = wallItems();
+        const base = items.length ? items : [
+            { text: 'A Stellar precisa de ranking público real urgente 🔥', at: 'Agora' },
+            { text: 'Eventos + missões semanais iam prender geral.', at: 'Comunidade' }
+        ];
+        box.innerHTML = base.slice(-6).reverse().map(item => `<div class="public-wall-item"><p>${escapeHtml(item.text)}</p><small>${item.at}</small></div>`).join('');
+    }
+
+    function escapeHtml(str) {
+        return String(str || '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\'': '&#39;', '"': '&quot;' }[ch]));
+    }
+
+    window.publicCopyCTA = () => copyText($('#public-cta-text')?.textContent || 'Entre na Stellar Society.');
+    window.publicCopyText = copyText;
+    window.publicCopyFrom = (id) => copyText($('#' + id)?.value || $('#' + id)?.textContent || '');
+    window.publicRenderCommands = renderCommands;
+
+    window.publicShuffleRanking = function () {
+        state.ranking = state.ranking.map(r => ({ ...r, score: Math.max(100000, r.score + Math.floor((Math.random() - 0.35) * 450000)) })).sort((a, b) => b.score - a.score);
+        renderRanking();
+        toastPublic('Ranking simulado atualizado.');
+    };
+
+    window.publicGenerateProfile = function () {
+        const name = $('#public-profile-name')?.value || 'Membro Stellar';
+        const style = $('#public-profile-style')?.value || 'Magnata';
+        const score = Number($('#public-profile-money')?.value || 1250000);
+        const box = $('#public-profile-card');
+        if (!box) return;
+        box.innerHTML = `<div class="public-profile-glow">
+            <small>Cartão público</small>
+            <h3>${escapeHtml(name)}</h3>
+            <p>${escapeHtml(style)} • ${money(score)}</p>
+            <button onclick="window.publicCopyText('✦ ${escapeHtml(name)} • ${escapeHtml(style)} na Stellar Society • Fortuna: ${money(score)} ✦')">Copiar assinatura</button>
+        </div>`;
+    };
+
+    window.publicRandomEvent = function () {
+        const ideas = [
+            '# 💘 PERFIS COMBINANDO\n\nMonte dupla, tire print combinando e dispute votação pública.\n🏆 Prêmio: coins + cargo temporário.',
+            '# 📸 PRINT PREMIADO\n\nPoste seu melhor print da Stellar. A comunidade vota no mais brabo.\n🏆 Prêmio: VIP Trial + destaque.',
+            '# 🏠 QUARTO PREMIADO\n\nMostre sua casa, mansão ou setup dentro da Stellar.\n🏆 Prêmio: coins + Hall da Fama.',
+            '# 💰 CORRIDA DOS MAGNATAS\n\nQuem mais evoluir na economia durante a semana leva prêmio.\n🏆 Prêmio: bônus pesado + tag exclusiva.',
+            '# 🎤 NOITE DA CALL\n\nEvento social de call com drop surpresa e mini missões ao vivo.\n🏆 Prêmio: drops aleatórios.'
+        ];
+        const text = ideas[Math.floor(Math.random() * ideas.length)];
+        const out = $('#public-event-output');
+        if (out) out.value = text;
+        toastPublic('Ideia gerada.');
+    };
+
+    window.publicRunSimulator = function () {
+        const msg = Number($('#public-sim-msg')?.value || 0);
+        const call = Number($('#public-sim-call')?.value || 0);
+        const days = Number($('#public-sim-days')?.value || 1);
+        const coins = Math.floor((msg * 140 + call * 7500) * days);
+        const xp = Math.floor((msg * 18 + call * 220) * days);
+        const result = $('#public-sim-result');
+        if (!result) return;
+        result.innerHTML = `<div><strong>${money(coins)}</strong><small>ganho estimado</small></div><div><strong>${xp.toLocaleString('pt-BR')} XP</strong><small>evolução social</small></div><p>Com esse ritmo, o membro teria motivo pra voltar diariamente e competir por ranking/streak.</p>`;
+    };
+
+    window.publicCopyPlan = function (plan) {
+        copyText(`💎 VIP ${plan} na Stellar Society\n\nGanhe benefícios exclusivos, destaque no servidor, vantagens no bot e ajude a comunidade crescer. Entre na Stellar e veja a loja VIP.`);
+    };
+
+    window.publicVoteRoadmap = function (idx) {
+        const saved = JSON.parse(localStorage.getItem('stellar_public_votes') || '{}');
+        saved[idx] = Number(saved[idx] || 0) + 1;
+        localStorage.setItem('stellar_public_votes', JSON.stringify(saved));
+        renderRoadmap();
+        toastPublic('Voto registrado localmente.');
+    };
+
+    window.publicRandomBio = function () {
+        const out = $('#public-bio-output');
+        if (!out) return;
+        out.value = state.bios[Math.floor(Math.random() * state.bios.length)];
+    };
+
+    window.publicAddWall = async function () {
+        const input = $('#public-wall-input');
+        const text = input?.value?.trim();
+        if (!text) return toastPublic('Escreve um recado primeiro.');
+        const items = wallItems();
+        items.push({ text, at: new Date().toLocaleDateString('pt-BR') });
+        localStorage.setItem('stellar_public_wall', JSON.stringify(items.slice(-20)));
+        input.value = '';
+        renderWall();
+        toastPublic('Recado enviado.');
+    };
+
+    function initPublicExperience() {
+        injectPublicNav();
+        injectPublicPage();
+        renderFeatureGrid();
+        renderRanking();
+        renderEvents();
+        renderVip();
+        renderAchievements();
+        renderRoadmap();
+        renderCommands();
+        renderWall();
+        window.publicRandomBio();
+        window.publicGenerateProfile();
+        window.publicRunSimulator();
+        if (window.lucide) window.lucide.createIcons();
+        document.documentElement.setAttribute('data-public-experience', VERSION);
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPublicExperience);
+    else initPublicExperience();
+    window.addEventListener('load', () => setTimeout(initPublicExperience, 800));
+})();
+
+</script>
 
 </body>
 </html>
